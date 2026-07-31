@@ -21,6 +21,19 @@ export const ReportsView: React.FC = () => {
         </button>
       </div>
 
+      <button
+        onClick={() => navigate('/barista-performance')}
+        style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%',
+          backgroundColor: 'var(--surface-1)', padding: '14px 16px', borderRadius: 'var(--radius-md)',
+          border: '1px solid var(--surface-border)', marginBottom: '20px', cursor: 'pointer',
+          color: 'var(--text-main)', fontWeight: 700, fontSize: '14px'
+        }}
+      >
+        <span>👤 Barista Performans Raporu</span>
+        <span style={{ color: 'var(--text-muted)' }}>→</span>
+      </button>
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {/* Zayi Raporu */}
         <div style={{ backgroundColor: 'var(--surface-1)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255, 107, 107, 0.2)' }}>

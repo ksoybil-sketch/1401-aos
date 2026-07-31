@@ -33,41 +33,43 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
   return (
     <>
       {/* Hayati Aksiyon Butonları */}
-      {!readOnly && (
-        <div className="flex flex-col gap-4 mt-2">
+      <div className="flex flex-col gap-4 mt-2">
+        {!readOnly && (
           <button
             onClick={() => setModalState('showFrozenModal', true)}
             className="flex items-center justify-center gap-3 w-full bg-blue-50 border border-blue-200 text-blue-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-blue-100 active:scale-95 transition-transform"
           >
             <span className="text-2xl">❄️</span> Donuk Ürün Stok
           </button>
+        )}
 
-          <div className="grid grid-cols-2 gap-4">
+        <div className={readOnly ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-2 gap-4'}>
+          {!readOnly && (
             <button
               onClick={() => setModalState('showSmartReorderModal', true)}
               className="flex flex-col items-center justify-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl p-4 font-bold shadow-sm hover:bg-amber-100 active:scale-95 transition-transform text-center"
             >
-              <span className="text-2xl">📦</span> 
+              <span className="text-2xl">📦</span>
               <span className="text-xs">Ne Sipariş Vermeliyim?</span>
             </button>
+          )}
 
-            <button
-              onClick={() => navigate('/inventory')}
-              className="flex flex-col items-center justify-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl p-4 font-bold shadow-sm hover:bg-indigo-100 active:scale-95 transition-transform text-center"
-            >
-              <span className="text-2xl">🔔</span> 
-              <span className="text-xs">Günlük SKT Bildirimi</span>
-            </button>
-          </div>
-          
           <button
-            onClick={() => navigate('/reports')}
-            className="flex items-center justify-center gap-3 w-full bg-purple-50 border border-purple-200 text-purple-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-purple-100 active:scale-95 transition-transform"
+            onClick={() => navigate('/inventory')}
+            className="flex flex-col items-center justify-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl p-4 font-bold shadow-sm hover:bg-indigo-100 active:scale-95 transition-transform text-center"
           >
-            <span className="text-2xl">📊</span> Raporlar ve Analizler
+            <span className="text-2xl">🔔</span>
+            <span className="text-xs">Günlük SKT Bildirimi</span>
           </button>
         </div>
-      )}
+
+        <button
+          onClick={() => navigate('/reports')}
+          className="flex items-center justify-center gap-3 w-full bg-purple-50 border border-purple-200 text-purple-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-purple-100 active:scale-95 transition-transform"
+        >
+          <span className="text-2xl">📊</span> Raporlar ve Analizler
+        </button>
+      </div>
 
       <div className="w-full h-px bg-gray-200 my-6"></div>
 
@@ -76,17 +78,17 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <div className="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-gray-50 transition" onClick={() => { if (!readOnly) { setInventoryStatusFilter('Hepsi'); navigate('/inventory'); } }}>
+        <div className="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-gray-50 transition" onClick={() => { setInventoryStatusFilter('Hepsi'); navigate('/inventory'); }}>
           <div className="text-xl font-extrabold text-emerald-500">{totalItems}</div>
           <div className="text-[10px] text-gray-400 font-bold mt-1">TOPLAM ÜRÜN</div>
         </div>
-        
-        <div className="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-gray-50 transition" onClick={() => { if (!readOnly) { setInventoryStatusFilter('warning'); navigate('/inventory'); } }}>
+
+        <div className="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-gray-50 transition" onClick={() => { setInventoryStatusFilter('warning'); navigate('/inventory'); }}>
           <div className="text-xl font-extrabold text-amber-500">{soonExpiringCount}</div>
           <div className="text-[10px] text-gray-400 font-bold mt-1">YAKLAŞAN SKT</div>
         </div>
-        
-        <div className="flex flex-col items-center justify-center bg-white border border-red-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-red-50 transition" onClick={() => { if (!readOnly) { setInventoryStatusFilter('danger'); navigate('/inventory'); } }}>
+
+        <div className="flex flex-col items-center justify-center bg-white border border-red-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-red-50 transition" onClick={() => { setInventoryStatusFilter('danger'); navigate('/inventory'); }}>
           <div className="text-xl font-extrabold text-red-500">{expiredCount}</div>
           <div className="text-[10px] text-gray-400 font-bold mt-1">TARİHİ GEÇEN</div>
         </div>

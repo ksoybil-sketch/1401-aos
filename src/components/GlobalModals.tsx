@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { useUIStore } from '../store/useUIStore';
+import { useSyncStore } from '../store/useSyncStore';
 import { useInventoryManager } from '../hooks/useInventoryManager';
 import { useSyncData } from '../hooks/useSyncData';
 import { CATEGORIES } from '../constants';
+import { lookupProductByBarcode } from '../utils/barcodeLookup';
 
 import { BranchModal } from './modals/BranchModal';
 import { DeleteModal } from './modals/DeleteModal';
@@ -26,12 +28,14 @@ export const GlobalModals: React.FC = () => {
 
   const { addInventoryItem, addFrozenItem, deleteItem } = useInventoryManager();
   const { updateInventory } = useSyncData();
+  const isOnline = useSyncStore((state) => state.isOnline);
 
   // Local state for Add Product Modal (since it's a form)
   const [productName, setProductName] = useState('');
   const [productCategory, setProductCategory] = useState(CATEGORIES[0]);
   const [expirationDate, setExpirationDate] = useState(new Date().toISOString().split('T')[0]);
   const [quantity, setQuantity] = useState(1);
+  const [isLookingUpProduct, setIsLookingUpProduct] = useState(false);
   const isNewProduct = !productMappings[scannedBarcode];
 
   // Auto-fill form when barcode changes
@@ -46,10 +50,23 @@ export const GlobalModals: React.FC = () => {
       } else {
         setProductCategory(CATEGORIES[0]);
       }
+
+      // Yeni ve bilinmeyen bir barkod ise (Teşhir Dolabı hariç), internetten ürün adı ara
+      if (scannedBarcode && !scannedBarcode.startsWith('VITRIN-') && isOnline) {
+        let cancelled = false;
+        setIsLookingUpProduct(true);
+        lookupProductByBarcode(scannedBarcode).then((result) => {
+          if (cancelled || useUIStore.getState().scannedBarcode !== scannedBarcode) return;
+          if (result) setProductName(result.name);
+        }).finally(() => {
+          if (!cancelled) setIsLookingUpProduct(false);
+        });
+        return () => { cancelled = true; };
+      }
     }
     setExpirationDate(new Date().toISOString().split('T')[0]);
     setQuantity(1);
-  }, [scannedBarcode, productMappings]);
+  }, [scannedBarcode, productMappings, isOnline]);
 
   const handleAddItemSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -174,6 +191,7 @@ export const GlobalModals: React.FC = () => {
           expirationDate={expirationDate}
           quantity={quantity}
           isNewProduct={isNewProduct}
+          isLookingUpProduct={isLookingUpProduct}
           onClose={() => setModalState('showAddModal', false)}
           onSetProductName={setProductName}
           onSetProductCategory={setProductCategory}

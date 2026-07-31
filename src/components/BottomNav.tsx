@@ -45,6 +45,20 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onNavigate, use
           <span className="text-[10px] font-semibold">Reçeteler</span>
         </button>
       )}
+
+      {userRole === 'Şube Müdürü' && (
+        <button
+          onClick={() => onNavigate('reports')}
+          className={`flex flex-col items-center gap-1 w-20 transition ${activeTab === 'reports' ? 'text-indigo-600' : 'text-gray-400'}`}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+          <span className="text-[10px] font-semibold">Raporlar</span>
+        </button>
+      )}
     </nav>
   );
 };

@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Recipe, RecipeIngredient } from '../../types';
 import { useStore } from '../../store/useStore';
 import { useSyncData } from '../../hooks/useSyncData';
+import { ROLE_PERMISSIONS } from '../../constants/roles';
 
 export const RecipesView: React.FC = () => {
   const { recipes, userRole } = useStore();
   const { updateRecipes } = useSyncData();
+  const canEditRecipes = ROLE_PERMISSIONS[userRole].canEditRecipes;
   const [recipeCategoryFilter, setRecipeCategoryFilter] = useState('Hepsi');
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showRecipeForm, setShowRecipeForm] = useState(false);
@@ -30,6 +32,24 @@ export const RecipesView: React.FC = () => {
     setFormIngredients([{ name: '', amount: '' }]);
     setFormInstructions('');
     setShowRecipeForm(true);
+  };
+
+  const openRecipeEdit = (recipe: Recipe) => {
+    setFormId(recipe.id);
+    setFormName(recipe.name);
+    setFormCategory(recipe.category);
+    setFormIngredients(recipe.ingredients.length > 0 ? recipe.ingredients.map((i) => ({ ...i })) : [{ name: '', amount: '' }]);
+    setFormInstructions(recipe.instructions);
+    setSelectedRecipe(null);
+    setShowRecipeForm(true);
+  };
+
+  const handleDeleteRecipe = (id: string) => {
+    if (!window.confirm('Bu reçeteyi silmek istediğinize emin misiniz?')) return;
+    const updatedRecipes = recipes.filter((r) => r.id !== id);
+    updateRecipes(updatedRecipes);
+    localStorage.setItem('skt_recipes', JSON.stringify(updatedRecipes));
+    setSelectedRecipe(null);
   };
 
   const handleAddIngredientRow = () => {
@@ -83,7 +103,7 @@ export const RecipesView: React.FC = () => {
       {/* Başlık ve Reçete Ekle Butonu */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
         <h3 style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>{filteredRecipes.length} Reçete</h3>
-        {(userRole === 'Şube Müdürü' || userRole === 'Bölge Müdürü') && (
+        {canEditRecipes && (
           <button onClick={openRecipeAdd} className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '12px', width: 'auto' }}>
             + Yeni Reçete
           </button>
@@ -133,6 +153,17 @@ export const RecipesView: React.FC = () => {
 
               <div className="recipe-section-title">HAZIRLANIŞI</div>
               <div className="recipe-tech">{selectedRecipe.instructions}</div>
+
+              {canEditRecipes && (
+                <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                  <button onClick={() => openRecipeEdit(selectedRecipe)} className="btn btn-secondary" style={{ flex: 1 }}>
+                    Düzenle
+                  </button>
+                  <button onClick={() => handleDeleteRecipe(selectedRecipe.id)} className="btn btn-danger" style={{ flex: 1 }}>
+                    Sil
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -143,7 +174,7 @@ export const RecipesView: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2 className="modal-title">Yeni Reçete Ekle</h2>
+              <h2 className="modal-title">{recipes.some((r) => r.id === formId) ? 'Reçeteyi Düzenle' : 'Yeni Reçete Ekle'}</h2>
               <button onClick={() => setShowRecipeForm(false)} className="btn-close">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="18" y1="6" x2="6" y2="18" />

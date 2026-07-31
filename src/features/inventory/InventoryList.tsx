@@ -4,11 +4,13 @@ import { getDaysRemaining, getStatusDetails, formatDate } from '../../utils/help
 import { CATEGORIES } from '../../constants';
 import { useStore } from '../../store/useStore';
 import { useUIStore } from '../../store/useUIStore';
+import { ROLE_PERMISSIONS } from '../../constants/roles';
 
 export const InventoryList: React.FC = () => {
   const navigate = useNavigate();
   const { userRole, inventory } = useStore();
   const { setModalState, openDeleteModal, inventoryStatusFilter: statusFilter, setInventoryStatusFilter: setStatusFilter } = useUIStore();
+  const canEdit = ROLE_PERMISSIONS[userRole].canEditInventory;
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('Hepsi');
@@ -140,9 +142,11 @@ export const InventoryList: React.FC = () => {
         <div className="empty-state">
           <div className="empty-icon">📦</div>
           <p className="empty-text">Aradığınız kriterlere uygun ürün bulunamadı.</p>
-          <button onClick={() => navigate('/scanner')} className="btn btn-primary" style={{ width: 'auto', padding: '10px 20px', fontSize: '13px' }}>
-            + Yeni Ürün Ekle
-          </button>
+          {canEdit && (
+            <button onClick={() => navigate('/scanner')} className="btn btn-primary" style={{ width: 'auto', padding: '10px 20px', fontSize: '13px' }}>
+              + Yeni Ürün Ekle
+            </button>
+          )}
         </div>
       ) : (
         filteredInventory.map((item) => {
@@ -176,15 +180,17 @@ export const InventoryList: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="item-actions">
-                  <button
-                    onClick={() => openDeleteModal(item)}
-                    className="btn-delete"
-                    title="Tüket / Sil"
-                  >
-                    Tüket / Sil
-                  </button>
-                </div>
+                {canEdit && (
+                  <div className="item-actions">
+                    <button
+                      onClick={() => openDeleteModal(item)}
+                      className="btn-delete"
+                      title="Tüket / Sil"
+                    >
+                      Tüket / Sil
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           );

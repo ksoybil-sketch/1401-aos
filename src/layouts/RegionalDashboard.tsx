@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore, useAuthStore } from '../store/useStore';
-import { ref, query, orderByChild, equalTo, get } from 'firebase/database';
-import { db } from '../api/firebase';
 import { getDaysRemaining } from '../utils/helpers';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
+import { useRegionBranchesData } from '../hooks/useRegionBranchesData';
 
 interface BranchStats {
   id: string;
@@ -17,77 +17,42 @@ interface BranchStats {
 }
 
 export const RegionalDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const { setBranch } = useStore();
   const regionId = useAuthStore(state => state.regionId);
-  const [branchesStats, setBranchesStats] = useState<BranchStats[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { branches, loading } = useRegionBranchesData();
 
-  useEffect(() => {
-    const fetchRegionData = async () => {
-      if (!regionId || !db) return;
-      
-      try {
-        const branchesRef = ref(db, 'branches');
-        const q = query(branchesRef, orderByChild('regionId'), equalTo(regionId));
-        const snapshot = await get(q);
-        
-        if (snapshot.exists()) {
-          const branchesData = snapshot.val();
-          const statsArray: BranchStats[] = [];
+  const branchesStats = useMemo<BranchStats[]>(() => {
+    const statsArray = branches.map((branch) => {
+      let teshirStock = 0;
+      let expiredCount = 0;
 
-          for (const [branchId, branch] of Object.entries<any>(branchesData)) {
-            let totalItems = 0;
-            let teshirStock = 0;
-            let expiredCount = 0;
-            
-            if (branch.inventory) {
-              const invArray = Array.isArray(branch.inventory) ? branch.inventory : Object.values(branch.inventory);
-              totalItems = invArray.length;
-              
-              invArray.forEach((item: any) => {
-                if (item.category === 'Teşhir Dolabı') teshirStock++;
-                if (getDaysRemaining(item.expirationDate) <= 0) expiredCount++;
-              });
-            }
+      branch.inventory.forEach((item: any) => {
+        if (item.category === 'Teşhir Dolabı') teshirStock++;
+        if (getDaysRemaining(item.expirationDate) <= 0) expiredCount++;
+      });
 
-            // Average score calculation (assuming training results might be stored under branch.training or similar, 
-            // but since it's not strictly defined in Firebase yet, we'll try to find it or default to 0)
-            let averageScore = 0;
-            if (branch.training && branch.training.quizResults) {
-               const results = Array.isArray(branch.training.quizResults) ? branch.training.quizResults : Object.values(branch.training.quizResults);
-               if (results.length > 0) {
-                 const sum = results.reduce((acc: number, r: any) => acc + (r.score || 0), 0);
-                 averageScore = Math.round(sum / results.length);
-               }
-            } else {
-               // Fallback if not found, use a mock or 0
-               averageScore = 0; 
-            }
-
-            statsArray.push({
-              id: branchId,
-              name: branch.name || 'Bilinmeyen Şube',
-              city: branch.city || 'Belirtilmedi',
-              totalItems,
-              teshirStock,
-              expiredCount,
-              averageScore
-            });
-          }
-
-          // Sort descending by expiredCount
-          statsArray.sort((a, b) => b.expiredCount - a.expiredCount);
-          setBranchesStats(statsArray);
-        }
-      } catch (error) {
-        console.error("Firebase bölge verisi çekilirken hata:", error);
-      } finally {
-        setLoading(false);
+      let averageScore = 0;
+      if (branch.quizResults.length > 0) {
+        const sum = branch.quizResults.reduce((acc, r) => acc + (r.score || 0), 0);
+        averageScore = Math.round(sum / branch.quizResults.length);
       }
-    };
 
-    fetchRegionData();
-  }, [regionId]);
+      return {
+        id: branch.id,
+        name: branch.name,
+        city: branch.city,
+        totalItems: branch.inventory.length,
+        teshirStock,
+        expiredCount,
+        averageScore
+      };
+    });
+
+    // Sort descending by expiredCount
+    statsArray.sort((a, b) => b.expiredCount - a.expiredCount);
+    return statsArray;
+  }, [branches]);
 
   const maxTotalItems = Math.max(...branchesStats.map(s => s.totalItems), 60);
 
@@ -140,6 +105,13 @@ export const RegionalDashboard: React.FC = () => {
           Şubelerin anlık stok durumlarını inceleyin ve detaylar için şubeye tıklayın.
         </p>
       </div>
+
+      <button
+        onClick={() => navigate('/reports')}
+        className="flex items-center justify-center gap-3 w-full bg-purple-50 border border-purple-200 text-purple-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-purple-100 active:scale-95 transition-transform"
+      >
+        <span className="text-2xl">📊</span> Raporlar ve Analizler
+      </button>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {branchesStats.length === 0 && (

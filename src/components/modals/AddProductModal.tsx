@@ -8,6 +8,7 @@ interface AddProductModalProps {
   expirationDate: string;
   quantity: number;
   isNewProduct: boolean;
+  isLookingUpProduct?: boolean;
   onClose: () => void;
   onSetProductName: (val: string) => void;
   onSetProductCategory: (val: string) => void;
@@ -23,6 +24,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
   expirationDate,
   quantity,
   isNewProduct,
+  isLookingUpProduct = false,
   onClose,
   onSetProductName,
   onSetProductCategory,
@@ -56,7 +58,12 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
           </div>
 
           <div className="form-group">
-            <span className="form-label">Ürün Adı</span>
+            <span className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              Ürün Adı
+              {isLookingUpProduct && (
+                <span className="api-spinner" style={{ width: '14px', height: '14px', borderWidth: '2px' }}></span>
+              )}
+            </span>
             {productCategory === 'Teşhir Dolabı' ? (
               <select
                 className="form-input"
@@ -74,9 +81,10 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
               <input
                 type="text"
                 className="form-input"
-                placeholder="Örn: Espresso Çekirdeği 1Kg"
+                placeholder={isLookingUpProduct ? 'Ürün aranıyor...' : 'Örn: Espresso Çekirdeği 1Kg'}
                 value={productName}
                 onChange={(e) => onSetProductName(e.target.value)}
+                disabled={isLookingUpProduct}
                 required
               />
             )}

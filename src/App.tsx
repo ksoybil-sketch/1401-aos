@@ -31,6 +31,7 @@ const TrainingQuiz = React.lazy(() => import('./features/training/TrainingQuiz')
 const ScannerView = React.lazy(() => import('./features/scanner/ScannerView').then(m => ({ default: m.ScannerView })));
 const ReportsView = React.lazy(() => import('./features/reports/ReportsView').then(m => ({ default: m.ReportsView })));
 const BaristaPerformanceReport = React.lazy(() => import('./features/reports/BaristaPerformanceReport').then(m => ({ default: m.BaristaPerformanceReport })));
+const RegionalReportsView = React.lazy(() => import('./features/reports/RegionalReportsView').then(m => ({ default: m.RegionalReportsView })));
 
 export const App: React.FC = () => {
   const { isAuthenticated, userRole, setAuth } = useStore();
@@ -182,9 +183,17 @@ export const App: React.FC = () => {
         {userRole === 'Bölge Müdürü' && (
           <Route element={<RegionalLayout />}>
             {activeBranchId ? (
-              <Route path="/" element={<ManagerDashboard readOnly />} />
+              <>
+                <Route path="/" element={<ManagerDashboard readOnly />} />
+                <Route path="/inventory" element={<InventoryList />} />
+                <Route path="/reports" element={<ReportsView />} />
+                <Route path="/barista-performance" element={<BaristaPerformanceReport />} />
+              </>
             ) : (
-              <Route path="/" element={<RegionalDashboard />} />
+              <>
+                <Route path="/" element={<RegionalDashboard />} />
+                <Route path="/reports" element={<RegionalReportsView />} />
+              </>
             )}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>

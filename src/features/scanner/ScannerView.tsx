@@ -11,10 +11,26 @@ export const ScannerView: React.FC = () => {
   
   const [scannerError, setScannerError] = useState('');
   const [scanStatusText, setScanStatusText] = useState('Kamera Başlatılıyor...');
+  const [hasTorch, setHasTorch] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
   const isWeb = Capacitor.getPlatform() === 'web';
 
   const handleCancel = () => {
     navigate('/');
+  };
+
+  const handleToggleTorch = async () => {
+    try {
+      if (torchOn) {
+        await BarcodeScanner.disableTorch();
+        setTorchOn(false);
+      } else {
+        await BarcodeScanner.enableTorch();
+        setTorchOn(true);
+      }
+    } catch (err) {
+      console.error('Fener açılıp kapatılamadı:', err);
+    }
   };
 
   const handleScanSuccess = (barcode: string) => {
@@ -64,6 +80,13 @@ export const ScannerView: React.FC = () => {
         });
 
         await BarcodeScanner.startScan({ formats: [BarcodeFormat.Ean13, BarcodeFormat.Ean8, BarcodeFormat.Code128, BarcodeFormat.Code39, BarcodeFormat.UpcA, BarcodeFormat.UpcE, BarcodeFormat.QrCode] });
+
+        try {
+          const { available } = await BarcodeScanner.isTorchAvailable();
+          if (isMounted) setHasTorch(available);
+        } catch {
+          // Fener desteği sorgulanamadıysa buton gösterilmez
+        }
       } catch (err: any) {
         if (isMounted) {
           console.error("Scanner error:", err);
@@ -78,6 +101,7 @@ export const ScannerView: React.FC = () => {
       isMounted = false;
       document.body.classList.remove('scanner-active');
       document.documentElement.classList.remove('scanner-active');
+      BarcodeScanner.disableTorch().catch(() => {});
       BarcodeScanner.removeAllListeners().then(() => {
         BarcodeScanner.stopScan().catch(() => {});
       });
@@ -121,6 +145,20 @@ export const ScannerView: React.FC = () => {
           {/* Tarama Çizgisi (Animasyonlu) */}
           <div className="absolute top-0 left-0 w-full h-1 bg-emerald-400 opacity-80 shadow-[0_0_8px_2px_rgba(52,211,116,0.5)] animate-[scan_2s_ease-in-out_infinite]"></div>
         </div>
+
+        {/* El Feneri Butonu (sadece cihaz destekliyorsa) */}
+        {hasTorch && (
+          <button
+            onClick={handleToggleTorch}
+            className="absolute bottom-6 right-6 p-3 rounded-full backdrop-blur-sm active:scale-95 transition pointer-events-auto z-20"
+            style={{ backgroundColor: torchOn ? 'var(--accent, #f59e0b)' : 'rgba(0,0,0,0.4)' }}
+            aria-label="El feneri"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill={torchOn ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#fff' }}>
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Durum Metni */}
