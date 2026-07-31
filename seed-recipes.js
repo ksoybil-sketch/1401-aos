@@ -12,8 +12,17 @@ const app = initializeApp({
 const db = getDatabase(app);
 
 async function main() {
-  await db.ref('recipes').set(recipes);
-  console.log(`${recipes.length} reçete 'recipes' düğümüne yazıldı.`);
+  // recipes/{id} şeklinde anahtarlı kayıtlar — training/quizResults'ta zaten
+  // kullanılan güvenli desenle aynı. Tek bir dizi yerine böyle saklanmasının
+  // nedeni: bir cihaz henüz senkronize olmadan bir reçete ekleyip/silip tüm
+  // diziyi Firebase'e geri yazdığında, henüz senkronize olmamış eski/eksik
+  // yerel listenin gerçek listenin üzerine yazmasını engellemek.
+  const keyedRecipes = {};
+  for (const r of recipes) {
+    keyedRecipes[r.id] = r;
+  }
+  await db.ref('recipes').set(keyedRecipes);
+  console.log(`${recipes.length} reçete 'recipes/{id}' formatında yazıldı.`);
   process.exit(0);
 }
 

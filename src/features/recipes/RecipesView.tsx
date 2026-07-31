@@ -12,7 +12,7 @@ const btnCloseClass = "bg-surface-2 border-none cursor-pointer text-content-mute
 
 export const RecipesView: React.FC = () => {
   const { recipes, userRole } = useStore();
-  const { updateRecipes } = useSyncData();
+  const { saveRecipe, deleteRecipe } = useSyncData();
   const canEditRecipes = ROLE_PERMISSIONS[userRole].canEditRecipes;
   const [recipeCategoryFilter, setRecipeCategoryFilter] = useState('Hepsi');
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,9 +55,7 @@ export const RecipesView: React.FC = () => {
 
   const handleDeleteRecipe = (id: string) => {
     if (!window.confirm('Bu reçeteyi silmek istediğinize emin misiniz?')) return;
-    const updatedRecipes = recipes.filter((r) => r.id !== id);
-    updateRecipes(updatedRecipes);
-    localStorage.setItem('skt_recipes', JSON.stringify(updatedRecipes));
+    deleteRecipe(id);
     setSelectedRecipe(null);
   };
 
@@ -87,9 +85,7 @@ export const RecipesView: React.FC = () => {
       image: null
     };
 
-    const updatedRecipes = [newRecipe, ...recipes.filter(r => r.id !== newRecipe.id)];
-    updateRecipes(updatedRecipes);
-    localStorage.setItem('skt_recipes', JSON.stringify(updatedRecipes));
+    saveRecipe(newRecipe);
 
     setShowRecipeForm(false);
   };

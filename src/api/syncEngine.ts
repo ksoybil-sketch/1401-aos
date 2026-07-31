@@ -1,8 +1,8 @@
 import localforage from 'localforage';
-import { ref, set, onValue, off } from 'firebase/database';
+import { ref, set, remove, onValue, off } from 'firebase/database';
 import { db } from './firebase';
 import { useAuthStore, useInventoryStore, useSyncStore, useAppStore, useBranchesStore } from '../store/useStore';
-import { InventoryItem, FrozenItem, TransactionLogItem } from '../types';
+import { InventoryItem, FrozenItem, TransactionLogItem, Recipe } from '../types';
 
 // Configure localforage for Sync Queue
 localforage.config({
@@ -12,9 +12,10 @@ localforage.config({
 
 interface SyncTask {
   id: string;
-  type: 'INVENTORY' | 'FROZEN' | 'TRANSACTION' | 'RECIPES' | 'MAPPINGS';
-  action: 'SET';
+  type: 'INVENTORY' | 'FROZEN' | 'TRANSACTION' | 'RECIPE' | 'MAPPINGS';
+  action: 'SET' | 'DELETE';
   payload: any;
+  recipeId?: string;
   timestamp: number;
 }
 
@@ -22,7 +23,7 @@ export const syncEngine = {
   init: () => {
     window.addEventListener('online', syncEngine.processQueue);
     window.addEventListener('offline', () => useSyncStore.getState().setOnlineStatus(false));
-    
+
     if (navigator.onLine) {
       useSyncStore.getState().setOnlineStatus(true);
       syncEngine.processQueue();
@@ -36,7 +37,7 @@ export const syncEngine = {
       id: Date.now().toString(),
       timestamp: Date.now()
     };
-    
+
     queue.push(newTask);
     await localforage.setItem('offline_queue', queue);
     useSyncStore.getState().setPendingCount(queue.length);
@@ -66,13 +67,15 @@ export const syncEngine = {
         if (task.type === 'INVENTORY') refPath += 'inventory';
         if (task.type === 'FROZEN') refPath += 'frozenStock';
         if (task.type === 'TRANSACTION') refPath += 'transactionLog';
-        if (task.type === 'RECIPES') refPath = 'recipes';
+        if (task.type === 'RECIPE') refPath = `recipes/${task.recipeId}`;
         if (task.type === 'MAPPINGS') refPath = 'productMappings';
 
         if (task.action === 'SET') {
-           await set(ref(db, refPath), task.payload);
+          await set(ref(db, refPath), task.payload);
+        } else if (task.action === 'DELETE') {
+          await remove(ref(db, refPath));
         }
-        
+
         newQueue.shift();
         await localforage.setItem('offline_queue', newQueue);
         useSyncStore.getState().setPendingCount(newQueue.length);
@@ -130,10 +133,16 @@ export const syncEngine = {
     });
 
     onValue(recipesRef, async (snapshot) => {
+      // recipes/{id} şeklinde anahtarlı kayıtlar (tıpkı quizResults gibi) — tek bir
+      // cihaz senkronize olmadan bir reçete ekleyip/silip tüm diziyi ezmesin diye.
       if (snapshot.exists()) {
         const val = snapshot.val();
-        useAppStore.getState().setRecipes(val);
-        await localforage.setItem(`cache_recipes`, val);
+        const arr = (Array.isArray(val) ? val : Object.values(val)) as Recipe[];
+        useAppStore.getState().setRecipes(arr);
+        await localforage.setItem(`cache_recipes`, arr);
+      } else {
+        useAppStore.getState().setRecipes([]);
+        await localforage.setItem(`cache_recipes`, []);
       }
     });
 
