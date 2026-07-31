@@ -1,0 +1,43 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false,
+        "mustChangePassword": {
+          ".write": "auth != null && auth.uid === $uid && newData.isBoolean()"
+        }
+      }
+    },
+
+    "branches": {
+      ".read": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'bolge_muduru')",
+      ".indexOn": ["regionId"],
+      "$branchId": {
+        ".read": "auth != null && (
+          root.child('users').child(auth.uid).child('role').val() === 'admin' ||
+          (root.child('users').child(auth.uid).child('role').val() === 'sube_muduru' &&
+           root.child('users').child(auth.uid).child('branchId').val() === $branchId) ||
+          (root.child('users').child(auth.uid).child('role').val() === 'bolge_muduru' &&
+           root.child('users').child(auth.uid).child('regionId').val() === root.child('branches').child($branchId).child('regionId').val())
+        )",
+
+        ".write": "auth != null && (
+          root.child('users').child(auth.uid).child('role').val() === 'admin' ||
+          (root.child('users').child(auth.uid).child('role').val() === 'sube_muduru' &&
+           root.child('users').child(auth.uid).child('branchId').val() === $branchId)
+        )"
+      }
+    },
+
+    "recipes": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    },
+
+    "training": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    }
+  }
+}

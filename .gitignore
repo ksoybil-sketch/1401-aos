@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output
+www/
+dist/
+
+# Android build artifacts
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+*.keystore
+*.jks
+
+# Secrets - NEVER commit
+serviceAccountKey.json
+.env
+.env.local
+
+# Old APK builds (large binaries, not source)
+*.apk
+
+# OS/editor
+.DS_Store
+Thumbs.db
+inst_user_settings.tmp

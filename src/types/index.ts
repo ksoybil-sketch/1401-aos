@@ -1,0 +1,101 @@
+export type UserRole = 'Barista' | 'Şube Müdürü' | 'Bölge Müdürü';
+
+export type ActiveTab = 'dashboard' | 'inventory' | 'recipes' | 'teshirStock' | 'training' | 'reports' | 'scanner';
+
+export interface BaristaProfile {
+  id: string;
+  name: string;
+  pin: string;
+  branchId: string;
+}
+
+export interface QuizResult {
+  id: string;
+  baristaName: string;
+  score: number;
+  date: string;
+  totalQuestions: number;
+  correctAnswers: number;
+}
+
+export interface InventoryItem {
+  id: string;
+  barcode: string;
+  name: string;
+  category: string;
+  quantity: number;
+  expirationDate: string;
+  dateAdded: string;
+  isFrozen?: boolean;
+}
+
+export interface FrozenItem {
+  id: string;
+  barcode?: string;
+  name: string;
+  category?: string;
+  quantity: number;
+  expirationDate: string;
+  dateAdded: string;
+}
+
+export interface RecipeIngredient {
+  name: string;
+  amount: string;
+}
+
+export interface Recipe {
+  id: string;
+  name: string;
+  category: string;
+  ingredients: RecipeIngredient[];
+  instructions: string;
+  image: string | null;
+}
+
+export interface TransactionLogItem {
+  id: string;
+  date: string;
+  productName: string;
+  quantity: number;
+  type: 'ADDED' | 'CONSUMED' | 'EXPIRED' | 'CORRECTION';
+  reason: string;
+  performedBy?: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  recipeName: string;
+  questionText: string;
+  correctAnswer: string;
+  options: string[];
+}
+
+export interface QuizFeedback {
+  isCorrect: boolean;
+  text: string;
+}
+
+export interface StatusDetails {
+  statusClass: 'danger' | 'warning' | 'success';
+  statusBorderClass: 'danger-border' | 'warning-border' | 'success-border';
+  label: string;
+  color?: string;
+  bgColor?: string;
+}
+
+export interface BranchInfo {
+  id: string;
+  name: string;
+  city: string;
+  regionId?: string;
+}
+
+export interface ReorderRecommendation {
+  productName: string;
+  category: string;
+  currentStock: number;
+  recommendedOrder: number;
+  reason: string;
+  urgency: 'HIGH' | 'MEDIUM' | 'LOW';
+}

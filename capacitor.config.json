@@ -1,0 +1,6 @@
+{
+  "appId": "com.coffee1401.skt",
+  "appName": "1401 Coffee AOS",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
