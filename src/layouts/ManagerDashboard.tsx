@@ -4,6 +4,7 @@ import { getDaysRemaining } from '../utils/helpers';
 import { BaristaPerformanceReport } from '../features/reports/BaristaPerformanceReport';
 import { useStore } from '../store/useStore';
 import { useUIStore } from '../store/useUIStore';
+import { DisplayCabinetSummaryCard, FrozenStockSummaryCard } from '../components/DashboardStockSummary';
 
 interface ManagerDashboardProps {
   readOnly?: boolean;
@@ -36,7 +37,7 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
       <div className="flex flex-col gap-4 mt-2">
         {!readOnly && (
           <button
-            onClick={() => setModalState('showFrozenModal', true)}
+            onClick={() => navigate('/frozen-stock')}
             className="flex items-center justify-center gap-3 w-full bg-blue-50 border border-blue-200 text-blue-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-blue-100 active:scale-95 transition-transform"
           >
             <span className="text-2xl">❄️</span> Donuk Ürün Stok
@@ -136,6 +137,9 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
           {frozenFeedbackMsg}
         </div>
       )}
+
+      <DisplayCabinetSummaryCard />
+      {!readOnly && <FrozenStockSummaryCard />}
 
       {quizResults && quizResults.length > 0 && (
         <div className="dashboard-report-container mt-6">

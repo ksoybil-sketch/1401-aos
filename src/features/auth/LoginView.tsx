@@ -11,11 +11,10 @@ import { DEMO_BARISTAS } from '../../constants';
  */
 interface LoginViewProps {
   onLogin: (role: UserRole, baristaId?: string) => void;
-  onManagerReturn?: () => void;
-  managerName?: string;
+  onManagerLoginClick: () => void;
 }
 
-export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerReturn, managerName }) => {
+export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerLoginClick }) => {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
@@ -70,17 +69,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerReturn, 
             </button>
           ))}
           
-          {onManagerReturn && (
-            <>
-              <div style={{ borderTop: '1px solid var(--surface-border)', margin: '20px 0' }}></div>
-              <button
-                className="btn admin-login-btn"
-                onClick={onManagerReturn}
-              >
-                <span>👑 {managerName || 'Yönetici'} Paneline Dön</span>
-              </button>
-            </>
-          )}
+          <div style={{ borderTop: '1px solid var(--surface-border)', margin: '20px 0' }}></div>
+          <button
+            className="btn admin-login-btn"
+            onClick={onManagerLoginClick}
+          >
+            <span>👑 Yönetici Girişi Yap</span>
+          </button>
         </div>
       </div>
     );

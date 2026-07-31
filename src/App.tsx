@@ -18,11 +18,10 @@ import { BaristaDashboard } from './layouts/BaristaDashboard';
 import { ManagerDashboard } from './layouts/ManagerDashboard';
 import { RegionalDashboard } from './layouts/RegionalDashboard';
 
-import { LoginScreen } from './features/auth/LoginScreen';
 import { ChangePasswordScreen } from './features/auth/ChangePasswordScreen';
-import { watchAuthState, AuthUserWithProfile } from './api/auth';
-import { ManagerReauthModal } from './components/modals/ManagerReauthModal';
-import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
+import { watchAuthState, AuthUserWithProfile, UserProfile } from './api/auth';
+import { ManagerLoginModal } from './components/modals/ManagerLoginModal';
+import { UserRole } from './types';
 
 // Lazy Loaded Routes
 const InventoryList = React.lazy(() => import('./features/inventory/InventoryList').then(m => ({ default: m.InventoryList })));
@@ -32,12 +31,13 @@ const ScannerView = React.lazy(() => import('./features/scanner/ScannerView').th
 const ReportsView = React.lazy(() => import('./features/reports/ReportsView').then(m => ({ default: m.ReportsView })));
 const BaristaPerformanceReport = React.lazy(() => import('./features/reports/BaristaPerformanceReport').then(m => ({ default: m.BaristaPerformanceReport })));
 const RegionalReportsView = React.lazy(() => import('./features/reports/RegionalReportsView').then(m => ({ default: m.RegionalReportsView })));
+const FrozenStockView = React.lazy(() => import('./features/frozenstock/FrozenStockView').then(m => ({ default: m.FrozenStockView })));
 
 export const App: React.FC = () => {
   const { isAuthenticated, userRole, setAuth } = useStore();
   const activeBranchId = useAuthStore(state => state.activeBranchId);
   const [firebaseUser, setFirebaseUser] = React.useState<AuthUserWithProfile | null | 'loading'>('loading');
-  const [showReauthModal, setShowReauthModal] = React.useState(false);
+  const [showManagerLoginModal, setShowManagerLoginModal] = React.useState(false);
   useSyncData();
 
   React.useEffect(() => {
@@ -89,49 +89,31 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleManagerReturn = () => {
-    if (!firebaseUser || firebaseUser === 'loading') return;
-    setShowReauthModal(true);
+  const mapFirebaseRole = (role?: string): UserRole => {
+    if (role === 'bolge_muduru') return 'Bölge Müdürü';
+    return 'Şube Müdürü';
   };
 
-  const handleReauthSuccess = async (password: string) => {
-    if (!firebaseUser || firebaseUser === 'loading' || !firebaseUser.email) return;
-    try {
-      const credential = EmailAuthProvider.credential(firebaseUser.email, password);
-      await reauthenticateWithCredential(firebaseUser, credential);
-      
-      setShowReauthModal(false);
-      
-      const roleMap: Record<string, any> = {
-        'sube_muduru': 'Şube Müdürü',
-        'bolge_muduru': 'Bölge Müdürü'
-      };
-      const role = roleMap[firebaseUser.profile?.role || ''] || 'Şube Müdürü';
-      setAuth(true, role, null, firebaseUser.profile?.regionId);
-      if (firebaseUser.profile?.branchId) {
-        useAuthStore.getState().setBranch(firebaseUser.profile.branchId);
-      }
-    } catch (err: any) {
-      // Re-auth failed, we should probably pass the error down to the modal or just use alert
-      // Wait, let's use a simple alert for now or let the modal handle it by passing an error prop?
-      // Since the modal controls its own loading state, it's better to pass a callback that throws if it fails.
-      throw new Error("Şifreniz hatalı. Lütfen tekrar deneyin.");
+  const handleManagerLoginSuccess = (profile: UserProfile | null) => {
+    setAuth(true, mapFirebaseRole(profile?.role), null, profile?.regionId);
+    if (profile?.branchId) {
+      useAuthStore.getState().setBranch(profile.branchId);
     }
+    if (profile?.role === 'bolge_muduru') {
+      useAuthStore.getState().setBranch('');
+    }
+    setShowManagerLoginModal(false);
   };
 
   if (firebaseUser === 'loading') {
     return <div className="flex h-screen items-center justify-center bg-gray-50 text-gray-500 font-medium">Yükleniyor...</div>;
   }
 
-  if (!firebaseUser) {
-    return <LoginScreen />;
-  }
-
-  if (firebaseUser.profile?.mustChangePassword) {
+  if (firebaseUser && firebaseUser.profile?.mustChangePassword) {
     return <ChangePasswordScreen user={firebaseUser} onPasswordChanged={() => {
       // Refresh the firebase user object to re-evaluate state
       setFirebaseUser({ ...firebaseUser, profile: { ...firebaseUser.profile, mustChangePassword: false } } as AuthUserWithProfile);
-      
+
       if (firebaseUser.profile?.role === 'bolge_muduru') {
         setAuth(true, 'Bölge Müdürü', null, firebaseUser.profile.regionId);
         useAuthStore.getState().setBranch('');
@@ -140,24 +122,23 @@ export const App: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    const managerName = firebaseUser.profile?.role === 'bolge_muduru' ? 'Bölge Müdürü' : 'Şube Müdürü';
-    return <LoginView onLogin={handleLogin} onManagerReturn={handleManagerReturn} managerName={managerName} />;
+    return (
+      <>
+        <LoginView onLogin={handleLogin} onManagerLoginClick={() => setShowManagerLoginModal(true)} />
+        {showManagerLoginModal && (
+          <ManagerLoginModal
+            defaultEmail={firebaseUser ? firebaseUser.email ?? '' : ''}
+            onClose={() => setShowManagerLoginModal(false)}
+            onSuccess={handleManagerLoginSuccess}
+          />
+        )}
+      </>
+    );
   }
 
   return (
     <>
       <Splash />
-      {showReauthModal && (
-        <ManagerReauthModal
-          onClose={() => setShowReauthModal(false)}
-          onSuccess={(password) => {
-             // Handle the promise returned by handleReauthSuccess inside the modal
-             // Wait, the modal doesn't await onSuccess. Let me fix the modal to await onSuccess.
-             // I'll change onSuccess signature to `(password: string) => Promise<void>` in ManagerReauthModal
-             return handleReauthSuccess(password);
-          }}
-        />
-      )}
       <Routes>
         {userRole === 'Barista' && (
           <Route element={<BaristaLayout />}>
@@ -166,6 +147,7 @@ export const App: React.FC = () => {
             <Route path="/training" element={<TrainingQuiz />} />
             <Route path="/recipes" element={<RecipesView />} />
             <Route path="/inventory" element={<InventoryList />} />
+            <Route path="/frozen-stock" element={<FrozenStockView />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         )}
@@ -174,6 +156,7 @@ export const App: React.FC = () => {
           <Route element={<ManagerLayout />}>
             <Route path="/" element={<ManagerDashboard />} />
             <Route path="/inventory" element={<InventoryList />} />
+            <Route path="/frozen-stock" element={<FrozenStockView />} />
             <Route path="/reports" element={<ReportsView />} />
             <Route path="/barista-performance" element={<BaristaPerformanceReport />} />
             <Route path="*" element={<Navigate to="/" replace />} />

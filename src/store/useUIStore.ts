@@ -13,12 +13,14 @@ interface UIState {
   itemToDelete: (InventoryItem & { isFrozen?: boolean }) | null;
   frozenFeedbackMsg: string;
 
-  setModalState: (modalName: keyof Omit<UIState, 'setModalState' | 'openAddModal' | 'openDeleteModal' | 'setFrozenFeedback' | 'scannedBarcode' | 'itemToDelete' | 'frozenFeedbackMsg' | 'inventoryStatusFilter' | 'setInventoryStatusFilter'>, isOpen: boolean) => void;
+  setModalState: (modalName: keyof Omit<UIState, 'setModalState' | 'openAddModal' | 'openDeleteModal' | 'setFrozenFeedback' | 'scannedBarcode' | 'itemToDelete' | 'frozenFeedbackMsg' | 'inventoryStatusFilter' | 'setInventoryStatusFilter' | 'inventoryCategoryFilter' | 'setInventoryCategoryFilter'>, isOpen: boolean) => void;
   openAddModal: (barcode: string) => void;
   openDeleteModal: (item: InventoryItem, isFrozen?: boolean) => void;
   setFrozenFeedback: (msg: string) => void;
   inventoryStatusFilter: 'Hepsi' | 'danger' | 'warning' | 'success';
   setInventoryStatusFilter: (filter: 'Hepsi' | 'danger' | 'warning' | 'success') => void;
+  inventoryCategoryFilter: string;
+  setInventoryCategoryFilter: (filter: string) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -49,5 +51,8 @@ export const useUIStore = create<UIState>((set) => ({
   },
 
   inventoryStatusFilter: 'Hepsi',
-  setInventoryStatusFilter: (filter) => set({ inventoryStatusFilter: filter })
+  setInventoryStatusFilter: (filter) => set({ inventoryStatusFilter: filter }),
+
+  inventoryCategoryFilter: 'Hepsi',
+  setInventoryCategoryFilter: (filter) => set({ inventoryCategoryFilter: filter })
 }));

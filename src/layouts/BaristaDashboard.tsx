@@ -4,11 +4,12 @@ import { useStore } from '../store/useStore';
 import { useUIStore } from '../store/useUIStore';
 import { getDaysRemaining } from '../utils/helpers';
 import { CATEGORIES } from '../constants';
+import { DisplayCabinetSummaryCard, FrozenStockSummaryCard } from '../components/DashboardStockSummary';
 
 export const BaristaDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { activeBarista, inventory } = useStore();
-  const { setModalState, openAddModal, setInventoryStatusFilter } = useUIStore();
+  const { openAddModal, setInventoryStatusFilter } = useUIStore();
 
   const activeBaristaName = activeBarista?.name;
 
@@ -65,10 +66,10 @@ export const BaristaDashboard: React.FC = () => {
 
       <div className="grid grid-cols-2 gap-4 mb-6">
         <button
-          onClick={() => setModalState('showFrozenModal', true)}
+          onClick={() => navigate('/frozen-stock')}
           className="flex flex-col items-center justify-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 rounded-2xl p-4 font-bold shadow-sm active:scale-95 transition-transform"
         >
-          <span className="text-3xl">❄️</span> 
+          <span className="text-3xl">❄️</span>
           <span className="text-xs text-center">Donuk Ürün Stok</span>
         </button>
 
@@ -80,7 +81,10 @@ export const BaristaDashboard: React.FC = () => {
         </button>
       </div>
 
-      <div className="w-full h-px bg-gray-200 mb-4"></div>
+      <DisplayCabinetSummaryCard />
+      <FrozenStockSummaryCard />
+
+      <div className="w-full h-px bg-gray-200 mb-4 mt-6"></div>
 
       <div className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3">
         <span>Bildirimler</span>

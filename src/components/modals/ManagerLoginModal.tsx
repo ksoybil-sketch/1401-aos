@@ -1,40 +1,54 @@
 import React, { useState } from 'react';
+import { signIn, getUserProfile, UserProfile } from '../../api/auth';
 
-interface ManagerReauthModalProps {
+interface ManagerLoginModalProps {
+  defaultEmail?: string;
   onClose: () => void;
-  onSuccess: (password: string) => Promise<void>;
+  onSuccess: (profile: UserProfile | null) => void;
 }
 
-export const ManagerReauthModal: React.FC<ManagerReauthModalProps> = ({
-  onClose,
-  onSuccess,
-}) => {
+function mapAuthError(code: string) {
+  switch (code) {
+    case 'auth/invalid-email':
+      return 'Geçersiz e-posta adresi.';
+    case 'auth/user-disabled':
+      return 'Bu hesap devre dışı bırakılmış.';
+    case 'auth/user-not-found':
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+      return 'E-posta veya şifre hatalı.';
+    case 'auth/too-many-requests':
+      return 'Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar dene.';
+    default:
+      return 'Giriş yapılamadı. Lütfen tekrar dene.';
+  }
+}
+
+export const ManagerLoginModal: React.FC<ManagerLoginModalProps> = ({ defaultEmail = '', onClose, onSuccess }) => {
+  const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!password) {
-      setError("Lütfen şifrenizi girin.");
-      return;
-    }
     setError('');
     setLoading(true);
-    
     try {
-      await onSuccess(password);
+      const user = await signIn(email.trim(), password);
+      const profile = await getUserProfile(user.uid);
+      onSuccess(profile);
     } catch (err: any) {
-      setError(err.message || "Şifre doğrulanamadı.");
+      setError(mapAuthError(err.code));
       setLoading(false);
-    } 
+    }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content" style={{ maxWidth: '400px' }}>
         <div className="modal-header">
-          <h2 className="modal-title">Müdür Yetki Doğrulaması</h2>
+          <h2 className="modal-title">👑 Yönetici Girişi</h2>
           <button onClick={onClose} className="btn-close" disabled={loading}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -45,15 +59,28 @@ export const ManagerReauthModal: React.FC<ManagerReauthModalProps> = ({
 
         <form onSubmit={handleSubmit} className="modal-inner">
           <div className="form-group">
-            <span className="form-label">Hesap Şifreniz</span>
+            <span className="form-label">E-posta</span>
+            <input
+              type="email"
+              className="form-input"
+              placeholder="E-posta"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoFocus
+              autoComplete="username"
+            />
+          </div>
+
+          <div className="form-group">
+            <span className="form-label">Şifre</span>
             <input
               type="password"
               className="form-input"
-              placeholder="Şifrenizi girin"
+              placeholder="Şifre"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              autoFocus
               autoComplete="current-password"
             />
           </div>
@@ -65,7 +92,7 @@ export const ManagerReauthModal: React.FC<ManagerReauthModalProps> = ({
               İptal
             </button>
             <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={loading}>
-              {loading ? 'Doğrulanıyor...' : 'Giriş Yap'}
+              {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
             </button>
           </div>
         </form>

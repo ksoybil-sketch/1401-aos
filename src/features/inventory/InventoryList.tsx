@@ -9,11 +9,14 @@ import { ROLE_PERMISSIONS } from '../../constants/roles';
 export const InventoryList: React.FC = () => {
   const navigate = useNavigate();
   const { userRole, inventory } = useStore();
-  const { setModalState, openDeleteModal, inventoryStatusFilter: statusFilter, setInventoryStatusFilter: setStatusFilter } = useUIStore();
+  const {
+    setModalState, openDeleteModal,
+    inventoryStatusFilter: statusFilter, setInventoryStatusFilter: setStatusFilter,
+    inventoryCategoryFilter: selectedCategoryFilter, setInventoryCategoryFilter: setSelectedCategoryFilter
+  } = useUIStore();
   const canEdit = ROLE_PERMISSIONS[userRole].canEditInventory;
-  
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('Hepsi');
 
   const filteredInventory = inventory.filter((item) => {
     const matchesSearch =

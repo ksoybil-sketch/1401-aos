@@ -21,7 +21,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canViewRecipes: true,
     canEditRecipes: true,
     canViewTraining: true,
-    canManageFrozenStock: false,
+    canManageFrozenStock: true,
     canManageBranches: false
   },
   'Şube Müdürü': {
