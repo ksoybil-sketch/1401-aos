@@ -5,7 +5,7 @@ export const Splash: React.FC = () => {
     const splashTimer = setTimeout(() => {
       const splashEl = document.getElementById('premium-splash');
       if (splashEl) {
-        splashEl.classList.add('translate-y-[100vh]', 'opacity-0', 'pointer-events-none');
+        splashEl.classList.add('opacity-0', 'scale-105', 'pointer-events-none');
         setTimeout(() => {
           if (splashEl) splashEl.style.display = 'none';
         }, 800);
@@ -16,10 +16,19 @@ export const Splash: React.FC = () => {
   }, []);
 
   return (
-    <div id="premium-splash" className="fixed inset-0 w-screen h-screen bg-gradient-to-br from-[#F5F0E8] to-[#EAE0D0] z-[99999] flex justify-center items-center transition-[transform,opacity] duration-[750ms] ease">
-      <div className="flex flex-col items-center -translate-y-10 opacity-0 [animation:slideDownFadeIn_0.9s_ease_0.15s_forwards]">
-        <img src="./icons/logo_goat.svg" alt="1401 Coffee Logo" className="w-[110px] h-[110px] mb-5" />
-        <h1 className="font-extrabold text-xl text-[#1A1210] text-center px-5 leading-relaxed tracking-wide">1401 Coffee Akıllı Operasyon Sistemi</h1>
+    <div
+      id="premium-splash"
+      className="fixed inset-0 z-[99999] flex justify-center items-center bg-void transition-all duration-[750ms] ease-out"
+    >
+      {/* Ambiyans hâlesi */}
+      <div className="absolute w-[420px] h-[420px] rounded-full bg-gold/12 blur-[100px]" />
+
+      <div className="relative flex flex-col items-center -translate-y-10 opacity-0 [animation:slideDownFadeIn_0.9s_ease_0.15s_forwards]">
+        <img src="./icons/logo_goat.svg" alt="1401 Coffee Logo" className="w-28 h-28 mb-6" />
+        <h1 className="font-extrabold text-xl text-content text-center px-8 leading-relaxed tracking-tight">
+          1401 Coffee Akıllı Operasyon Sistemi
+        </h1>
+        <div className="mt-8 w-10 h-10 rounded-full border-2 border-hairline border-t-gold [animation:rotation_0.8s_linear_infinite]" />
       </div>
     </div>
   );

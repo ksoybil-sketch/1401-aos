@@ -3,6 +3,7 @@ import { QuizQuestion, QuizFeedback, QuizWrongAnswer } from '../../types';
 import { useStore, useAuthStore } from '../../store/useStore';
 import { ref, push } from 'firebase/database';
 import { db } from '../../api/firebase';
+import { btn, btnLg, btnPrimary, card } from '../../constants/ui';
 
 export const TrainingQuiz: React.FC = () => {
   const { recipes } = useStore();
@@ -105,16 +106,18 @@ export const TrainingQuiz: React.FC = () => {
 
   if (!trainingActive) {
     return (
-      <div className="text-center py-10 px-5 bg-surface-1 rounded-lg">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" className="mb-5 mx-auto">
-          <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-          <path d="M6 12v5c3 3 9 3 12 0v-5" />
-        </svg>
-        <h2 className="text-content mb-2.5">Barista Eğitim Modülü</h2>
-        <p className="text-content-secondary mb-7 leading-relaxed">
+      <div className={`${card} text-center py-12 px-6`}>
+        <div className="w-20 h-20 mx-auto rounded-3xl bg-gold/12 border border-gold/25 flex items-center justify-center mb-6">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gold">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+            <path d="M6 12v5c3 3 9 3 12 0v-5" />
+          </svg>
+        </div>
+        <h2 className="text-xl font-extrabold text-content mb-3 tracking-tight">Barista Eğitim Modülü</h2>
+        <p className="text-content-secondary mb-8 leading-relaxed text-sm">
           İçecek reçetelerini ne kadar iyi biliyorsun? 20 soruluk bu sınavda reçetelerdeki malzemeleri ve ml/gramajları tahmin et. Şubede hatasız üretim için kendini test et!
         </p>
-        <button onClick={generateQuiz} className="py-[15px] px-8 rounded-md text-base font-semibold cursor-pointer inline-flex items-center justify-center gap-2 transition bg-ink text-night active:bg-ink-hover active:scale-[0.98]">
+        <button onClick={generateQuiz} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
           Sınava Başla
         </button>
       </div>
@@ -122,16 +125,20 @@ export const TrainingQuiz: React.FC = () => {
   }
 
   if (finished) {
+    const passed = score >= 80;
     return (
-      <div className="text-center py-10 px-5 bg-surface-1 rounded-lg">
-        <h2 className="text-content mb-2.5">Sınav Bitti!</h2>
-        <div className={`text-5xl font-bold my-5 ${score >= 80 ? 'text-success' : 'text-gold'}`}>
-          {score} Puan
+      <div className={`${card} text-center py-12 px-6`}>
+        <h2 className="text-xl font-extrabold text-content mb-2 tracking-tight">Sınav Bitti!</h2>
+        <div className={`text-6xl font-extrabold my-6 tracking-tight ${passed ? 'text-success' : 'text-gold'}`}>
+          {score}
+          <span className="text-2xl font-bold ml-1">Puan</span>
         </div>
-        <p className="text-content-secondary mb-7">
-          {score >= 80 ? "Harika iş çıkardın! Barın arkasına geçmeye hazırsın." : "Biraz daha pratik yapman gerekiyor. Reçeteler sekmesinden formülleri tekrar gözden geçir."}
+        <p className="text-content-secondary mb-8 leading-relaxed text-sm">
+          {passed
+            ? 'Harika iş çıkardın! Barın arkasına geçmeye hazırsın.'
+            : 'Biraz daha pratik yapman gerekiyor. Reçeteler sekmesinden formülleri tekrar gözden geçir.'}
         </p>
-        <button onClick={() => setTrainingActive(false)} className="w-full py-[15px] rounded-md text-[15px] font-semibold cursor-pointer flex items-center justify-center gap-2 transition bg-ink text-night active:bg-ink-hover active:scale-[0.98]">
+        <button onClick={() => setTrainingActive(false)} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
           Yeniden Başla
         </button>
       </div>
@@ -139,15 +146,23 @@ export const TrainingQuiz: React.FC = () => {
   }
 
   const currentQ = questions[currentIndex];
+  const progress = ((currentIndex) / questions.length) * 100;
 
   return (
-    <div className="p-5 bg-surface-1 rounded-lg">
-      <div className="flex justify-between mb-5 text-sm text-content-secondary">
-        <span>Soru: {currentIndex + 1} / {questions.length}</span>
-        <span>Skor: {score}</span>
+    <div className={`${card} p-5`}>
+      {/* İlerleme */}
+      <div className="flex justify-between items-center text-[13px] text-content-muted font-semibold mb-2.5">
+        <span>Soru {currentIndex + 1} / {questions.length}</span>
+        <span className="text-gold">Skor: {score}</span>
+      </div>
+      <div className="h-1.5 bg-glass-2 rounded-full overflow-hidden mb-7">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-gold-deep to-gold transition-all duration-500"
+          style={{ width: `${progress}%` }}
+        />
       </div>
 
-      <h3 className="text-content text-lg mb-7 leading-relaxed">
+      <h3 className="text-content text-lg font-bold mb-7 leading-relaxed">
         {currentQ.questionText}
       </h3>
 
@@ -157,8 +172,11 @@ export const TrainingQuiz: React.FC = () => {
             key={idx}
             disabled={feedback !== null}
             onClick={() => handleAnswer(opt)}
-            className="w-full py-[15px] rounded-md text-[15px] font-semibold cursor-pointer flex items-center gap-2 transition bg-surface-2 border border-surface-border text-content text-left"
+            className="w-full min-h-14 py-3.5 px-5 rounded-2xl text-[15px] font-semibold cursor-pointer flex items-center gap-3 text-left transition-all duration-200 bg-glass-2 border border-hairline text-content hover:bg-glass-3 hover:border-hairline-strong active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
+            <span className="w-7 h-7 shrink-0 rounded-lg bg-glass-3 flex items-center justify-center text-xs font-bold text-content-muted">
+              {String.fromCharCode(65 + idx)}
+            </span>
             {opt}
           </button>
         ))}
@@ -166,7 +184,11 @@ export const TrainingQuiz: React.FC = () => {
 
       {feedback && (
         <div
-          className={`mt-5 p-[15px] rounded-md font-bold text-center ${feedback.isCorrect ? 'bg-[rgba(52,201,135,0.15)] text-success' : 'bg-[rgba(255,107,107,0.15)] text-danger'}`}
+          className={`mt-5 p-4 rounded-2xl font-bold text-center border ${
+            feedback.isCorrect
+              ? 'bg-success-bg text-success border-success-border'
+              : 'bg-danger-bg text-danger border-danger-border'
+          }`}
         >
           {feedback.text}
         </div>

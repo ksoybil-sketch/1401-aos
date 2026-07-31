@@ -5,10 +5,35 @@ import { BaristaPerformanceReport } from '../features/reports/BaristaPerformance
 import { useStore } from '../store/useStore';
 import { useUIStore } from '../store/useUIStore';
 import { DisplayCabinetSummaryCard, FrozenStockSummaryCard } from '../components/DashboardStockSummary';
+import {
+  actionTile, btn, btnLg, btnPrimary, btnSecondary, card, cardInteractive,
+  cardPad, eyebrow, tileBadge
+} from '../constants/ui';
 
 interface ManagerDashboardProps {
   readOnly?: boolean;
 }
+
+/** Tek bir istatistik kutusu — tıklanabilir ya da salt gösterim. */
+const StatCard: React.FC<{
+  value: number;
+  label: string;
+  tone: string;
+  onClick?: () => void;
+  large?: boolean;
+}> = ({ value, label, tone, onClick, large }) => (
+  <div
+    onClick={onClick}
+    className={`${onClick ? cardInteractive : card} flex flex-col items-center justify-center gap-1 ${large ? 'py-7' : 'py-5'}`}
+  >
+    <div className={`${large ? 'text-4xl' : 'text-2xl'} font-extrabold tracking-tight ${tone}`}>
+      {value}
+    </div>
+    <div className="text-[10px] font-bold text-content-muted uppercase tracking-[0.1em] text-center px-2">
+      {label}
+    </div>
+  </div>
+);
 
 export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = false }) => {
   const navigate = useNavigate();
@@ -33,114 +58,107 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
 
   return (
     <>
-      {/* Hayati Aksiyon Butonları */}
-      <div className="flex flex-col gap-4 mt-2">
-        {!readOnly && (
-          <button
-            onClick={() => navigate('/frozen-stock')}
-            className="flex items-center justify-center gap-3 w-full bg-blue-50 border border-blue-200 text-blue-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-blue-100 active:scale-95 transition-transform"
-          >
-            <span className="text-2xl">❄️</span> Donuk Ürün Stok
-          </button>
-        )}
-
-        {!readOnly && (
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => setModalState('showSmartReorderModal', true)}
-              className="flex flex-col items-center justify-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 rounded-2xl p-4 font-bold shadow-sm hover:bg-amber-100 active:scale-95 transition-transform text-center"
-            >
-              <span className="text-2xl">📦</span>
-              <span className="text-xs">Ne Sipariş Vermeliyim?</span>
-            </button>
-
-            <button
-              onClick={() => navigate('/inventory')}
-              className="flex flex-col items-center justify-center gap-2 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl p-4 font-bold shadow-sm hover:bg-indigo-100 active:scale-95 transition-transform text-center"
-            >
-              <span className="text-2xl">🔔</span>
-              <span className="text-xs">Günlük SKT Bildirimi</span>
-            </button>
-          </div>
-        )}
-
-        <button
-          onClick={() => navigate('/reports')}
-          className="flex items-center justify-center gap-3 w-full bg-purple-50 border border-purple-200 text-purple-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-purple-100 active:scale-95 transition-transform"
-        >
-          <span className="text-2xl">📊</span> Raporlar ve Analizler
-        </button>
-      </div>
-
-      <div className="w-full h-px bg-gray-200 my-6"></div>
-
-      <div className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-3">
-        <span>Genel Durum</span>
-      </div>
+      {/* ---------- Genel Durum ---------- */}
+      <div className={`${eyebrow} mt-1`}>Genel Durum</div>
 
       {readOnly ? (
-        <div className="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl py-6 shadow-sm">
-          <div className="text-2xl font-extrabold text-emerald-500">{totalItems}</div>
-          <div className="text-[10px] text-gray-400 font-bold mt-1">TOPLAM STOK</div>
-        </div>
+        <StatCard value={totalItems} label="Toplam Stok" tone="text-success" large />
       ) : (
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-gray-50 transition" onClick={() => { setInventoryStatusFilter('Hepsi'); navigate('/inventory'); }}>
-            <div className="text-xl font-extrabold text-emerald-500">{totalItems}</div>
-            <div className="text-[10px] text-gray-400 font-bold mt-1">TOPLAM ÜRÜN</div>
-          </div>
-
-          <div className="flex flex-col items-center justify-center bg-white border border-gray-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-gray-50 transition" onClick={() => { setInventoryStatusFilter('warning'); navigate('/inventory'); }}>
-            <div className="text-xl font-extrabold text-amber-500">{soonExpiringCount}</div>
-            <div className="text-[10px] text-gray-400 font-bold mt-1">YAKLAŞAN SKT</div>
-          </div>
-
-          <div className="flex flex-col items-center justify-center bg-white border border-red-100 rounded-2xl py-4 shadow-sm cursor-pointer hover:bg-red-50 transition" onClick={() => { setInventoryStatusFilter('danger'); navigate('/inventory'); }}>
-            <div className="text-xl font-extrabold text-red-500">{expiredCount}</div>
-            <div className="text-[10px] text-gray-400 font-bold mt-1">TARİHİ GEÇEN</div>
-          </div>
+          <StatCard
+            value={totalItems}
+            label="Toplam Ürün"
+            tone="text-success"
+            onClick={() => { setInventoryStatusFilter('Hepsi'); navigate('/inventory'); }}
+          />
+          <StatCard
+            value={soonExpiringCount}
+            label="Yaklaşan SKT"
+            tone="text-warning"
+            onClick={() => { setInventoryStatusFilter('warning'); navigate('/inventory'); }}
+          />
+          <StatCard
+            value={expiredCount}
+            label="Tarihi Geçen"
+            tone="text-danger"
+            onClick={() => { setInventoryStatusFilter('danger'); navigate('/inventory'); }}
+          />
         </div>
       )}
 
       {!readOnly && expiredCount > 0 && (
-        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-2xl p-4 mt-4 shadow-sm">
-          <div className="text-red-500 flex-shrink-0 mt-0.5">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-              <line x1="12" y1="9" x2="12" y2="13"/>
-              <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-          </div>
+        <div className="flex items-start gap-3.5 rounded-3xl border border-danger-border bg-danger-bg backdrop-blur-xl p-5">
+          <span className="text-xl leading-none mt-0.5">⚠️</span>
           <div>
-            <h4 className="text-sm font-bold text-red-700">Dikkat: Tarihi Geçmiş Ürün Var!</h4>
-            <p className="text-xs text-red-600 mt-1">Envanterinizde süresi dolmuş {expiredCount} ürün bulunuyor. Lütfen imha edin.</p>
+            <h4 className="text-sm font-bold text-danger">Dikkat: Tarihi Geçmiş Ürün Var!</h4>
+            <p className="text-xs text-danger/80 mt-1 leading-relaxed">
+              Envanterinizde süresi dolmuş {expiredCount} ürün bulunuyor. Lütfen imha edin.
+            </p>
           </div>
         </div>
       )}
 
-      {/* Operasyon Butonları */}
+      {/* ---------- Operasyon ---------- */}
       {!readOnly && (
-        <div className="flex flex-col gap-4 mt-6">
-          <button onClick={handleStartScan} className="flex items-center justify-center gap-3 w-full bg-indigo-600 text-white rounded-2xl py-5 px-4 font-bold shadow-md hover:bg-indigo-700 active:scale-95 transition-transform text-lg">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <>
+          <div className={`${eyebrow} mt-2`}>Operasyon</div>
+
+          <button onClick={handleStartScan} className={`${btn} ${btnPrimary} w-full h-[68px] text-base rounded-3xl`}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
               <circle cx="12" cy="13" r="4" />
             </svg>
             Barkod Tara ve Ekle
           </button>
 
-          <button
-            onClick={handleOpenAddTeshir}
-            className="w-full bg-white text-indigo-600 border-2 border-indigo-100 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-indigo-50 active:scale-95 transition-transform text-sm"
-          >
+          <button onClick={handleOpenAddTeshir} className={`${btn} ${btnSecondary} w-full ${btnLg}`}>
             🎂 Teşhir Dolabına Ürün Ekle (3 Gün SKT)
           </button>
-        </div>
+        </>
       )}
+
+      {/* ---------- Hızlı Erişim ---------- */}
+      <div className={`${eyebrow} mt-2`}>Hızlı Erişim</div>
+
+      <div className="flex flex-col gap-3">
+        {!readOnly && (
+          <button onClick={() => navigate('/frozen-stock')} className={actionTile('info')}>
+            <span className={tileBadge('info')}>❄️</span>
+            <span className="flex-1 font-bold text-[15px] text-content">Donuk Ürün Stok</span>
+            <span className="text-content-muted">›</span>
+          </button>
+        )}
+
+        {!readOnly && (
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setModalState('showSmartReorderModal', true)}
+              className={`${cardInteractive} ${cardPad} flex flex-col items-start gap-3 text-left`}
+            >
+              <span className={tileBadge('warning')}>📦</span>
+              <span className="text-[13px] font-bold text-content leading-snug">Ne Sipariş Vermeliyim?</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/inventory')}
+              className={`${cardInteractive} ${cardPad} flex flex-col items-start gap-3 text-left`}
+            >
+              <span className={tileBadge('gold')}>🔔</span>
+              <span className="text-[13px] font-bold text-content leading-snug">Günlük SKT Bildirimi</span>
+            </button>
+          </div>
+        )}
+
+        <button onClick={() => navigate('/reports')} className={actionTile('violet')}>
+          <span className={tileBadge('violet')}>📊</span>
+          <span className="flex-1 font-bold text-[15px] text-content">Raporlar ve Analizler</span>
+          <span className="text-content-muted">›</span>
+        </button>
+      </div>
 
       {/* Geri Bildirim Mesajı */}
       {frozenFeedbackMsg && (
-        <div className="bg-success-bg border border-success-border text-success rounded-lg py-3 px-4 text-[13px] font-semibold mt-4">
+        <div className="rounded-2xl border border-success-border bg-success-bg backdrop-blur-xl py-3.5 px-4 text-[13px] font-semibold text-success">
           {frozenFeedbackMsg}
         </div>
       )}
@@ -149,7 +167,7 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
       {!readOnly && <FrozenStockSummaryCard />}
 
       {quizResults && quizResults.length > 0 && (
-        <div className="mt-5">
+        <div className="mt-2">
           <BaristaPerformanceReport />
         </div>
       )}

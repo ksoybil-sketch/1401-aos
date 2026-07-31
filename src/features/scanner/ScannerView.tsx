@@ -124,7 +124,7 @@ export const ScannerView: React.FC = () => {
 
       {/* Hata Mesajı */}
       {scannerError && (
-        <div className="absolute top-24 left-4 right-4 bg-red-500/90 text-white p-4 rounded-xl shadow-lg z-20 backdrop-blur-md font-semibold text-sm">
+        <div className="absolute top-24 left-4 right-4 bg-danger/90 text-white p-4 rounded-2xl shadow-lg z-20 backdrop-blur-md font-semibold text-sm border border-white/15">
           {scannerError}
         </div>
       )}
@@ -135,15 +135,15 @@ export const ScannerView: React.FC = () => {
         <div className="absolute inset-0 border-[40px] border-black/40 backdrop-blur-[2px]"></div>
         
         {/* Odak Çerçevesi */}
-        <div className="relative w-64 h-64 border-2 border-white/30 rounded-xl overflow-hidden shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
+        <div className="relative w-64 h-64 border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_0_9999px_rgba(0,0,0,0.55)]">
           {/* Köşe İşaretçileri */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-emerald-400 rounded-tl-xl"></div>
-          <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-400 rounded-tr-xl"></div>
-          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-400 rounded-bl-xl"></div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-400 rounded-br-xl"></div>
-          
+          <div className="absolute top-0 left-0 w-9 h-9 border-t-[3px] border-l-[3px] border-gold rounded-tl-3xl"></div>
+          <div className="absolute top-0 right-0 w-9 h-9 border-t-[3px] border-r-[3px] border-gold rounded-tr-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-9 h-9 border-b-[3px] border-l-[3px] border-gold rounded-bl-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-9 h-9 border-b-[3px] border-r-[3px] border-gold rounded-br-3xl"></div>
+
           {/* Tarama Çizgisi (Animasyonlu) */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-emerald-400 opacity-80 shadow-[0_0_8px_2px_rgba(52,211,116,0.5)] animate-[scan_2s_ease-in-out_infinite]"></div>
+          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent shadow-[0_0_12px_2px_rgba(217,182,95,0.6)] [animation:scan_2.2s_ease-in-out_infinite]"></div>
         </div>
 
         {/* El Feneri Butonu (sadece cihaz destekliyorsa) */}

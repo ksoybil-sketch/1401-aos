@@ -5,6 +5,9 @@ import { getDaysRemaining } from '../utils/helpers';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { useRegionBranchesData } from '../hooks/useRegionBranchesData';
+import {
+  actionTile, card, cardInteractive, eyebrow, fullscreenLoader, spinner, tileBadge
+} from '../constants/ui';
 
 interface BranchStats {
   id: string;
@@ -86,36 +89,45 @@ export const RegionalDashboard: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="p-5 text-center">Yükleniyor...</div>;
+    return (
+      <div className={fullscreenLoader}>
+        <div className={`${spinner} w-11 h-11`} />
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="p-4 bg-surface-1 rounded-lg border border-surface-border">
-        <div className="text-[11px] uppercase text-gold font-bold tracking-wide flex justify-between">
-          <span>BÖLGE MÜDÜRÜ</span>
-          <button onClick={handleExportCSV} className="bg-transparent border-none text-ink cursor-pointer font-bold">
+    <div className="flex flex-col gap-4">
+      {/* Bölge başlığı */}
+      <div className={`${card} p-5`}>
+        <div className="flex justify-between items-center gap-3">
+          <span className={eyebrow}>Bölge Müdürü</span>
+          <button
+            onClick={handleExportCSV}
+            className="text-gold cursor-pointer font-bold text-xs transition-opacity hover:opacity-75 shrink-0"
+          >
             Özeti CSV İndir
           </button>
         </div>
-        <h2 className="text-xl text-content mt-1 font-extrabold">
+        <h2 className="text-xl font-extrabold text-content mt-2 tracking-tight">
           Tüm Şubeler Canlı Durum
         </h2>
-        <p className="text-[13px] text-content-muted mt-1">
+        <p className="text-[13px] text-content-muted mt-1.5 leading-relaxed">
           Şubelerin anlık stok durumlarını inceleyin ve detaylar için şubeye tıklayın.
         </p>
       </div>
 
-      <button
-        onClick={() => navigate('/reports')}
-        className="flex items-center justify-center gap-3 w-full bg-purple-50 border border-purple-200 text-purple-700 rounded-2xl py-4 px-4 font-bold shadow-sm hover:bg-purple-100 active:scale-95 transition-transform"
-      >
-        <span className="text-2xl">📊</span> Raporlar ve Analizler
+      <button onClick={() => navigate('/reports')} className={actionTile('violet')}>
+        <span className={tileBadge('violet')}>📊</span>
+        <span className="flex-1 font-bold text-[15px] text-content">Raporlar ve Analizler</span>
+        <span className="text-content-muted">›</span>
       </button>
+
+      <div className={`${eyebrow} mt-1`}>Şubeler</div>
 
       <div className="flex flex-col gap-3">
         {branchesStats.length === 0 && (
-          <div className="text-center py-5 text-content-muted">Bu bölgeye ait şube bulunamadı.</div>
+          <div className="text-center py-6 text-content-muted text-sm">Bu bölgeye ait şube bulunamadı.</div>
         )}
         {branchesStats.map((stats) => {
           const teshirWidth = Math.min((stats.teshirStock / maxTotalItems) * 100, 100);
@@ -127,43 +139,43 @@ export const RegionalDashboard: React.FC = () => {
                 setBranch(stats.id);
                 localStorage.setItem('skt_branch_id', stats.id);
               }}
-              className="bg-surface-1 border border-surface-border rounded-lg p-4 cursor-pointer flex flex-col gap-3 transition-all"
+              className={`${cardInteractive} p-5 flex flex-col gap-3.5`}
             >
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="text-base font-extrabold text-ink">
+              <div className="flex justify-between items-start gap-3">
+                <div className="min-w-0">
+                  <div className="text-base font-extrabold text-content truncate">
                     {stats.name}
                   </div>
-                  <div className="text-[11px] text-content-muted">
+                  <div className="text-[11px] text-content-muted mt-0.5">
                     {stats.city}
                   </div>
                 </div>
-                <div className="flex gap-2.5 text-xs font-semibold">
-                  <div className="flex flex-col items-end">
-                    <span className="text-content-muted">Eğitim Ort.</span>
-                    <span className={stats.averageScore >= 80 ? 'text-success' : 'text-warning'}>%{stats.averageScore}</span>
-                  </div>
+                <div className="flex flex-col items-end shrink-0">
+                  <span className="text-[10px] text-content-muted uppercase font-bold tracking-[0.08em]">Eğitim Ort.</span>
+                  <span className={`text-sm font-bold ${stats.averageScore >= 80 ? 'text-success' : 'text-warning'}`}>
+                    %{stats.averageScore}
+                  </span>
                 </div>
               </div>
 
               {stats.expiredCount > 0 && (
-                <div className="p-2 bg-danger-bg rounded-lg border border-danger-border text-xs text-danger font-semibold">
+                <div className="py-2 px-3 bg-danger-bg rounded-xl border border-danger-border text-xs text-danger font-semibold">
                   ⚠️ {stats.expiredCount} tarihi geçen ürün var!
                 </div>
               )}
 
-              <div className="flex flex-col gap-2">
-                <div>
-                  <div className="flex justify-between text-[11px] mb-0.5 font-semibold">
-                    <span className="text-content-muted">Teşhir Dolabı</span>
-                    <span className="text-content">{stats.teshirStock} çeşit</span>
-                  </div>
-                  <div className="h-1.5 bg-surface-2 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full bg-gold" style={{ width: `${teshirWidth}%` }}></div>
-                  </div>
+              <div>
+                <div className="flex justify-between text-[11px] mb-1.5 font-semibold">
+                  <span className="text-content-muted">Teşhir Dolabı</span>
+                  <span className="text-content">{stats.teshirStock} çeşit</span>
+                </div>
+                <div className="h-1.5 bg-glass-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-gold-deep to-gold transition-all duration-500"
+                    style={{ width: `${teshirWidth}%` }}
+                  />
                 </div>
               </div>
-
             </div>
           );
         })}

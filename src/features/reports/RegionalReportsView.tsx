@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRegionBranchesData } from '../../hooks/useRegionBranchesData';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
+import { card, fullscreenLoader, screenTitle, spinner } from '../../constants/ui';
 
 interface BranchLogEntry {
   branchName: string;
@@ -10,6 +11,8 @@ interface BranchLogEntry {
   productName: string;
   quantity: number;
 }
+
+const logRow = 'flex justify-between items-center gap-3 py-2.5 border-b border-hairline last:border-b-0 text-sm';
 
 export const RegionalReportsView: React.FC = () => {
   const navigate = useNavigate();
@@ -82,80 +85,91 @@ export const RegionalReportsView: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="p-5 text-center">Yükleniyor...</div>;
+    return (
+      <div className={fullscreenLoader}>
+        <div className={`${spinner} w-11 h-11`} />
+      </div>
+    );
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center px-0.5 mb-4">
-        <span className="text-[15px] font-bold text-ink tracking-tight">📊 Bölge Analiz ve Raporları</span>
+    <div className="flex flex-col gap-4">
+      <div className="flex justify-between items-center gap-3">
+        <h2 className={screenTitle}>📊 Bölge Raporları</h2>
         <button
           onClick={() => navigate('/')}
-          className="bg-transparent border-none text-content-secondary text-[13px] cursor-pointer font-semibold"
+          className="text-content-muted text-[13px] font-semibold cursor-pointer transition-colors hover:text-gold shrink-0"
         >
           Ana Ekran
         </button>
       </div>
 
-      <div className="flex flex-col gap-5">
-        {/* Şube Bazlı Kırılım */}
-        <div className="bg-surface-1 p-4 rounded-lg border border-surface-border">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="m-0 text-content text-base">🏢 Şube Bazlı Özet</h3>
-            <button onClick={handleExportCSV} className="bg-transparent border-none text-ink cursor-pointer font-bold text-xs">
-              CSV İndir
-            </button>
-          </div>
-          {branchBreakdown.length === 0 ? (
-            <p className="text-content-secondary text-sm m-0">Bu bölgeye ait şube bulunamadı.</p>
+      {/* Şube Bazlı Kırılım */}
+      <div className={`${card} p-5`}>
+        <div className="flex justify-between items-center gap-3 mb-3">
+          <h3 className="text-content text-[15px] font-bold">🏢 Şube Bazlı Özet</h3>
+          <button
+            onClick={handleExportCSV}
+            className="text-gold cursor-pointer font-bold text-xs transition-opacity hover:opacity-75 shrink-0"
+          >
+            CSV İndir
+          </button>
+        </div>
+        {branchBreakdown.length === 0 ? (
+          <p className="text-content-muted text-sm m-0">Bu bölgeye ait şube bulunamadı.</p>
+        ) : (
+          <ul className="p-0 m-0 list-none">
+            {branchBreakdown.map((b) => (
+              <li key={b.branchName} className={logRow}>
+                <strong className="text-content min-w-0 truncate">{b.branchName}</strong>
+                <span className="flex gap-3 shrink-0">
+                  <span className="text-danger font-bold">Zayi: {b.expiredCount}</span>
+                  <span className="text-success font-bold">Tüketilen: {b.consumedCount}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Zayi Raporu */}
+      <div className={`${card} p-5 border-danger-border`}>
+        <h3 className="text-danger text-[15px] font-bold mb-3">🔴 Çöpe Gidenler (Zayi)</h3>
+        <ul className="p-0 m-0 list-none">
+          {expiredLogs.length === 0 ? (
+            <p className="text-content-muted text-sm m-0">Zayi kaydı bulunmuyor.</p>
           ) : (
-            <ul className="p-0 m-0 list-none">
-              {branchBreakdown.map((b) => (
-                <li key={b.branchName} className="flex justify-between py-2 border-b border-surface-border text-sm last:border-b-0">
-                  <span><strong>{b.branchName}</strong></span>
-                  <span className="flex gap-3">
-                    <span className="text-danger font-bold">Zayi: {b.expiredCount}</span>
-                    <span className="text-success font-bold">Tüketilen: {b.consumedCount}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+            expiredLogs.map((log, idx) => (
+              <li key={idx} className={logRow}>
+                <span className="text-content-secondary min-w-0 truncate">
+                  {new Date(log.date).toLocaleDateString('tr-TR')} — <strong className="text-content">{log.productName}</strong>
+                  {' '}<span className="text-content-muted">({log.branchName})</span>
+                </span>
+                <span className="font-bold text-danger shrink-0">{log.quantity} Adet</span>
+              </li>
+            ))
           )}
-        </div>
+        </ul>
+      </div>
 
-        {/* Zayi Raporu */}
-        <div className="bg-surface-1 p-4 rounded-lg border border-[rgba(255,107,107,0.2)]">
-          <h3 className="mt-0 text-danger text-base mb-3">🔴 Çöpe Gidenler (Zayi)</h3>
-          <ul className="p-0 m-0 list-none">
-            {expiredLogs.length === 0 ? (
-              <p className="text-content-secondary text-sm m-0">Zayi kaydı bulunmuyor.</p>
-            ) : (
-              expiredLogs.map((log, idx) => (
-                <li key={idx} className="flex justify-between py-2 border-b border-surface-border text-sm last:border-b-0">
-                  <span>{new Date(log.date).toLocaleDateString('tr-TR')} - <strong>{log.productName}</strong> <span className="text-content-muted">({log.branchName})</span></span>
-                  <span className="font-bold text-danger">{log.quantity} Adet</span>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
-
-        {/* Satılanlar / Tüketilenler Raporu */}
-        <div className="bg-surface-1 p-4 rounded-lg border border-[rgba(52,201,135,0.2)]">
-          <h3 className="mt-0 text-success text-base mb-3">🟢 Tüketilenler / Satılanlar</h3>
-          <ul className="p-0 m-0 list-none">
-            {consumedLogs.length === 0 ? (
-              <p className="text-content-secondary text-sm m-0">Tüketim kaydı bulunmuyor.</p>
-            ) : (
-              consumedLogs.map((log, idx) => (
-                <li key={idx} className="flex justify-between py-2 border-b border-surface-border text-sm last:border-b-0">
-                  <span>{new Date(log.date).toLocaleDateString('tr-TR')} - <strong>{log.productName}</strong> <span className="text-content-muted">({log.branchName})</span></span>
-                  <span className="font-bold text-success">{log.quantity} Adet</span>
-                </li>
-              ))
-            )}
-          </ul>
-        </div>
+      {/* Satılanlar / Tüketilenler Raporu */}
+      <div className={`${card} p-5 border-success-border`}>
+        <h3 className="text-success text-[15px] font-bold mb-3">🟢 Tüketilenler / Satılanlar</h3>
+        <ul className="p-0 m-0 list-none">
+          {consumedLogs.length === 0 ? (
+            <p className="text-content-muted text-sm m-0">Tüketim kaydı bulunmuyor.</p>
+          ) : (
+            consumedLogs.map((log, idx) => (
+              <li key={idx} className={logRow}>
+                <span className="text-content-secondary min-w-0 truncate">
+                  {new Date(log.date).toLocaleDateString('tr-TR')} — <strong className="text-content">{log.productName}</strong>
+                  {' '}<span className="text-content-muted">({log.branchName})</span>
+                </span>
+                <span className="font-bold text-success shrink-0">{log.quantity} Adet</span>
+              </li>
+            ))
+          )}
+        </ul>
       </div>
     </div>
   );

@@ -1,65 +1,109 @@
 @import "tailwindcss";
 
+/* ============================================================
+   TASARIM TOKEN'LARI (Tailwind v4 @theme)
+   @theme içindeki --color-* değişkenleri Tailwind'in utility
+   üretecine bağlanır: --color-gold → bg-gold / text-gold / border-gold.
+   Uygulamanın TAMAMI koyu tema + cam (glassmorphism) yüzeyler kullanır.
+   ============================================================ */
+@theme {
+  /* --- Zemin katmanları (opak) --- */
+  --color-void: #08070A;
+  --color-night: #0E0C0B;
+  --color-surface-0: #131116;
+  --color-surface-deep: #17141B;
+
+  /* --- Cam yüzeyler (yarı saydam, backdrop-blur ile kullanılır) --- */
+  --color-glass: rgba(255, 255, 255, 0.045);
+  --color-glass-2: rgba(255, 255, 255, 0.075);
+  --color-glass-3: rgba(255, 255, 255, 0.11);
+  --color-hairline: rgba(255, 255, 255, 0.09);
+  --color-hairline-strong: rgba(255, 255, 255, 0.18);
+
+  /* --- Marka --- */
+  --color-gold: #D9B65F;
+  --color-gold-soft: #F2E3B0;
+  --color-gold-deep: #8A6D28;
+  --color-ink: #F6F2EA;
+  --color-ink-hover: #E8E0D2;
+
+  /* --- Metin --- */
+  --color-content: #F6F2EA;
+  --color-content-secondary: #BFB6AC;
+  --color-content-muted: #8A8078;
+  --color-content-placeholder: #5A524C;
+
+  /* --- Durum renkleri --- */
+  --color-danger: #FF6B6B;
+  --color-danger-bg: rgba(255, 107, 107, 0.12);
+  --color-danger-border: rgba(255, 107, 107, 0.28);
+
+  --color-warning: #F5B33C;
+  --color-warning-bg: rgba(245, 179, 60, 0.12);
+  --color-warning-border: rgba(245, 179, 60, 0.28);
+
+  --color-success: #3ED598;
+  --color-success-bg: rgba(62, 213, 152, 0.12);
+  --color-success-border: rgba(62, 213, 152, 0.28);
+
+  --color-info: #7C8CFF;
+  --color-info-bg: rgba(124, 140, 255, 0.12);
+  --color-info-border: rgba(124, 140, 255, 0.28);
+
+  --color-violet: #B98CFF;
+  --color-violet-bg: rgba(185, 140, 255, 0.12);
+  --color-violet-border: rgba(185, 140, 255, 0.28);
+}
+
 @layer base {
+  html {
+    background-color: #08070A;
+  }
+
   body {
-    background-color: #f9fafb;
-    color: #111827;
+    color: #F6F2EA;
+    background-color: #08070A;
+    /* Ambiyans: köşelerden yayılan yumuşak renk hüzmeleri. Sabit (fixed)
+       tutulur ki sayfa kaydırılırken zemin sabit kalsın. */
+    background-image:
+      radial-gradient(58% 38% at 10% -4%, rgba(217, 182, 95, 0.13), transparent 62%),
+      radial-gradient(48% 32% at 92% 6%, rgba(124, 140, 255, 0.10), transparent 62%),
+      radial-gradient(75% 45% at 50% 104%, rgba(217, 182, 95, 0.06), transparent 70%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Kaydırma çubuklarını koyu temaya uydur */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+  }
 }
 
-/* Capacitor Barcode Scanner Transparency Fix */
+/* Capacitor Barcode Scanner Transparency Fix
+   Native kamera görüntüsünün WebView'in ardından görünebilmesi için
+   zeminin tamamen şeffaflaşması gerekir (ambiyans gradyanı dahil). */
 html.scanner-active,
 html.scanner-active body,
 html.scanner-active #root {
   background: transparent !important;
+  background-image: none !important;
 }
 
 /* ============================================================
-   KOYU TEMA TASARIM TOKEN'LARI (Tailwind v4 @theme)
-   Barista PIN ekranı, envanter/reçete/rapor listeleri ve modallar
-   bu paleti kullanır. @theme içindeki --color-* değişkenleri
-   Tailwind'in kendi utility class üretecine bağlanır: örn.
-   --color-ink → bg-ink / text-ink / border-ink otomatik oluşur.
-   ============================================================ */
-@theme {
-  --color-ink: #F5F0E8;
-  --color-ink-hover: #EAE3D5;
-
-  --color-gold: #C9A84C;
-  --color-gold-glow: rgba(201, 168, 76, 0.15);
-
-  --color-night: #0E0C0B;
-
-  --color-surface-0: #141210;
-  --color-surface-1: rgba(28, 25, 23, 0.85);
-  --color-surface-2: rgba(37, 33, 32, 0.90);
-  --color-surface-border: rgba(255, 255, 255, 0.07);
-  --color-surface-border-2: rgba(255, 255, 255, 0.04);
-
-  --color-content: #F5F0E8;
-  --color-content-secondary: #C8BDB5;
-  --color-content-muted: #7A6E68;
-  --color-content-placeholder: #4A4340;
-
-  --color-danger: #FF6B6B;
-  --color-danger-bg: rgba(255, 107, 107, 0.10);
-  --color-danger-border: rgba(255, 107, 107, 0.20);
-
-  --color-warning: #F0A429;
-  --color-warning-bg: rgba(240, 164, 41, 0.10);
-  --color-warning-border: rgba(240, 164, 41, 0.20);
-
-  --color-success: #34C987;
-  --color-success-bg: rgba(52, 201, 135, 0.10);
-  --color-success-border: rgba(52, 201, 135, 0.20);
-}
-
-/* ============================================================
-   ANİMASYONLAR — Tailwind arbitrary animate-[isim_süre_...]
-   sözdizimiyle kullanılıyor (bkz. modal, item kartı, splash ekranı).
+   ANİMASYONLAR — Tailwind'in animate-[isim_süre_...] arbitrary
+   sözdizimiyle çağrılır (modal, kart girişi, splash, tarayıcı).
    ============================================================ */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -67,7 +111,7 @@ html.scanner-active #root {
 }
 
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -86,10 +130,15 @@ html.scanner-active #root {
   100% { transform: rotate(360deg); }
 }
 
-/* ============================================================
-   RESPONSIVE — mobil genişlik dışındaki (tablet/masaüstü) önizleme
-   için uygulamanın etrafında koyu bir "letterbox" arka planı.
-   ============================================================ */
-@media (min-width: 481px) {
-  body { background-color: #080706; }
+/* Barkod tarayıcının vizördeki tarama çizgisi */
+@keyframes scan {
+  0%   { transform: translateY(0); opacity: 0.35; }
+  50%  { transform: translateY(15rem); opacity: 1; }
+  100% { transform: translateY(0); opacity: 0.35; }
+}
+
+/* Altın vurgulu öğeler için nefes alan parıltı */
+@keyframes auraPulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
 }

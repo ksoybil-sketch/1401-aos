@@ -106,7 +106,11 @@ export const App: React.FC = () => {
   };
 
   if (firebaseUser === 'loading') {
-    return <div className="flex h-screen items-center justify-center bg-gray-50 text-gray-500 font-medium">Yükleniyor...</div>;
+    return (
+      <div className="flex h-screen items-center justify-center bg-void">
+        <div className="w-11 h-11 rounded-full border-2 border-hairline border-t-gold [animation:rotation_0.8s_linear_infinite]" />
+      </div>
+    );
   }
 
   if (firebaseUser && firebaseUser.profile?.mustChangePassword) {
