@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserRole, BaristaProfile } from '../types';
 import { useStore } from '../store/useStore';
 
@@ -18,12 +19,13 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenBranchModal
 }) => {
   const { branches } = useStore();
+  const navigate = useNavigate();
   const currentBranchObj = branches.find(b => b.id === activeBranchId);
   const branchDisplayName = currentBranchObj ? currentBranchObj.name : (activeBranchId || 'Şube Seç');
 
   return (
     <header className="fixed top-0 w-full z-40 bg-white/90 backdrop-blur-md border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 cursor-pointer active:opacity-70" onClick={() => navigate('/')}>
         <img src="/icons/logo_goat.svg" alt="1401 Logo" className="w-10 h-10 object-contain drop-shadow-md" />
         <div className="flex flex-col">
           <div className="font-extrabold text-sm tracking-tight text-gray-900">1401 COFFEE</div>

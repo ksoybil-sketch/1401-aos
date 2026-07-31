@@ -45,14 +45,20 @@ export const GlobalModals: React.FC = () => {
       setProductCategory(productMappings[scannedBarcode].category);
     } else {
       setProductName('');
-      if (scannedBarcode?.startsWith('VITRIN-')) {
+      const isTeshir = scannedBarcode?.startsWith('VITRIN-');
+      if (isTeshir) {
         setProductCategory('Teşhir Dolabı');
+        // Teşhir Dolabı ürünleri kısa raf ömürlü: varsayılan SKT bugünden 3 gün sonrası
+        const exp = new Date();
+        exp.setDate(exp.getDate() + 3);
+        setExpirationDate(exp.toISOString().split('T')[0]);
       } else {
         setProductCategory(CATEGORIES[0]);
+        setExpirationDate(new Date().toISOString().split('T')[0]);
       }
 
       // Yeni ve bilinmeyen bir barkod ise (Teşhir Dolabı hariç), internetten ürün adı ara
-      if (scannedBarcode && !scannedBarcode.startsWith('VITRIN-') && isOnline) {
+      if (scannedBarcode && !isTeshir && isOnline) {
         let cancelled = false;
         setIsLookingUpProduct(true);
         lookupProductByBarcode(scannedBarcode).then((result) => {
@@ -63,6 +69,8 @@ export const GlobalModals: React.FC = () => {
         });
         return () => { cancelled = true; };
       }
+      setQuantity(1);
+      return;
     }
     setExpirationDate(new Date().toISOString().split('T')[0]);
     setQuantity(1);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TESHIR_URUNLERI } from '../../constants';
+import { TESHIR_URUNLERI, KUTU_ICI_ADETLER } from '../../constants';
 
 interface FrozenModalProps {
   onClose: () => void;
@@ -8,7 +8,14 @@ interface FrozenModalProps {
 
 export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
   const [name, setName] = useState(TESHIR_URUNLERI[0]);
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(KUTU_ICI_ADETLER[TESHIR_URUNLERI[0]] || 1);
+
+  const handleNameChange = (val: string) => {
+    setName(val);
+    if (KUTU_ICI_ADETLER[val]) {
+      setQty(KUTU_ICI_ADETLER[val]);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,10 +41,10 @@ export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div className="form-group">
               <label className="form-label">Ürün Seçin</label>
-              <select 
-                className="form-select" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)}
+              <select
+                className="form-select"
+                value={name}
+                onChange={(e) => handleNameChange(e.target.value)}
               >
                 {TESHIR_URUNLERI.map(u => (
                   <option key={u} value={u}>{u}</option>
@@ -47,6 +54,11 @@ export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
 
             <div className="form-group">
               <label className="form-label">Kutu / Adet Miktarı</label>
+              {KUTU_ICI_ADETLER[name] && (
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+                  Kutu içi standart adet: {KUTU_ICI_ADETLER[name]}
+                </span>
+              )}
               <input 
                 type="number" 
                 className="form-input" 

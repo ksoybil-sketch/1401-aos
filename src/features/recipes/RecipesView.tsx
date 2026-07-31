@@ -19,7 +19,7 @@ export const RecipesView: React.FC = () => {
   const [formIngredients, setFormIngredients] = useState<RecipeIngredient[]>([{ name: '', amount: '' }]);
   const [formInstructions, setFormInstructions] = useState('');
 
-  const recipeCategories = ["Hepsi", "Soğuk Kahveler", "Sıcak Kahveler", "Soğuk İçecekler", "Sıcak İçecekler", "Yöresel Kahveler", "Demlenmiş Kahveler"];
+  const recipeCategories = ["Hepsi", "Soğuk Kahveler", "Sıcak Kahveler", "Soğuk İçecekler", "Sıcak İçecekler", "Yöresel Kahveler", "Demlenmiş Kahveler", "Bitki Çayları"];
 
   const filteredRecipes = recipes.filter(
     (r) => recipeCategoryFilter === 'Hepsi' || r.category === recipeCategoryFilter
