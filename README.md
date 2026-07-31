@@ -82,6 +82,7 @@ Rol matrisi merkezi bir dosyada (`src/constants/roles.ts`) tanımlıdır — yen
 ```
 Vite + TypeScript + React 18
         │
+        ├── Tailwind CSS v4 (tüm arayüz — @theme ile tanımlı özel renk token'ları)
         ├── Zustand (state yönetimi — auth / inventory / app / sync / branches / UI store'ları)
         ├── React Router (HashRouter, rol bazlı route izolasyonu)
         ├── Firebase Authentication + Realtime Database
@@ -146,4 +147,3 @@ USB hata ayıklaması açık bir cihaz veya çalışan bir emülatör gerektirir
 ## 🗺️ Yol Haritası / Bilinen Açık Maddeler
 
 - Sentry hata izleme entegrasyonu kurulu ama gerçek bir DSN ile aktive edilmedi
-- Tasarım sistemi kısmen eski CSS-class tabanlı ekranlar, kısmen Tailwind tabanlı yeni ekranlar olarak ikiye ayrılmış durumda — kademeli birleştirme planlanıyor
