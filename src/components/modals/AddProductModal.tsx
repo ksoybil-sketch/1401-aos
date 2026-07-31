@@ -1,5 +1,5 @@
 import React from 'react';
-import { CATEGORIES, TESHIR_URUNLERI } from '../../constants';
+import { CATEGORIES, TESHIR_URUNLERI, KUTU_ICI_ADETLER } from '../../constants';
 
 interface AddProductModalProps {
   scannedBarcode: string;
@@ -9,6 +9,7 @@ interface AddProductModalProps {
   quantity: number;
   isNewProduct: boolean;
   isLookingUpProduct?: boolean;
+  frozenStockNames: string[];
   onClose: () => void;
   onSetProductName: (val: string) => void;
   onSetProductCategory: (val: string) => void;
@@ -25,6 +26,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
   quantity,
   isNewProduct,
   isLookingUpProduct = false,
+  frozenStockNames,
   onClose,
   onSetProductName,
   onSetProductCategory,
@@ -32,6 +34,12 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
   onSetQuantity,
   onSubmit
 }) => {
+  const handleProductNameSelect = (val: string) => {
+    onSetProductName(val);
+    if (KUTU_ICI_ADETLER[val]) {
+      onSetQuantity(KUTU_ICI_ADETLER[val]);
+    }
+  };
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -65,10 +73,29 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
               )}
             </span>
             {productCategory === 'Teşhir Dolabı' ? (
+              frozenStockNames.length === 0 ? (
+                <p style={{ fontSize: '13px', color: 'var(--danger)', margin: '4px 0 0' }}>
+                  Donuk stokta hiç ürün yok. Önce "❄️ Donuk Stok" ile stok girişi yapın.
+                </p>
+              ) : (
+                <select
+                  className="form-input"
+                  value={productName}
+                  onChange={(e) => handleProductNameSelect(e.target.value)}
+                  required
+                  style={{ backgroundColor: 'var(--surface)', padding: '12px', fontSize: '15px', color: 'var(--text-primary)' }}
+                >
+                  <option value="" disabled>Donuk stoktan bir ürün seçin...</option>
+                  {frozenStockNames.map((item) => (
+                    <option key={item} value={item}>{item}</option>
+                  ))}
+                </select>
+              )
+            ) : productCategory === 'Donuk Stok' ? (
               <select
                 className="form-input"
                 value={productName}
-                onChange={(e) => onSetProductName(e.target.value)}
+                onChange={(e) => handleProductNameSelect(e.target.value)}
                 required
                 style={{ backgroundColor: 'var(--surface)', padding: '12px', fontSize: '15px', color: 'var(--text-primary)' }}
               >
@@ -102,6 +129,9 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                 .map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
+              {!scannedBarcode.startsWith('VITRIN-') && (
+                <option value="Donuk Stok">❄️ Donuk Stok</option>
+              )}
             </select>
           </div>
 

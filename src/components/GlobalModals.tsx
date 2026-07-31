@@ -37,6 +37,7 @@ export const GlobalModals: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [isLookingUpProduct, setIsLookingUpProduct] = useState(false);
   const isNewProduct = !productMappings[scannedBarcode];
+  const frozenStockNames = Array.from(new Set(frozenStock.filter((f) => f.quantity > 0).map((f) => f.name)));
 
   // Auto-fill form when barcode changes
   React.useEffect(() => {
@@ -79,10 +80,14 @@ export const GlobalModals: React.FC = () => {
   const handleAddItemSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!productName.trim() || !expirationDate) return;
-    
-    const { feedbackMsg } = addInventoryItem(scannedBarcode, productName, productCategory, quantity, expirationDate);
-    if (feedbackMsg) {
-      useUIStore.getState().setFrozenFeedback(feedbackMsg);
+
+    if (productCategory === 'Donuk Stok') {
+      addFrozenItem(productName, quantity, expirationDate);
+    } else {
+      const { feedbackMsg } = addInventoryItem(scannedBarcode, productName, productCategory, quantity, expirationDate);
+      if (feedbackMsg) {
+        useUIStore.getState().setFrozenFeedback(feedbackMsg);
+      }
     }
     setModalState('showAddModal', false);
   };
@@ -200,6 +205,7 @@ export const GlobalModals: React.FC = () => {
           quantity={quantity}
           isNewProduct={isNewProduct}
           isLookingUpProduct={isLookingUpProduct}
+          frozenStockNames={frozenStockNames}
           onClose={() => setModalState('showAddModal', false)}
           onSetProductName={setProductName}
           onSetProductCategory={setProductCategory}

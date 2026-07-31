@@ -88,14 +88,18 @@ export const useInventoryManager = () => {
     return { feedbackMsg };
   };
 
-  const addFrozenItem = (name: string, quantity: number) => {
-    const exp = new Date();
-    exp.setMonth(exp.getMonth() + 6); // Default 6 months for frozen
+  const addFrozenItem = (name: string, quantity: number, customExpirationDate?: string) => {
+    let expirationDate = customExpirationDate;
+    if (!expirationDate) {
+      const exp = new Date();
+      exp.setMonth(exp.getMonth() + 6); // Default 6 months for frozen
+      expirationDate = exp.toISOString().split('T')[0];
+    }
     const newItem: FrozenItem = {
       id: `${Date.now()}-frozen`,
       name,
       quantity,
-      expirationDate: exp.toISOString().split('T')[0],
+      expirationDate,
       dateAdded: new Date().toISOString().split('T')[0]
     };
     
