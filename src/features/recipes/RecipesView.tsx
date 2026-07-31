@@ -9,6 +9,7 @@ export const RecipesView: React.FC = () => {
   const { updateRecipes } = useSyncData();
   const canEditRecipes = ROLE_PERMISSIONS[userRole].canEditRecipes;
   const [recipeCategoryFilter, setRecipeCategoryFilter] = useState('Hepsi');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [showRecipeForm, setShowRecipeForm] = useState(false);
 
@@ -21,9 +22,11 @@ export const RecipesView: React.FC = () => {
 
   const recipeCategories = ["Hepsi", "Soğuk Kahveler", "Sıcak Kahveler", "Soğuk İçecekler", "Sıcak İçecekler", "Yöresel Kahveler", "Demlenmiş Kahveler", "Bitki Çayları"];
 
-  const filteredRecipes = recipes.filter(
-    (r) => recipeCategoryFilter === 'Hepsi' || r.category === recipeCategoryFilter
-  );
+  const filteredRecipes = recipes.filter((r) => {
+    const matchesCategory = recipeCategoryFilter === 'Hepsi' || r.category === recipeCategoryFilter;
+    const matchesSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const openRecipeAdd = () => {
     setFormId(`r-${Date.now()}`);
@@ -87,6 +90,21 @@ export const RecipesView: React.FC = () => {
 
   return (
     <div>
+      {/* Arama Alanı */}
+      <div className="search-input-wrapper" style={{ marginBottom: '12px' }}>
+        <svg className="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Reçete adı ara..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
       {/* Kategori Sekmeleri */}
       <div className="filter-tabs" style={{ marginBottom: '16px' }}>
         {recipeCategories.map((cat) => (

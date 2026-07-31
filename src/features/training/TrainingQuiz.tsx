@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { QuizQuestion, QuizFeedback } from '../../types';
+import { QuizQuestion, QuizFeedback, QuizWrongAnswer } from '../../types';
 import { useStore, useAuthStore } from '../../store/useStore';
 import { ref, push } from 'firebase/database';
 import { db } from '../../api/firebase';
@@ -10,6 +10,7 @@ export const TrainingQuiz: React.FC = () => {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [wrongAnswers, setWrongAnswers] = useState<QuizWrongAnswer[]>([]);
   const [feedback, setFeedback] = useState<QuizFeedback | null>(null);
   const [finished, setFinished] = useState(false);
 
@@ -49,6 +50,7 @@ export const TrainingQuiz: React.FC = () => {
     setQuestions(quizQuestions);
     setCurrentIndex(0);
     setScore(0);
+    setWrongAnswers([]);
     setFeedback(null);
     setFinished(false);
     setTrainingActive(true);
@@ -58,9 +60,18 @@ export const TrainingQuiz: React.FC = () => {
     const currentQ = questions[currentIndex];
     const isCorrect = selectedOption === currentQ.correctAnswer;
     let nextScore = score;
+    let nextWrongAnswers = wrongAnswers;
     if (isCorrect) {
       nextScore += 5; // 20 soru * 5 puan = 100 puan
       setScore(nextScore);
+    } else {
+      nextWrongAnswers = [...wrongAnswers, {
+        recipeName: currentQ.recipeName,
+        questionText: currentQ.questionText,
+        correctAnswer: currentQ.correctAnswer,
+        userAnswer: selectedOption
+      }];
+      setWrongAnswers(nextWrongAnswers);
     }
 
     setFeedback({
@@ -84,7 +95,8 @@ export const TrainingQuiz: React.FC = () => {
             score: nextScore,
             totalQuestions: questions.length,
             correctAnswers: nextScore / 5,
-            date: new Date().toISOString()
+            date: new Date().toISOString(),
+            wrongAnswers: nextWrongAnswers
           }).catch(err => console.error("Quiz kaydı başarısız:", err));
         }
       }

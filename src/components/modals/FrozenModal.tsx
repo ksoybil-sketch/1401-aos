@@ -7,6 +7,7 @@ interface FrozenModalProps {
 }
 
 export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
+  const [isManual, setIsManual] = useState(false);
   const [name, setName] = useState(TESHIR_URUNLERI[0]);
   const [qty, setQty] = useState(KUTU_ICI_ADETLER[TESHIR_URUNLERI[0]] || 1);
 
@@ -14,6 +15,17 @@ export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
     setName(val);
     if (KUTU_ICI_ADETLER[val]) {
       setQty(KUTU_ICI_ADETLER[val]);
+    }
+  };
+
+  const handleToggleManual = (manual: boolean) => {
+    setIsManual(manual);
+    if (manual) {
+      setName('');
+      setQty(1);
+    } else {
+      setName(TESHIR_URUNLERI[0]);
+      setQty(KUTU_ICI_ADETLER[TESHIR_URUNLERI[0]] || 1);
     }
   };
 
@@ -40,16 +52,37 @@ export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
         <div className="modal-inner">
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div className="form-group">
-              <label className="form-label">Ürün Seçin</label>
-              <select
-                className="form-select"
-                value={name}
-                onChange={(e) => handleNameChange(e.target.value)}
-              >
-                {TESHIR_URUNLERI.map(u => (
-                  <option key={u} value={u}>{u}</option>
-                ))}
-              </select>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <label className="form-label" style={{ margin: 0 }}>Ürün {isManual ? 'Adı' : 'Seçin'}</label>
+                <button
+                  type="button"
+                  onClick={() => handleToggleManual(!isManual)}
+                  style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                >
+                  {isManual ? 'Listeden Seç' : 'Manuel Gir'}
+                </button>
+              </div>
+              {isManual ? (
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Örn: Vişneli Cheesecake"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  autoFocus
+                />
+              ) : (
+                <select
+                  className="form-select"
+                  value={name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                >
+                  {TESHIR_URUNLERI.map(u => (
+                    <option key={u} value={u}>{u}</option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div className="form-group">

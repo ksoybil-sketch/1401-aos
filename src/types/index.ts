@@ -9,6 +9,13 @@ export interface BaristaProfile {
   branchId: string;
 }
 
+export interface QuizWrongAnswer {
+  recipeName: string;
+  questionText: string;
+  correctAnswer: string;
+  userAnswer: string;
+}
+
 export interface QuizResult {
   id: string;
   baristaName: string;
@@ -16,6 +23,7 @@ export interface QuizResult {
   date: string;
   totalQuestions: number;
   correctAnswers: number;
+  wrongAnswers?: QuizWrongAnswer[];
 }
 
 export interface InventoryItem {

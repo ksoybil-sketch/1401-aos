@@ -118,7 +118,6 @@ export const RegionalDashboard: React.FC = () => {
           <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-muted)' }}>Bu bölgeye ait şube bulunamadı.</div>
         )}
         {branchesStats.map((stats) => {
-          const totalWidth = Math.min((stats.totalItems / maxTotalItems) * 100, 100);
           const teshirWidth = Math.min((stats.teshirStock / maxTotalItems) * 100, 100);
 
           return (
@@ -164,16 +163,6 @@ export const RegionalDashboard: React.FC = () => {
               )}
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '2px', fontWeight: 600 }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Toplam Stok</span>
-                    <span style={{ color: 'var(--text-main)' }}>{stats.totalItems} çeşit</span>
-                  </div>
-                  <div style={{ height: '6px', backgroundColor: 'var(--surface-2)', borderRadius: '100px', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${totalWidth}%`, backgroundColor: 'var(--primary)', borderRadius: '100px' }}></div>
-                  </div>
-                </div>
-
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '2px', fontWeight: 600 }}>
                     <span style={{ color: 'var(--text-muted)' }}>Teşhir Dolabı</span>

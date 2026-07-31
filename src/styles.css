@@ -144,7 +144,7 @@ html.scanner-active #root {
    ============================================================ */
 .app-content {
   flex: 1;
-  padding: 20px 16px calc(100px + env(safe-area-inset-bottom)) 16px;
+  padding: calc(84px + env(safe-area-inset-top)) 16px calc(100px + env(safe-area-inset-bottom)) 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
