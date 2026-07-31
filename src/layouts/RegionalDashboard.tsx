@@ -57,11 +57,11 @@ export const RegionalDashboard: React.FC = () => {
   const maxTotalItems = Math.max(...branchesStats.map(s => s.totalItems), 60);
 
   const handleExportCSV = async () => {
-    let csv = "\uFEFFŞube,Şehir,Toplam Stok,Teşhir Dolabı,Tarihi Geçen,Eğitim Ortalaması\n";
+    let csv = "﻿Şube,Şehir,Toplam Stok,Teşhir Dolabı,Tarihi Geçen,Eğitim Ortalaması\n";
     branchesStats.forEach(stat => {
       csv += `"${stat.name}","${stat.city}",${stat.totalItems},${stat.teshirStock},${stat.expiredCount},${stat.averageScore}%\n`;
     });
-    
+
     const fileName = `bolge_ozeti_${regionId}_${new Date().toISOString().split('T')[0]}.csv`;
     try {
       const result = await Filesystem.writeFile({
@@ -86,22 +86,22 @@ export const RegionalDashboard: React.FC = () => {
   };
 
   if (loading) {
-    return <div style={{ padding: '20px', textAlign: 'center' }}>Yükleniyor...</div>;
+    return <div className="p-5 text-center">Yükleniyor...</div>;
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <div style={{ padding: '16px', backgroundColor: 'var(--surface-1)', borderRadius: 'var(--radius-md)', border: '1px solid var(--surface-border)' }}>
-        <div style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--accent)', fontWeight: 700, letterSpacing: '0.8px', display: 'flex', justifyContent: 'space-between' }}>
+    <div className="flex flex-col gap-5">
+      <div className="p-4 bg-surface-1 rounded-lg border border-surface-border">
+        <div className="text-[11px] uppercase text-gold font-bold tracking-wide flex justify-between">
           <span>BÖLGE MÜDÜRÜ</span>
-          <button onClick={handleExportCSV} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 'bold' }}>
+          <button onClick={handleExportCSV} className="bg-transparent border-none text-ink cursor-pointer font-bold">
             Özeti CSV İndir
           </button>
         </div>
-        <h2 style={{ fontSize: '20px', color: 'var(--text-main)', marginTop: '4px', fontWeight: 800 }}>
+        <h2 className="text-xl text-content mt-1 font-extrabold">
           Tüm Şubeler Canlı Durum
         </h2>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
+        <p className="text-[13px] text-content-muted mt-1">
           Şubelerin anlık stok durumlarını inceleyin ve detaylar için şubeye tıklayın.
         </p>
       </div>
@@ -113,9 +113,9 @@ export const RegionalDashboard: React.FC = () => {
         <span className="text-2xl">📊</span> Raporlar ve Analizler
       </button>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div className="flex flex-col gap-3">
         {branchesStats.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '20px', color: 'var(--text-muted)' }}>Bu bölgeye ait şube bulunamadı.</div>
+          <div className="text-center py-5 text-content-muted">Bu bölgeye ait şube bulunamadı.</div>
         )}
         {branchesStats.map((stats) => {
           const teshirWidth = Math.min((stats.teshirStock / maxTotalItems) * 100, 100);
@@ -127,49 +127,39 @@ export const RegionalDashboard: React.FC = () => {
                 setBranch(stats.id);
                 localStorage.setItem('skt_branch_id', stats.id);
               }}
-              style={{
-                backgroundColor: 'var(--surface-1)',
-                border: '1px solid var(--surface-border)',
-                borderRadius: 'var(--radius-md)',
-                padding: '16px',
-                cursor: 'pointer',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px',
-                transition: 'var(--transition)'
-              }}
+              className="bg-surface-1 border border-surface-border rounded-lg p-4 cursor-pointer flex flex-col gap-3 transition-all"
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="flex justify-between items-center">
                 <div>
-                  <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--primary)' }}>
+                  <div className="text-base font-extrabold text-ink">
                     {stats.name}
                   </div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                  <div className="text-[11px] text-content-muted">
                     {stats.city}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '10px', fontSize: '12px', fontWeight: 600 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Eğitim Ort.</span>
-                    <span style={{ color: stats.averageScore >= 80 ? 'var(--success)' : 'var(--warning)' }}>%{stats.averageScore}</span>
+                <div className="flex gap-2.5 text-xs font-semibold">
+                  <div className="flex flex-col items-end">
+                    <span className="text-content-muted">Eğitim Ort.</span>
+                    <span className={stats.averageScore >= 80 ? 'text-success' : 'text-warning'}>%{stats.averageScore}</span>
                   </div>
                 </div>
               </div>
 
               {stats.expiredCount > 0 && (
-                <div style={{ padding: '8px', backgroundColor: 'var(--danger-bg)', borderRadius: '8px', border: '1px solid var(--danger-border)', fontSize: '12px', color: 'var(--danger)', fontWeight: 600 }}>
+                <div className="p-2 bg-danger-bg rounded-lg border border-danger-border text-xs text-danger font-semibold">
                   ⚠️ {stats.expiredCount} tarihi geçen ürün var!
                 </div>
               )}
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="flex flex-col gap-2">
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '2px', fontWeight: 600 }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Teşhir Dolabı</span>
-                    <span style={{ color: 'var(--text-main)' }}>{stats.teshirStock} çeşit</span>
+                  <div className="flex justify-between text-[11px] mb-0.5 font-semibold">
+                    <span className="text-content-muted">Teşhir Dolabı</span>
+                    <span className="text-content">{stats.teshirStock} çeşit</span>
                   </div>
-                  <div style={{ height: '6px', backgroundColor: 'var(--surface-2)', borderRadius: '100px', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', width: `${teshirWidth}%`, backgroundColor: 'var(--accent)', borderRadius: '100px' }}></div>
+                  <div className="h-1.5 bg-surface-2 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full bg-gold" style={{ width: `${teshirWidth}%` }}></div>
                   </div>
                 </div>
               </div>

@@ -35,25 +35,12 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
+      <div className="flex gap-1.5 items-center flex-shrink-0">
         {/* Sadece Şube Müdürü ve Bölge Müdürü şube değiştirebilir */}
         {userRole !== 'Barista' && (
           <button
             onClick={onOpenBranchModal}
-            style={{
-              background: 'var(--surface-2)',
-              border: '1px solid var(--surface-border)',
-              color: 'var(--accent)',
-              fontSize: '11px',
-              padding: '4px 8px',
-              borderRadius: 'var(--radius-sm)',
-              cursor: 'pointer',
-              fontWeight: 600,
-              maxWidth: '90px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
-            }}
+            className="bg-surface-2 border border-surface-border text-gold text-[11px] py-1 px-2 rounded-md cursor-pointer font-semibold max-w-[90px] overflow-hidden text-ellipsis whitespace-nowrap"
           >
             {branchDisplayName}
           </button>
@@ -61,17 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         <button
           onClick={onOpenRoleModal}
-          style={{
-            background: 'var(--primary)',
-            color: '#0E0C0B',
-            border: 'none',
-            fontSize: '11px',
-            padding: '4px 8px',
-            borderRadius: '100px',
-            cursor: 'pointer',
-            fontWeight: 700,
-            whiteSpace: 'nowrap'
-          }}
+          className="bg-ink text-[#0E0C0B] border-none text-[11px] py-1 px-2 rounded-full cursor-pointer font-bold whitespace-nowrap"
         >
           {userRole === 'Barista' && activeBarista ? activeBarista.name.split(' ')[0] : userRole}
         </button>

@@ -31,11 +31,11 @@ export const BaristaDashboard: React.FC = () => {
 
   return (
     <>
-      <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontSize: '24px', color: 'var(--text-main)', fontWeight: 800 }}>
+      <div className="mb-5">
+        <h2 className="text-2xl font-extrabold text-content">
           Hoş geldin, {activeBaristaName ? activeBaristaName.split(' ')[0] : 'Barista'} 👋
         </h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '4px' }}>
+        <p className="text-content-muted text-sm mt-1">
           Hızlı işlemlere aşağıdan ulaşabilirsin.
         </p>
       </div>
@@ -90,52 +90,34 @@ export const BaristaDashboard: React.FC = () => {
         <span>Bildirimler</span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '12px' }}>
-        <div 
+      <div className="grid grid-cols-1 gap-3">
+        <div
           onClick={() => { setInventoryStatusFilter('warning'); navigate('/inventory'); }}
-          style={{ 
-            backgroundColor: 'var(--surface-1)', 
-            border: `1px solid ${soonExpiringCount > 0 ? 'var(--warning)' : 'var(--surface-border)'}`, 
-            borderRadius: 'var(--radius-md)', 
-            padding: '16px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between',
-            cursor: 'pointer'
-          }}
+          className={`bg-surface-1 rounded-lg p-4 flex items-center justify-between cursor-pointer border ${soonExpiringCount > 0 ? 'border-warning' : 'border-surface-border'}`}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '24px' }}>🔔</span>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🔔</span>
             <div>
-              <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>Yaklaşan SKT Bildirimi</div>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{soonExpiringCount} ürünün süresi yaklaşıyor.</div>
+              <div className="font-bold text-content">Yaklaşan SKT Bildirimi</div>
+              <div className="text-xs text-content-muted">{soonExpiringCount} ürünün süresi yaklaşıyor.</div>
             </div>
           </div>
-          <span style={{ color: 'var(--accent)' }}>İncele ➔</span>
+          <span className="text-gold">İncele ➔</span>
         </div>
 
         {expiredCount > 0 && (
-          <div 
+          <div
             onClick={() => { setInventoryStatusFilter('danger'); navigate('/inventory'); }}
-            style={{ 
-              backgroundColor: 'var(--danger-bg)', 
-              border: '1px solid var(--danger)', 
-              borderRadius: 'var(--radius-md)', 
-              padding: '16px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}
+            className="bg-danger-bg border border-danger rounded-lg p-4 flex items-center justify-between cursor-pointer"
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '24px' }}>⚠️</span>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">⚠️</span>
               <div>
-                <div style={{ fontWeight: 700, color: 'var(--danger)' }}>Tarihi Geçen Ürün Var!</div>
-                <div style={{ fontSize: '12px', color: 'var(--danger)', opacity: 0.8 }}>{expiredCount} ürünü imha etmeniz gerekiyor.</div>
+                <div className="font-bold text-danger">Tarihi Geçen Ürün Var!</div>
+                <div className="text-xs text-danger opacity-80">{expiredCount} ürünü imha etmeniz gerekiyor.</div>
               </div>
             </div>
-            <span style={{ color: 'var(--danger)' }}>İncele ➔</span>
+            <span className="text-danger">İncele ➔</span>
           </div>
         )}
       </div>

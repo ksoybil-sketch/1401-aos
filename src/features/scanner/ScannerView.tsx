@@ -111,7 +111,7 @@ export const ScannerView: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[100] flex flex-col">
       {/* Üst Kısım: İptal Butonu ve Başlık */}
-      <div className="flex items-center justify-between p-4 bg-black/40 backdrop-blur-sm text-white safe-pt">
+      <div className="flex items-center justify-between p-4 bg-black/40 backdrop-blur-sm text-white pt-[max(16px,env(safe-area-inset-top))]">
         <button className="p-2 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition" onClick={handleCancel}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="18" y1="6" x2="6" y2="18" />
@@ -150,11 +150,10 @@ export const ScannerView: React.FC = () => {
         {hasTorch && (
           <button
             onClick={handleToggleTorch}
-            className="absolute bottom-6 right-6 p-3 rounded-full backdrop-blur-sm active:scale-95 transition pointer-events-auto z-20"
-            style={{ backgroundColor: torchOn ? 'var(--accent, #f59e0b)' : 'rgba(0,0,0,0.4)' }}
+            className={`absolute bottom-6 right-6 p-3 rounded-full backdrop-blur-sm active:scale-95 transition pointer-events-auto z-20 ${torchOn ? 'bg-gold' : 'bg-black/40'}`}
             aria-label="El feneri"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill={torchOn ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#fff' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill={torchOn ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
             </svg>
           </button>

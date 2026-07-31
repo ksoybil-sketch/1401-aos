@@ -13,27 +13,21 @@ export function getStatusDetails(daysRemaining: number, category?: string): Stat
   const warningThreshold = category === 'Teşhir Dolabı' ? 1 : 3;
   if (daysRemaining <= 0) {
     return {
-      statusClass: "danger",
-      statusBorderClass: "danger-border",
+      statusClass: "bg-danger-bg text-danger border border-danger-border",
+      statusBorderClass: "border-danger-border border-l-4 border-l-danger",
       label: daysRemaining === 0 ? "Bugün Son Gün!" : `Tarihi Geçmiş (${Math.abs(daysRemaining)} gün)`,
-      color: 'var(--danger)',
-      bgColor: 'var(--danger-bg)'
     };
   } else if (daysRemaining <= warningThreshold) {
     return {
-      statusClass: "warning",
-      statusBorderClass: "warning-border",
+      statusClass: "bg-warning-bg text-warning border border-warning-border",
+      statusBorderClass: "border-warning-border border-l-4 border-l-warning",
       label: `${daysRemaining} Gün Kaldı!`,
-      color: 'var(--warning)',
-      bgColor: 'var(--warning-bg)'
     };
   } else {
     return {
-      statusClass: "success",
-      statusBorderClass: "success-border",
+      statusClass: "bg-success-bg text-success border border-success-border",
+      statusBorderClass: "border-success-border border-l-4 border-l-success",
       label: "Güvenli",
-      color: 'var(--success)',
-      bgColor: 'var(--success-bg)'
     };
   }
 }

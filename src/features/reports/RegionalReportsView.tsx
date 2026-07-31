@@ -82,40 +82,40 @@ export const RegionalReportsView: React.FC = () => {
   };
 
   if (loading) {
-    return <div style={{ padding: '20px', textAlign: 'center' }}>Yükleniyor...</div>;
+    return <div className="p-5 text-center">Yükleniyor...</div>;
   }
 
   return (
     <div>
-      <div className="list-header" style={{ marginBottom: '16px' }}>
-        <span className="list-title">📊 Bölge Analiz ve Raporları</span>
+      <div className="flex justify-between items-center px-0.5 mb-4">
+        <span className="text-[15px] font-bold text-ink tracking-tight">📊 Bölge Analiz ve Raporları</span>
         <button
           onClick={() => navigate('/')}
-          style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', fontSize: '13px', cursor: 'pointer', fontWeight: 600 }}
+          className="bg-transparent border-none text-content-secondary text-[13px] cursor-pointer font-semibold"
         >
           Ana Ekran
         </button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div className="flex flex-col gap-5">
         {/* Şube Bazlı Kırılım */}
-        <div style={{ backgroundColor: 'var(--surface-1)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--surface-border)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <h3 style={{ margin: 0, color: 'var(--text-main)', fontSize: '16px' }}>🏢 Şube Bazlı Özet</h3>
-            <button onClick={handleExportCSV} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}>
+        <div className="bg-surface-1 p-4 rounded-lg border border-surface-border">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="m-0 text-content text-base">🏢 Şube Bazlı Özet</h3>
+            <button onClick={handleExportCSV} className="bg-transparent border-none text-ink cursor-pointer font-bold text-xs">
               CSV İndir
             </button>
           </div>
           {branchBreakdown.length === 0 ? (
-            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0 }}>Bu bölgeye ait şube bulunamadı.</p>
+            <p className="text-content-secondary text-sm m-0">Bu bölgeye ait şube bulunamadı.</p>
           ) : (
-            <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
+            <ul className="p-0 m-0 list-none">
               {branchBreakdown.map((b) => (
-                <li key={b.branchName} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--surface-border)', fontSize: '14px' }}>
+                <li key={b.branchName} className="flex justify-between py-2 border-b border-surface-border text-sm last:border-b-0">
                   <span><strong>{b.branchName}</strong></span>
-                  <span style={{ display: 'flex', gap: '12px' }}>
-                    <span style={{ color: 'var(--danger)', fontWeight: 'bold' }}>Zayi: {b.expiredCount}</span>
-                    <span style={{ color: 'var(--success)', fontWeight: 'bold' }}>Tüketilen: {b.consumedCount}</span>
+                  <span className="flex gap-3">
+                    <span className="text-danger font-bold">Zayi: {b.expiredCount}</span>
+                    <span className="text-success font-bold">Tüketilen: {b.consumedCount}</span>
                   </span>
                 </li>
               ))}
@@ -124,16 +124,16 @@ export const RegionalReportsView: React.FC = () => {
         </div>
 
         {/* Zayi Raporu */}
-        <div style={{ backgroundColor: 'var(--surface-1)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255, 107, 107, 0.2)' }}>
-          <h3 style={{ marginTop: 0, color: 'var(--danger)', fontSize: '16px', marginBottom: '12px' }}>🔴 Çöpe Gidenler (Zayi)</h3>
-          <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
+        <div className="bg-surface-1 p-4 rounded-lg border border-[rgba(255,107,107,0.2)]">
+          <h3 className="mt-0 text-danger text-base mb-3">🔴 Çöpe Gidenler (Zayi)</h3>
+          <ul className="p-0 m-0 list-none">
             {expiredLogs.length === 0 ? (
-              <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0 }}>Zayi kaydı bulunmuyor.</p>
+              <p className="text-content-secondary text-sm m-0">Zayi kaydı bulunmuyor.</p>
             ) : (
               expiredLogs.map((log, idx) => (
-                <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--surface-border)', fontSize: '14px' }}>
-                  <span>{new Date(log.date).toLocaleDateString('tr-TR')} - <strong>{log.productName}</strong> <span style={{ color: 'var(--text-muted)' }}>({log.branchName})</span></span>
-                  <span style={{ fontWeight: 'bold', color: 'var(--danger)' }}>{log.quantity} Adet</span>
+                <li key={idx} className="flex justify-between py-2 border-b border-surface-border text-sm last:border-b-0">
+                  <span>{new Date(log.date).toLocaleDateString('tr-TR')} - <strong>{log.productName}</strong> <span className="text-content-muted">({log.branchName})</span></span>
+                  <span className="font-bold text-danger">{log.quantity} Adet</span>
                 </li>
               ))
             )}
@@ -141,16 +141,16 @@ export const RegionalReportsView: React.FC = () => {
         </div>
 
         {/* Satılanlar / Tüketilenler Raporu */}
-        <div style={{ backgroundColor: 'var(--surface-1)', padding: '16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(52, 201, 135, 0.2)' }}>
-          <h3 style={{ marginTop: 0, color: 'var(--success)', fontSize: '16px', marginBottom: '12px' }}>🟢 Tüketilenler / Satılanlar</h3>
-          <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
+        <div className="bg-surface-1 p-4 rounded-lg border border-[rgba(52,201,135,0.2)]">
+          <h3 className="mt-0 text-success text-base mb-3">🟢 Tüketilenler / Satılanlar</h3>
+          <ul className="p-0 m-0 list-none">
             {consumedLogs.length === 0 ? (
-              <p style={{ color: 'var(--text-secondary)', fontSize: '14px', margin: 0 }}>Tüketim kaydı bulunmuyor.</p>
+              <p className="text-content-secondary text-sm m-0">Tüketim kaydı bulunmuyor.</p>
             ) : (
               consumedLogs.map((log, idx) => (
-                <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--surface-border)', fontSize: '14px' }}>
-                  <span>{new Date(log.date).toLocaleDateString('tr-TR')} - <strong>{log.productName}</strong> <span style={{ color: 'var(--text-muted)' }}>({log.branchName})</span></span>
-                  <span style={{ fontWeight: 'bold', color: 'var(--success)' }}>{log.quantity} Adet</span>
+                <li key={idx} className="flex justify-between py-2 border-b border-surface-border text-sm last:border-b-0">
+                  <span>{new Date(log.date).toLocaleDateString('tr-TR')} - <strong>{log.productName}</strong> <span className="text-content-muted">({log.branchName})</span></span>
+                  <span className="font-bold text-success">{log.quantity} Adet</span>
                 </li>
               ))
             )}

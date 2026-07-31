@@ -18,18 +18,18 @@ export const RegionalLayout: React.FC = () => {
         onOpenRoleModal={() => { logout(); navigate('/'); }}
         onOpenBranchModal={() => setModalState('showBranchModal', true)}
       />
-      <main className="app-content" style={{ paddingBottom: '20px' }}>
-         {activeBranchId && (
-          <div style={{ padding: '16px 16px 0' }}>
-            <button 
+      <main className="flex-1 pt-[calc(84px+env(safe-area-inset-top))] px-4 pb-5 flex flex-col gap-4 overflow-y-auto">
+        {activeBranchId && (
+          <div>
+            <button
               onClick={() => useAuthStore.getState().setBranch('')}
-              style={{ padding: '8px 12px', background: 'var(--surface-2)', border: 'none', color: 'var(--text-main)', borderRadius: 'var(--radius-sm)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
+              className="py-2 px-3 bg-surface-2 border-none text-content rounded-md font-semibold flex items-center gap-1.5 cursor-pointer"
             >
               ← Tüm Şubelere Dön
             </button>
           </div>
         )}
-        <React.Suspense fallback={<div className="api-loading-overlay"><div className="api-spinner"></div></div>}>
+        <React.Suspense fallback={<div className="fixed inset-0 w-screen h-screen bg-black/85 backdrop-blur-md z-[10000] flex justify-center items-center"><div className="inline-block w-12 h-12 rounded-full border-4 border-surface-border border-b-gold [animation:rotation_1s_linear_infinite]"></div></div>}>
           <Outlet />
         </React.Suspense>
       </main>

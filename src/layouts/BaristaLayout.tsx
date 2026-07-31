@@ -25,16 +25,16 @@ export const BaristaLayout: React.FC = () => {
           onOpenBranchModal={() => {}} // Baristas can't change branch
         />
       )}
-      <main className="app-content" style={{ paddingBottom: isScanner ? '0' : '80px' }}>
-        <React.Suspense fallback={<div className="api-loading-overlay"><div className="api-spinner"></div></div>}>
+      <main className={`flex-1 pt-[calc(84px+env(safe-area-inset-top))] px-4 flex flex-col gap-4 overflow-y-auto ${isScanner ? 'pb-0' : 'pb-20'}`}>
+        <React.Suspense fallback={<div className="fixed inset-0 w-screen h-screen bg-black/85 backdrop-blur-md z-[10000] flex justify-center items-center"><div className="inline-block w-12 h-12 rounded-full border-4 border-surface-border border-b-gold [animation:rotation_1s_linear_infinite]"></div></div>}>
           <Outlet />
         </React.Suspense>
       </main>
       {!isScanner && (
-        <BottomNav 
-          activeTab={currentPath} 
-          onNavigate={(tab) => navigate(tab === 'dashboard' ? '/' : `/${tab}`)} 
-          userRole="Barista" 
+        <BottomNav
+          activeTab={currentPath}
+          onNavigate={(tab) => navigate(tab === 'dashboard' ? '/' : `/${tab}`)}
+          userRole="Barista"
         />
       )}
       <GlobalModals />

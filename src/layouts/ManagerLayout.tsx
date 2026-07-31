@@ -23,14 +23,14 @@ export const ManagerLayout: React.FC = () => {
         onOpenRoleModal={() => { logout(); navigate('/'); }}
         onOpenBranchModal={() => setModalState('showBranchModal', true)}
       />
-      <main className="app-content" style={{ paddingBottom: '80px' }}>
-        <React.Suspense fallback={<div className="api-loading-overlay"><div className="api-spinner"></div></div>}>
+      <main className="flex-1 pt-[calc(84px+env(safe-area-inset-top))] px-4 pb-20 flex flex-col gap-4 overflow-y-auto">
+        <React.Suspense fallback={<div className="fixed inset-0 w-screen h-screen bg-black/85 backdrop-blur-md z-[10000] flex justify-center items-center"><div className="inline-block w-12 h-12 rounded-full border-4 border-surface-border border-b-gold [animation:rotation_1s_linear_infinite]"></div></div>}>
           <Outlet />
         </React.Suspense>
       </main>
-      <BottomNav 
-        activeTab={currentPath} 
-        onNavigate={(tab) => navigate(tab === 'dashboard' ? '/' : `/${tab}`)} 
+      <BottomNav
+        activeTab={currentPath}
+        onNavigate={(tab) => navigate(tab === 'dashboard' ? '/' : `/${tab}`)}
         userRole="Şube Müdürü"
       />
       <GlobalModals />

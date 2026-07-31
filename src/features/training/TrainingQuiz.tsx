@@ -105,16 +105,16 @@ export const TrainingQuiz: React.FC = () => {
 
   if (!trainingActive) {
     return (
-      <div className="training-welcome" style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.5" style={{ marginBottom: '20px' }}>
+      <div className="text-center py-10 px-5 bg-surface-1 rounded-lg">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" className="mb-5 mx-auto">
           <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
           <path d="M6 12v5c3 3 9 3 12 0v-5" />
         </svg>
-        <h2 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Barista Eğitim Modülü</h2>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '30px', lineHeight: '1.5' }}>
+        <h2 className="text-content mb-2.5">Barista Eğitim Modülü</h2>
+        <p className="text-content-secondary mb-7 leading-relaxed">
           İçecek reçetelerini ne kadar iyi biliyorsun? 20 soruluk bu sınavda reçetelerdeki malzemeleri ve ml/gramajları tahmin et. Şubede hatasız üretim için kendini test et!
         </p>
-        <button onClick={generateQuiz} className="btn btn-primary" style={{ padding: '15px 30px', fontSize: '16px' }}>
+        <button onClick={generateQuiz} className="py-[15px] px-8 rounded-md text-base font-semibold cursor-pointer inline-flex items-center justify-center gap-2 transition bg-ink text-night active:bg-ink-hover active:scale-[0.98]">
           Sınava Başla
         </button>
       </div>
@@ -123,15 +123,15 @@ export const TrainingQuiz: React.FC = () => {
 
   if (finished) {
     return (
-      <div className="training-result" style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
-        <h2 style={{ color: 'var(--text-main)', marginBottom: '10px' }}>Sınav Bitti!</h2>
-        <div style={{ fontSize: '48px', fontWeight: 'bold', color: score >= 80 ? 'var(--success)' : 'var(--accent)', margin: '20px 0' }}>
+      <div className="text-center py-10 px-5 bg-surface-1 rounded-lg">
+        <h2 className="text-content mb-2.5">Sınav Bitti!</h2>
+        <div className={`text-5xl font-bold my-5 ${score >= 80 ? 'text-success' : 'text-gold'}`}>
           {score} Puan
         </div>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>
+        <p className="text-content-secondary mb-7">
           {score >= 80 ? "Harika iş çıkardın! Barın arkasına geçmeye hazırsın." : "Biraz daha pratik yapman gerekiyor. Reçeteler sekmesinden formülleri tekrar gözden geçir."}
         </p>
-        <button onClick={() => setTrainingActive(false)} className="btn btn-primary">
+        <button onClick={() => setTrainingActive(false)} className="w-full py-[15px] rounded-md text-[15px] font-semibold cursor-pointer flex items-center justify-center gap-2 transition bg-ink text-night active:bg-ink-hover active:scale-[0.98]">
           Yeniden Başla
         </button>
       </div>
@@ -141,32 +141,23 @@ export const TrainingQuiz: React.FC = () => {
   const currentQ = questions[currentIndex];
 
   return (
-    <div className="training-quiz-card" style={{ padding: '20px', backgroundColor: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '14px', color: 'var(--text-secondary)' }}>
+    <div className="p-5 bg-surface-1 rounded-lg">
+      <div className="flex justify-between mb-5 text-sm text-content-secondary">
         <span>Soru: {currentIndex + 1} / {questions.length}</span>
         <span>Skor: {score}</span>
       </div>
 
-      <h3 style={{ color: 'var(--text-main)', fontSize: '18px', marginBottom: '30px', lineHeight: '1.4' }}>
+      <h3 className="text-content text-lg mb-7 leading-relaxed">
         {currentQ.questionText}
       </h3>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div className="flex flex-col gap-3">
         {currentQ.options.map((opt, idx) => (
           <button
             key={idx}
             disabled={feedback !== null}
             onClick={() => handleAnswer(opt)}
-            className="btn"
-            style={{
-              padding: '15px',
-              backgroundColor: 'var(--surface-2)',
-              border: '1px solid var(--surface-border)',
-              color: 'var(--text-main)',
-              textAlign: 'left',
-              fontSize: '15px',
-              borderRadius: 'var(--radius-sm)'
-            }}
+            className="w-full py-[15px] rounded-md text-[15px] font-semibold cursor-pointer flex items-center gap-2 transition bg-surface-2 border border-surface-border text-content text-left"
           >
             {opt}
           </button>
@@ -175,15 +166,7 @@ export const TrainingQuiz: React.FC = () => {
 
       {feedback && (
         <div
-          style={{
-            marginTop: '20px',
-            padding: '15px',
-            borderRadius: 'var(--radius-sm)',
-            backgroundColor: feedback.isCorrect ? 'rgba(52, 201, 135, 0.15)' : 'rgba(255, 107, 107, 0.15)',
-            color: feedback.isCorrect ? 'var(--success)' : 'var(--danger)',
-            fontWeight: 'bold',
-            textAlign: 'center'
-          }}
+          className={`mt-5 p-[15px] rounded-md font-bold text-center ${feedback.isCorrect ? 'bg-[rgba(52,201,135,0.15)] text-success' : 'bg-[rgba(255,107,107,0.15)] text-danger'}`}
         >
           {feedback.text}
         </div>

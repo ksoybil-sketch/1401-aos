@@ -140,7 +140,7 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
 
       {/* Geri Bildirim Mesajı */}
       {frozenFeedbackMsg && (
-        <div className="dashboard-feedback-msg">
+        <div className="bg-success-bg border border-success-border text-success rounded-lg py-3 px-4 text-[13px] font-semibold mt-4">
           {frozenFeedbackMsg}
         </div>
       )}
@@ -149,7 +149,7 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
       {!readOnly && <FrozenStockSummaryCard />}
 
       {quizResults && quizResults.length > 0 && (
-        <div className="dashboard-report-container mt-6">
+        <div className="mt-5">
           <BaristaPerformanceReport />
         </div>
       )}

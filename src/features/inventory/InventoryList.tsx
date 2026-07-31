@@ -37,17 +37,17 @@ export const InventoryList: React.FC = () => {
   });
 
   return (
-    <section className="inventory-list">
+    <section className="flex flex-col gap-2.5">
       {/* Filtre ve Arama Alanı */}
-      <div className="filter-section">
-        <div className="search-input-wrapper">
-          <svg className="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <div className="flex flex-col gap-3 bg-surface-1 border border-surface-border p-3.5 rounded-lg">
+        <div className="relative w-full">
+          <svg className="absolute left-[13px] top-1/2 -translate-y-1/2 text-content-muted w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <input
             type="text"
-            className="search-input"
+            className="w-full py-[11px] pr-3.5 pl-10 border border-surface-border rounded-md text-sm bg-surface-0 text-content transition placeholder:text-content-placeholder focus:outline-none focus:border-gold focus:bg-surface-2"
             placeholder="Ürün adı, barkod veya kategori ara..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -55,9 +55,9 @@ export const InventoryList: React.FC = () => {
         </div>
 
         {/* Kategori Filtre Butonları */}
-        <div className="filter-tabs">
+        <div className="flex gap-[7px] overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
-            className={`filter-tab ${selectedCategoryFilter === 'Hepsi' ? 'active' : ''}`}
+            className={`py-[7px] px-3.5 border rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer transition ${selectedCategoryFilter === 'Hepsi' ? 'bg-ink text-surface-0 border-ink' : 'bg-surface-0 text-content-muted border-surface-border'}`}
             onClick={() => setSelectedCategoryFilter('Hepsi')}
           >
             Tümü
@@ -65,7 +65,7 @@ export const InventoryList: React.FC = () => {
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
-              className={`filter-tab ${selectedCategoryFilter === cat ? 'active' : ''}`}
+              className={`py-[7px] px-3.5 border rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer transition ${selectedCategoryFilter === cat ? 'bg-ink text-surface-0 border-ink' : 'bg-surface-0 text-content-muted border-surface-border'}`}
               onClick={() => setSelectedCategoryFilter(cat)}
             >
               {cat}
@@ -74,49 +74,22 @@ export const InventoryList: React.FC = () => {
         </div>
 
         {/* SKT Durum Filtresi */}
-        <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingTop: '4px' }}>
+        <div className="flex gap-1.5 overflow-x-auto pt-1">
           <button
             onClick={() => setStatusFilter('Hepsi')}
-            style={{
-              padding: '4px 10px',
-              borderRadius: '100px',
-              fontSize: '11px',
-              border: '1px solid var(--surface-border)',
-              background: statusFilter === 'Hepsi' ? 'var(--primary)' : 'var(--surface-0)',
-              color: statusFilter === 'Hepsi' ? '#000' : 'var(--text-muted)',
-              cursor: 'pointer',
-              fontWeight: 600
-            }}
+            className={`py-1 px-2.5 rounded-full text-[11px] font-semibold cursor-pointer border border-surface-border ${statusFilter === 'Hepsi' ? 'bg-ink text-black' : 'bg-surface-0 text-content-muted'}`}
           >
             Tüm Durumlar
           </button>
           <button
             onClick={() => setStatusFilter('danger')}
-            style={{
-              padding: '4px 10px',
-              borderRadius: '100px',
-              fontSize: '11px',
-              border: '1px solid var(--danger-border)',
-              background: statusFilter === 'danger' ? 'var(--danger)' : 'var(--danger-bg)',
-              color: statusFilter === 'danger' ? '#fff' : 'var(--danger)',
-              cursor: 'pointer',
-              fontWeight: 600
-            }}
+            className={`py-1 px-2.5 rounded-full text-[11px] font-semibold cursor-pointer border border-danger-border ${statusFilter === 'danger' ? 'bg-danger text-white' : 'bg-danger-bg text-danger'}`}
           >
             🔴 Tarihi Geçen
           </button>
           <button
             onClick={() => setStatusFilter('warning')}
-            style={{
-              padding: '4px 10px',
-              borderRadius: '100px',
-              fontSize: '11px',
-              border: '1px solid var(--warning-border)',
-              background: statusFilter === 'warning' ? 'var(--warning)' : 'var(--warning-bg)',
-              color: statusFilter === 'warning' ? '#000' : 'var(--warning)',
-              cursor: 'pointer',
-              fontWeight: 600
-            }}
+            className={`py-1 px-2.5 rounded-full text-[11px] font-semibold cursor-pointer border border-warning-border ${statusFilter === 'warning' ? 'bg-warning text-black' : 'bg-warning-bg text-warning'}`}
           >
             🟡 Kritik (Son 3 Gün)
           </button>
@@ -124,15 +97,15 @@ export const InventoryList: React.FC = () => {
       </div>
 
       {/* Başlık ve Sayaç */}
-      <div className="list-header" style={{ marginTop: '10px' }}>
-        <span className="list-title">Stoktaki Ürünler</span>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <span className="list-count">{filteredInventory.length} ürün</span>
+      <div className="flex justify-between items-center px-0.5 mt-2.5">
+        <span className="text-[15px] font-bold text-ink tracking-tight">Stoktaki Ürünler</span>
+        <div className="flex gap-2 items-center">
+          <span className="text-xs text-content-muted font-medium">{filteredInventory.length} ürün</span>
           {/* Baristalar CSV butonunu görmemeli */}
           {userRole !== 'Barista' && (
             <button
               onClick={() => setModalState('showCsvModal', true)}
-              style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '12px' }}
+              className="bg-transparent border-none text-content-muted cursor-pointer text-xs"
             >
               ⚙️ CSV
             </button>
@@ -142,11 +115,11 @@ export const InventoryList: React.FC = () => {
 
       {/* Liste Görünümü */}
       {filteredInventory.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">📦</div>
-          <p className="empty-text">Aradığınız kriterlere uygun ürün bulunamadı.</p>
+        <div className="text-center py-12 px-5 bg-surface-1 border-[1.5px] border-dashed border-surface-border rounded-lg flex flex-col items-center gap-3">
+          <div className="text-4xl opacity-35">📦</div>
+          <p className="text-[13px] text-content-muted max-w-[240px] leading-relaxed">Aradığınız kriterlere uygun ürün bulunamadı.</p>
           {canEdit && (
-            <button onClick={() => navigate('/scanner')} className="btn btn-primary" style={{ width: 'auto', padding: '10px 20px', fontSize: '13px' }}>
+            <button onClick={() => navigate('/scanner')} className="py-2.5 px-5 rounded-md text-[13px] font-semibold cursor-pointer bg-ink text-night w-auto active:bg-ink-hover active:scale-[0.98]">
               + Yeni Ürün Ekle
             </button>
           )}
@@ -157,37 +130,37 @@ export const InventoryList: React.FC = () => {
           const status = getStatusDetails(days, item.category);
 
           return (
-            <div key={item.id} className={`inventory-item ${status.statusBorderClass}`}>
-              <div className="item-top">
-                <div className="item-info">
-                  <span className="item-name">{item.name}</span>
-                  <div className="item-meta">
-                    <span className="item-category">{item.category}</span>
-                    <span className="item-barcode">Kod: {item.barcode}</span>
+            <div key={item.id} className={`bg-surface-1 border rounded-lg py-3.5 px-3.5 pl-[18px] flex flex-col gap-2.5 transition relative overflow-hidden animate-[fadeSlideIn_0.3s_ease-out] ${status.statusBorderClass}`}>
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex flex-col flex-1 min-w-0">
+                  <span className="text-[15px] font-semibold text-content tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">{item.name}</span>
+                  <div className="flex items-center gap-1.5 text-[11px] text-content-muted mt-1 flex-wrap">
+                    <span className="bg-surface-2 text-content-secondary py-0.5 px-2 rounded-full font-semibold text-[10px] tracking-wide">{item.category}</span>
+                    <span className="font-mono text-[10px] text-content-muted">Kod: {item.barcode}</span>
                   </div>
                 </div>
-                <span className={`status-badge ${status.statusClass}`}>
+                <span className={`text-[11px] font-bold py-1 px-2.5 rounded-full whitespace-nowrap flex-shrink-0 ${status.statusClass}`}>
                   {item.quantity} Adet
                 </span>
               </div>
 
-              <div className="item-bottom">
-                <div className="item-details">
-                  <div className="detail-group">
-                    <span className="detail-label">SKT Tarihi</span>
-                    <span className="detail-value">{formatDate(item.expirationDate)}</span>
+              <div className="flex justify-between items-center border-t border-surface-border-2 pt-2.5">
+                <div className="flex gap-4">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[9px] text-content-muted uppercase font-bold tracking-wide">SKT Tarihi</span>
+                    <span className="text-[13px] font-semibold text-content">{formatDate(item.expirationDate)}</span>
                   </div>
-                  <div className="detail-group">
-                    <span className="detail-label">Durum</span>
-                    <span className="detail-value">{status.label}</span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[9px] text-content-muted uppercase font-bold tracking-wide">Durum</span>
+                    <span className="text-[13px] font-semibold text-content">{status.label}</span>
                   </div>
                 </div>
 
                 {canEdit && (
-                  <div className="item-actions">
+                  <div className="flex gap-1.5">
                     <button
                       onClick={() => openDeleteModal(item)}
-                      className="btn-delete"
+                      className="bg-transparent border border-danger-border text-danger py-2 px-2.5 rounded-md cursor-pointer transition flex items-center justify-center active:bg-danger-bg active:scale-[0.93]"
                       title="Tüket / Sil"
                     >
                       Tüket / Sil

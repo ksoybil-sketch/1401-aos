@@ -85,11 +85,9 @@ export interface QuizFeedback {
 }
 
 export interface StatusDetails {
-  statusClass: 'danger' | 'warning' | 'success';
-  statusBorderClass: 'danger-border' | 'warning-border' | 'success-border';
+  statusClass: string;
+  statusBorderClass: string;
   label: string;
-  color?: string;
-  bgColor?: string;
 }
 
 export interface BranchInfo {
