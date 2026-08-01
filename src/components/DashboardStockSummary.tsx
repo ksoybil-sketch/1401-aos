@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { useUIStore } from '../store/useUIStore';
 import { Icon, IconName } from '../components/Icon';
-import { card, cardTitle, iconChip, Tone } from '../constants/ui';
+import { card, cardTitle, iconChip, TONE, Tone } from '../constants/ui';
 
 /** İki özet kartının ortak kabuğu — başlık, "Tümü" bağlantısı ve liste. */
 const SummaryShell: React.FC<{
@@ -14,7 +14,9 @@ const SummaryShell: React.FC<{
   children: React.ReactNode;
   footer?: React.ReactNode;
 }> = ({ icon, tone, title, onSeeAll, children, footer }) => (
-  <div className={card}>
+  // Sol kenardaki ince renkli şerit iki kartı birbirinden ayırır:
+  // teşhir dolabı sıcak (kil), donuk stok soğuk (arduvaz) tonda.
+  <div className={`${card} border-l-2 ${TONE[tone].edge}`}>
     <div className="flex justify-between items-center gap-3 px-4 pt-3.5 pb-3 border-b border-line">
       <div className="flex items-center gap-2.5 min-w-0">
         <span className={iconChip(tone)}>
@@ -55,14 +57,15 @@ export const DisplayCabinetSummaryCard: React.FC = () => {
   return (
     <SummaryShell
       icon="cabinet"
-      tone="neutral"
+      tone="caution"
       title="Dolapta neler var"
       onSeeAll={() => { setInventoryCategoryFilter('Teşhir Dolabı'); navigate('/inventory'); }}
     >
       {summaryArray.map((item) => (
         <li key={item.name} className={row}>
-          <span className="text-fg-2 truncate">{item.name}</span>
-          <span className="font-medium text-crema shrink-0 tnum">{item.quantity}</span>
+          {/* Ürün adı tam parlaklıkta: bu kartlar hızlı okunmak için var */}
+          <span className="text-crema truncate">{item.name}</span>
+          <span className="font-semibold text-caution shrink-0 tnum">{item.quantity}</span>
         </li>
       ))}
     </SummaryShell>
@@ -93,8 +96,8 @@ export const FrozenStockSummaryCard: React.FC = () => {
     >
       {sorted.slice(0, 6).map((item) => (
         <li key={item.id} className={row}>
-          <span className="text-fg-2 truncate">{item.name}</span>
-          <span className={`font-medium shrink-0 tnum ${item.quantity === 0 ? 'text-negative' : 'text-crema'}`}>
+          <span className="text-crema truncate">{item.name}</span>
+          <span className={`font-semibold shrink-0 tnum ${item.quantity === 0 ? 'text-negative' : 'text-accent'}`}>
             {item.quantity === 0 ? 'Tükendi' : item.quantity}
           </span>
         </li>

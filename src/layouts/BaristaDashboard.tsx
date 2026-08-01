@@ -6,7 +6,7 @@ import { getDaysRemaining } from '../utils/helpers';
 import { DisplayCabinetSummaryCard, FrozenStockSummaryCard } from '../components/DashboardStockSummary';
 import { Icon } from '../components/Icon';
 import {
-  btn, btnLg, btnPrimary, btnSecondary, iconChip, listGroup, listRow,
+  btn, btnLg, btnPrimary, btnToned, iconChip, listGroup, listRow,
   rowChevron, sectionLabel
 } from '../constants/ui';
 
@@ -45,16 +45,23 @@ export const BaristaDashboard: React.FC = () => {
         </p>
       </div>
 
-      {/* ---------- Operasyon ---------- */}
+      {/* ---------- Operasyon ----------
+          Günlük üç ana eylem bir arada. Her biri kendi ince renkli
+          çerçevesiyle ayrışır; dolgular nötr kaldığı için sayfa sakin durur. */}
       <div className="flex flex-col gap-2.5">
         <button onClick={handleStartScan} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
           <Icon name="camera" size={18} />
           Barkod Tara ve Ekle
         </button>
 
-        <button onClick={handleOpenAddTeshir} className={`${btn} ${btnSecondary} ${btnLg} w-full`}>
-          <Icon name="cabinet" size={18} />
+        <button onClick={handleOpenAddTeshir} className={`${btn} ${btnToned('caution')} ${btnLg} w-full`}>
+          <Icon name="cabinet" size={18} className="text-caution" />
           Teşhir Dolabına Ürün Ekle
+        </button>
+
+        <button onClick={() => navigate('/frozen-stock')} className={`${btn} ${btnToned('accent')} ${btnLg} w-full`}>
+          <Icon name="snowflake" size={18} className="text-accent" />
+          Donuk Ürün Stok
         </button>
       </div>
 
@@ -62,14 +69,6 @@ export const BaristaDashboard: React.FC = () => {
       <div className={`${sectionLabel} mt-1.5`}>Modüller</div>
 
       <div className={listGroup}>
-        <button onClick={() => navigate('/frozen-stock')} className={listRow}>
-          <span className={iconChip('accent')}>
-            <Icon name="snowflake" size={17} />
-          </span>
-          <span className="flex-1 text-[15px] font-medium text-crema">Donuk Ürün Stok</span>
-          <Icon name="chevronRight" size={16} className={rowChevron} />
-        </button>
-
         <button onClick={() => navigate('/training')} className={listRow}>
           <span className={iconChip()}>
             <Icon name="cap" size={17} />

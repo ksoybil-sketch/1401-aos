@@ -101,7 +101,13 @@ export interface ReorderRecommendation {
   productName: string;
   category: string;
   currentStock: number;
+  /** Önerilen sipariş, adet cinsinden. */
   recommendedOrder: number;
+  /**
+   * Ürünün kutu içi adedi (biliniyorsa). Doluysa sipariş "kutu" olarak
+   * gösterilir; tedarikçiye kutu ile sipariş verildiği için okunması kolaydır.
+   */
+  boxSize?: number;
   reason: string;
   urgency: 'HIGH' | 'MEDIUM' | 'LOW';
 }

@@ -165,13 +165,23 @@ export const badgeNegative = 'bg-negative-bg text-negative border-negative-line'
 
 export type Tone = 'neutral' | 'accent' | 'positive' | 'caution' | 'negative';
 
-export const TONE: Record<Tone, { fg: string; chipBg: string; line: string }> = {
-  neutral:  { fg: 'text-fg-2',     chipBg: 'bg-panel-2',      line: 'border-line' },
-  accent:   { fg: 'text-accent',   chipBg: 'bg-accent-bg',    line: 'border-accent-line' },
-  positive: { fg: 'text-positive', chipBg: 'bg-positive-bg',  line: 'border-positive-line' },
-  caution:  { fg: 'text-caution',  chipBg: 'bg-caution-bg',   line: 'border-caution-line' },
-  negative: { fg: 'text-negative', chipBg: 'bg-negative-bg',  line: 'border-negative-line' },
+export const TONE: Record<Tone, { fg: string; chipBg: string; line: string; edge: string }> = {
+  neutral:  { fg: 'text-fg-2',     chipBg: 'bg-panel-2',      line: 'border-line',           edge: 'border-l-line-2' },
+  accent:   { fg: 'text-accent',   chipBg: 'bg-accent-bg',    line: 'border-accent-line',    edge: 'border-l-accent' },
+  positive: { fg: 'text-positive', chipBg: 'bg-positive-bg',  line: 'border-positive-line',  edge: 'border-l-positive' },
+  caution:  { fg: 'text-caution',  chipBg: 'bg-caution-bg',   line: 'border-caution-line',   edge: 'border-l-caution' },
+  negative: { fg: 'text-negative', chipBg: 'bg-negative-bg',  line: 'border-negative-line',  edge: 'border-l-negative' },
 };
+
+/**
+ * Renk vurgulu ikincil buton.
+ * Aynı bloktaki eylemlerin birbirinden ayırt edilmesi için çok ince,
+ * düşük opaklıkta renkli çerçeve kullanır — dolgu hâlâ nötr kalır,
+ * böylece sayfa renk cümbüşüne dönmez.
+ * btnSecondary ile birlikte KULLANILMAZ (ikisi de border-color yazar).
+ */
+export const btnToned = (tone: Tone) =>
+  `bg-panel-2 text-crema border ${TONE[tone].line} hover:bg-panel-3`;
 
 /** Satır/kart başındaki kare ikon alanı. */
 export const iconChip = (tone: Tone = 'neutral') =>

@@ -41,7 +41,10 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
 }) => {
   const handleProductNameSelect = (val: string) => {
     onSetProductName(val);
-    if (KUTU_ICI_ADETLER[val]) {
+    // Kutu içi adet SADECE donuk stok girişinde otomatik gelir: oraya kutu
+    // bütün olarak girer. Teşhir dolabına ise donuk stoğun tamamı değil,
+    // vitrine konan kadarı çıkar — o yüzden adet elle girilir.
+    if (productCategory === 'Donuk Stok' && KUTU_ICI_ADETLER[val]) {
       onSetQuantity(KUTU_ICI_ADETLER[val]);
     }
   };

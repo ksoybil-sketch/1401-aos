@@ -7,7 +7,7 @@ import { useUIStore } from '../store/useUIStore';
 import { DisplayCabinetSummaryCard, FrozenStockSummaryCard } from '../components/DashboardStockSummary';
 import { Icon, IconName } from '../components/Icon';
 import {
-  btn, btnLg, btnPrimary, btnSecondary, card, iconChip, listGroup, listRow,
+  btn, btnLg, btnPrimary, btnToned, card, iconChip, listGroup, listRow,
   rowChevron, sectionLabel, Tone
 } from '../constants/ui';
 
@@ -124,15 +124,22 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
         <>
           <div className={`${sectionLabel} mt-1.5`}>Operasyon</div>
 
+          {/* Günlük üç ana eylem bir arada; her biri kendi ince renkli
+              çerçevesiyle ayrışır, dolgular nötr kaldığı için sayfa sakin durur. */}
           <div className="flex flex-col gap-2.5">
             <button onClick={handleStartScan} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
               <Icon name="camera" size={18} />
               Barkod Tara ve Ekle
             </button>
 
-            <button onClick={handleOpenAddTeshir} className={`${btn} ${btnSecondary} ${btnLg} w-full`}>
-              <Icon name="cabinet" size={18} />
+            <button onClick={handleOpenAddTeshir} className={`${btn} ${btnToned('caution')} ${btnLg} w-full`}>
+              <Icon name="cabinet" size={18} className="text-caution" />
               Teşhir Dolabına Ürün Ekle
+            </button>
+
+            <button onClick={() => navigate('/frozen-stock')} className={`${btn} ${btnToned('accent')} ${btnLg} w-full`}>
+              <Icon name="snowflake" size={18} className="text-accent" />
+              Donuk Ürün Stok
             </button>
           </div>
         </>
@@ -142,14 +149,6 @@ export const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ readOnly = f
       <div className={`${sectionLabel} mt-1.5`}>Hızlı Erişim</div>
 
       <div className={listGroup}>
-        {!readOnly && (
-          <NavRow
-            icon="snowflake"
-            tone="accent"
-            title="Donuk Ürün Stok"
-            onClick={() => navigate('/frozen-stock')}
-          />
-        )}
         {!readOnly && (
           <NavRow
             icon="package"

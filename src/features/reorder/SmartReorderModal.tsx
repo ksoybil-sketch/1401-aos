@@ -43,6 +43,7 @@ export const SmartReorderModal: React.FC<SmartReorderModalProps> = ({ inventory,
         category: 'Teşhir / Donuk Stok',
         currentStock: currentQty,
         recommendedOrder: Math.ceil(boxQty * 2), // 2 kutu öner
+        boxSize: boxQty,
         reason: currentQty === 0 ? 'Donuk stokta hiç kalmadı' : `Kritik stok seviyesi (${currentQty} adet kaldı)`,
         urgency: currentQty === 0 ? 'HIGH' : 'MEDIUM'
       });
@@ -79,6 +80,16 @@ export const SmartReorderModal: React.FC<SmartReorderModalProps> = ({ inventory,
       });
     }
   });
+
+  /**
+   * Sipariş miktarını okunabilir birime çevirir. Kutu içi adedi bilinen
+   * ürünler tedarikçiden kutu ile alındığı için "2 kutu" olarak gösterilir;
+   * bilinmeyenler adet olarak kalır.
+   */
+  const orderLabel = (rec: ReorderRecommendation) =>
+    rec.boxSize
+      ? `${Math.max(1, Math.round(rec.recommendedOrder / rec.boxSize))} kutu`
+      : `${rec.recommendedOrder} adet`;
 
   return (
     <div className={modalOverlay}>
@@ -122,12 +133,13 @@ export const SmartReorderModal: React.FC<SmartReorderModalProps> = ({ inventory,
                     </div>
 
                     <div className="text-[12px] text-fg-3">
-                      {rec.category} · Mevcut <span className="text-fg-2 tnum">{rec.currentStock}</span>
+                      {rec.category} · Mevcut <span className="text-fg-2 tnum">{rec.currentStock}</span> adet
+                      {rec.boxSize && <> · Kutu içi <span className="text-fg-2 tnum">{rec.boxSize}</span></>}
                     </div>
 
                     <div className="flex items-baseline gap-2 mt-0.5">
                       <span className="text-[13px] text-fg-2">Önerilen sipariş</span>
-                      <span className="text-[17px] font-semibold text-crema tnum">{rec.recommendedOrder}</span>
+                      <span className="text-[17px] font-semibold text-crema tnum">{orderLabel(rec)}</span>
                     </div>
                     <div className="text-[12px] text-fg-3 leading-relaxed">{rec.reason}</div>
                   </div>
@@ -142,12 +154,11 @@ export const SmartReorderModal: React.FC<SmartReorderModalProps> = ({ inventory,
             </button>
             <button
               onClick={() => {
-                let text = '*1401 AOS — Sipariş Önerisi*\n\n';
+                // Karşı tarafa gereken tek bilgi ne, ne kadar — gerekçe ve
+                // mevcut stok bilgisi mesajı okunmaz hâle getiriyordu.
+                let text = '*1401 Coffee — Sipariş Listesi*\n\n';
                 recommendations.forEach(r => {
-                  text += `• *${r.productName}*\n`;
-                  text += `Mevcut Stok: ${r.currentStock}\n`;
-                  text += `Sipariş Önerisi: *${r.recommendedOrder} Adet*\n`;
-                  text += `Nedeni: ${r.reason}\n\n`;
+                  text += `${r.productName} — ${orderLabel(r)}\n`;
                 });
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
                 window.open(whatsappUrl, '_blank');
