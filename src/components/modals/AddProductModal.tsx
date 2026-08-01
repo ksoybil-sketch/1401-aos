@@ -1,5 +1,6 @@
 import React from 'react';
 import { CATEGORIES, TESHIR_URUNLERI, KUTU_ICI_ADETLER } from '../../constants';
+import { Icon } from '../Icon';
 import {
   btn, btnLg, btnPrimary, btnSecondary, field, iconBtn, input, label,
   modalBody, modalGrabber, modalHeader, modalOverlay, modalPanel, modalTitle, spinner
@@ -52,19 +53,16 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
         <div className={modalHeader}>
           <h2 className={modalTitle}>{isNewProduct ? 'Yeni Ürün Girişi' : 'Ürün SKT Kaydı'}</h2>
           <button onClick={onClose} className={iconBtn} aria-label="Kapat">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <Icon name="close" size={16} />
           </button>
         </div>
 
-        <form onSubmit={onSubmit} className={`${modalBody} flex flex-col gap-4`}>
+        <form onSubmit={onSubmit} className={`${modalBody} flex flex-col gap-3.5`}>
           <div className={field}>
             <span className={label}>Barkod No</span>
             <input
               type="text"
-              className={`${input} font-mono font-bold text-content-muted cursor-not-allowed`}
+              className={`${input} font-mono text-fg-3 cursor-not-allowed`}
               value={scannedBarcode}
               disabled
             />
@@ -73,13 +71,16 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
           <div className={field}>
             <span className={`${label} flex items-center gap-2`}>
               Ürün Adı
-              {isLookingUpProduct && <span className={`${spinner} w-3.5 h-3.5`} />}
+              {isLookingUpProduct && <span className={`${spinner} w-3 h-3`} />}
             </span>
             {productCategory === 'Teşhir Dolabı' ? (
               frozenStockNames.length === 0 ? (
-                <p className="text-[13px] text-danger leading-relaxed">
-                  Donuk stokta hiç ürün yok. Önce "❄️ Donuk Stok" ile stok girişi yapın.
-                </p>
+                <div className="flex items-start gap-2 rounded-lg border border-negative-line bg-negative-bg px-3 py-2.5">
+                  <Icon name="alert" size={15} className="text-negative mt-px" />
+                  <span className="text-[13px] text-negative leading-relaxed">
+                    Donuk stokta hiç ürün yok. Önce Donuk Stok ekranından giriş yapın.
+                  </span>
+                </div>
               ) : (
                 <select
                   className={input}
@@ -87,7 +88,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                   onChange={(e) => handleProductNameSelect(e.target.value)}
                   required
                 >
-                  <option value="" disabled>Donuk stoktan bir ürün seçin...</option>
+                  <option value="" disabled>Donuk stoktan bir ürün seçin…</option>
                   {frozenStockNames.map((item) => (
                     <option key={item} value={item}>{item}</option>
                   ))}
@@ -100,7 +101,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                 onChange={(e) => handleProductNameSelect(e.target.value)}
                 required
               >
-                <option value="" disabled>Lütfen menüden bir ürün seçin...</option>
+                <option value="" disabled>Lütfen menüden bir ürün seçin…</option>
                 {TESHIR_URUNLERI.map((item) => (
                   <option key={item} value={item}>{item}</option>
                 ))}
@@ -109,7 +110,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
               <input
                 type="text"
                 className={input}
-                placeholder={isLookingUpProduct ? 'Ürün aranıyor...' : 'Örn: Espresso Çekirdeği 1Kg'}
+                placeholder={isLookingUpProduct ? 'Ürün aranıyor…' : 'Örn: Espresso Çekirdeği 1Kg'}
                 value={productName}
                 onChange={(e) => onSetProductName(e.target.value)}
                 disabled={isLookingUpProduct}
@@ -131,12 +132,12 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               {!scannedBarcode.startsWith('VITRIN-') && (
-                <option value="Donuk Stok">❄️ Donuk Stok</option>
+                <option value="Donuk Stok">Donuk Stok</option>
               )}
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <div className={field}>
               <span className={label}>Son Tüketim Tarihi</span>
               <input
@@ -148,11 +149,11 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
               />
             </div>
             <div className={field}>
-              <span className={label}>Miktar (Adet)</span>
+              <span className={label}>Miktar</span>
               <input
                 type="number"
                 min="1"
-                className={input}
+                className={`${input} tnum`}
                 value={quantity}
                 onChange={(e) => onSetQuantity(parseInt(e.target.value, 10) || 1)}
                 required
@@ -160,9 +161,9 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
             </div>
           </div>
 
-          <div className="flex gap-3 mt-2">
+          <div className="flex gap-2.5 mt-1.5">
             <button type="button" onClick={onClose} className={`${btn} ${btnSecondary} ${btnLg} flex-1`}>
-              İptal / Yeniden Tara
+              İptal
             </button>
             <button type="submit" className={`${btn} ${btnPrimary} ${btnLg} flex-1`}>
               Kaydet

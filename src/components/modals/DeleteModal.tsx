@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { InventoryItem } from '../../types';
+import { Icon } from '../Icon';
 import {
   btn, btnDanger, btnLg, btnPrimary, field, iconBtn, input, label,
   modalBody, modalGrabber, modalHeader, modalOverlay, modalPanel, modalTitle
@@ -46,72 +47,73 @@ export const DeleteModal: React.FC<DeleteModalProps> = ({ item, onClose, onConfi
   };
 
   const stepperBtn =
-    'w-14 h-14 shrink-0 flex items-center justify-center text-2xl font-light text-content cursor-pointer transition-colors hover:bg-glass-2 active:text-gold';
+    'w-12 h-11 shrink-0 flex items-center justify-center text-fg-2 cursor-pointer transition-colors hover:bg-panel-2 hover:text-crema active:opacity-70';
 
   return (
     <div className={modalOverlay}>
       <div className={modalPanel}>
         <div className={modalGrabber} />
         <div className={modalHeader}>
-          <h2 className={modalTitle}>Ürünü Tüket / Sil</h2>
+          <h2 className={modalTitle}>Tüket / Sil</h2>
           <button onClick={onClose} className={iconBtn} aria-label="Kapat">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <Icon name="close" size={16} />
           </button>
         </div>
 
-        <div className={`${modalBody} flex flex-col gap-4`}>
-          <p className="text-sm text-content-muted leading-relaxed">
-            <strong className="text-content">{item.name}</strong> ürününden kaç adet işlem yapılacak?
-            {' '}(Mevcut stok: <strong className="text-gold">{item.quantity}</strong> adet)
+        <div className={`${modalBody} flex flex-col gap-3.5`}>
+          <p className="text-[14px] text-fg-2 leading-relaxed">
+            <span className="text-crema font-medium">{item.name}</span> ürününden kaç adet işlem yapılacak?
+            {' '}Mevcut stok: <span className="text-crema font-medium tnum">{item.quantity}</span>
           </p>
 
           <div className={field}>
-            <span className={label}>İşlem Sebebi</span>
+            <span className={label}>İşlem sebebi</span>
             <select
               className={input}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             >
-              <option value="Satıldı/Tüketildi">🟢 Satıldı / Tüketildi</option>
-              <option value="Tarihi Geçti / Zayi">🔴 Tarihi Geçti / Çöpe Atıldı (Zayi)</option>
-              <option value="Hasarlı / Bozuk">🟠 Hasarlı / Bozuldu</option>
-              <option value="Hatalı Giriş / Düzeltme">✏️ Hatalı Giriş / Düzeltme (Stok Sayım Düzeltmesi)</option>
+              <option value="Satıldı/Tüketildi">Satıldı / Tüketildi</option>
+              <option value="Tarihi Geçti / Zayi">Tarihi geçti / Çöpe atıldı (zayi)</option>
+              <option value="Hasarlı / Bozuk">Hasarlı / Bozuldu</option>
+              <option value="Hatalı Giriş / Düzeltme">Hatalı giriş / Düzeltme</option>
             </select>
           </div>
 
           <div className={field}>
             <span className={label}>Miktar</span>
-            <div className="flex items-center rounded-2xl border border-hairline bg-surface-0/70 overflow-hidden">
-              <button type="button" className={stepperBtn} onClick={handleMinus}>−</button>
+            <div className="flex items-center rounded-lg border border-line bg-roast overflow-hidden">
+              <button type="button" className={stepperBtn} onClick={handleMinus} aria-label="Azalt">
+                <Icon name="minus" size={16} />
+              </button>
               <input
                 type="number"
-                className="flex-1 min-w-0 h-14 bg-transparent border-x border-hairline text-content text-2xl font-bold text-center focus:outline-none focus:bg-glass [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="flex-1 min-w-0 h-11 bg-transparent border-x border-line text-crema text-[17px] font-medium text-center tnum focus:outline-none focus:bg-panel-2 [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 value={qtyInput}
                 min="1"
                 max={item.quantity}
                 onChange={handleInputChange}
               />
-              <button type="button" className={stepperBtn} onClick={handlePlus}>+</button>
+              <button type="button" className={stepperBtn} onClick={handlePlus} aria-label="Artır">
+                <Icon name="plus" size={16} />
+              </button>
             </div>
           </div>
 
-          <div className="flex gap-3 mt-2">
+          <div className="flex gap-2.5 mt-1.5">
             <button
               type="button"
               onClick={() => onConfirm(false, qtyValue, reason)}
               className={`${btn} ${btnPrimary} ${btnLg} flex-1`}
             >
-              {qtyValue} Adet İşlem Yap
+              {qtyValue} adet işle
             </button>
             <button
               type="button"
               onClick={() => onConfirm(true, item.quantity, reason)}
               className={`${btn} ${btnDanger} ${btnLg} flex-1`}
             >
-              Tümünü Sil ({item.quantity})
+              Tümünü sil ({item.quantity})
             </button>
           </div>
         </div>

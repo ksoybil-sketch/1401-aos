@@ -2,108 +2,106 @@
 
 /* ============================================================
    TASARIM TOKEN'LARI (Tailwind v4 @theme)
-   @theme içindeki --color-* değişkenleri Tailwind'in utility
-   üretecine bağlanır: --color-gold → bg-gold / text-gold / border-gold.
-   Uygulamanın TAMAMI koyu tema + cam (glassmorphism) yüzeyler kullanır.
+   --color-* değişkenleri Tailwind'in utility üretecine bağlanır:
+   --color-crema → bg-crema / text-crema / border-crema.
+
+   Yön: mat, sıcak-nötr kahve paleti. Degrade yok, parıltı yok,
+   altın yok. Vurgu tek bir "krema" tonu (koyu zemin üzerinde açık
+   düğme) — Apple/Linear'in koyu temalarındaki gibi sakin ve elit.
    ============================================================ */
 @theme {
-  /* --- Zemin katmanları (opak) --- */
-  --color-void: #08070A;
-  --color-night: #0E0C0B;
-  --color-surface-0: #131116;
-  --color-surface-deep: #17141B;
+  /* --- Zemin (opak, mat) --- */
+  --color-espresso: #100E0D;   /* sayfa zemini */
+  --color-bean: #171413;       /* yükseltilmiş opak yüzey (sheet, tab bar) */
+  --color-roast: #1E1A18;      /* input zemini */
 
-  /* --- Cam yüzeyler (yarı saydam, backdrop-blur ile kullanılır) --- */
-  --color-glass: rgba(255, 255, 255, 0.045);
-  --color-glass-2: rgba(255, 255, 255, 0.075);
-  --color-glass-3: rgba(255, 255, 255, 0.11);
-  --color-hairline: rgba(255, 255, 255, 0.09);
-  --color-hairline-strong: rgba(255, 255, 255, 0.18);
+  /* --- Cam yüzeyler (zeminin üstünde yarı saydam) --- */
+  --color-panel: rgba(255, 255, 255, 0.04);
+  --color-panel-2: rgba(255, 255, 255, 0.07);
+  --color-panel-3: rgba(255, 255, 255, 0.10);
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-2: rgba(255, 255, 255, 0.14);
 
-  /* --- Marka --- */
-  --color-gold: #D9B65F;
-  --color-gold-soft: #F2E3B0;
-  --color-gold-deep: #8A6D28;
-  --color-ink: #F6F2EA;
-  --color-ink-hover: #E8E0D2;
+  /* --- Metin / vurgu --- */
+  --color-crema: #F2EDE7;      /* birincil metin + birincil düğme dolgusu */
+  --color-crema-dim: #E2DAD1;  /* birincil düğme hover */
+  --color-fg-2: #A9A19A;       /* ikincil metin */
+  --color-fg-3: #6E6863;       /* soluk metin */
+  --color-fg-4: #4A4541;       /* placeholder */
 
-  /* --- Metin --- */
-  --color-content: #F6F2EA;
-  --color-content-secondary: #BFB6AC;
-  --color-content-muted: #8A8078;
-  --color-content-placeholder: #5A524C;
+  /* --- Anlamsal renkler: mat, desatüre toprak tonları --- */
+  --color-positive: #6F9E7C;
+  --color-positive-bg: rgba(111, 158, 124, 0.12);
+  --color-positive-line: rgba(111, 158, 124, 0.26);
 
-  /* --- Durum renkleri --- */
-  --color-danger: #FF6B6B;
-  --color-danger-bg: rgba(255, 107, 107, 0.12);
-  --color-danger-border: rgba(255, 107, 107, 0.28);
+  --color-caution: #C09161;
+  --color-caution-bg: rgba(192, 145, 97, 0.12);
+  --color-caution-line: rgba(192, 145, 97, 0.26);
 
-  --color-warning: #F5B33C;
-  --color-warning-bg: rgba(245, 179, 60, 0.12);
-  --color-warning-border: rgba(245, 179, 60, 0.28);
+  --color-negative: #C4655A;
+  --color-negative-bg: rgba(196, 101, 90, 0.12);
+  --color-negative-line: rgba(196, 101, 90, 0.26);
 
-  --color-success: #3ED598;
-  --color-success-bg: rgba(62, 213, 152, 0.12);
-  --color-success-border: rgba(62, 213, 152, 0.28);
-
-  --color-info: #7C8CFF;
-  --color-info-bg: rgba(124, 140, 255, 0.12);
-  --color-info-border: rgba(124, 140, 255, 0.28);
-
-  --color-violet: #B98CFF;
-  --color-violet-bg: rgba(185, 140, 255, 0.12);
-  --color-violet-border: rgba(185, 140, 255, 0.28);
+  --color-accent: #8C9BAE;     /* sakin arduvaz mavisi — bilgi/nötr vurgu */
+  --color-accent-bg: rgba(140, 155, 174, 0.12);
+  --color-accent-line: rgba(140, 155, 174, 0.26);
 }
 
 @layer base {
   html {
-    background-color: #08070A;
+    background-color: #100E0D;
   }
 
   body {
-    color: #F6F2EA;
-    background-color: #08070A;
-    /* Ambiyans: köşelerden yayılan yumuşak renk hüzmeleri. Sabit (fixed)
-       tutulur ki sayfa kaydırılırken zemin sabit kalsın. */
-    background-image:
-      radial-gradient(58% 38% at 10% -4%, rgba(217, 182, 95, 0.13), transparent 62%),
-      radial-gradient(48% 32% at 92% 6%, rgba(124, 140, 255, 0.10), transparent 62%),
-      radial-gradient(75% 45% at 50% 104%, rgba(217, 182, 95, 0.06), transparent 70%);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    color: #F2EDE7;
+    background-color: #100E0D;
+    /* San Francisco: Apple platformlarında sistemden gelir. Diğer
+       platformlarda en yakın nötr grotesk'e düşer. */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+      "Helvetica Neue", "Segoe UI", Roboto, "Inter", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* SF'in sıkı optik ritmini taklit et */
+    letter-spacing: -0.011em;
   }
 
-  /* Kaydırma çubuklarını koyu temaya uydur */
+  /* Başlıklarda SF Pro Display davranışı: daha sıkı harf aralığı */
+  h1, h2, h3 {
+    letter-spacing: -0.021em;
+  }
+
+  /* Sayısal hizalama — istatistik ve miktar alanları için */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
   }
   *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   *::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 999px;
   }
 }
 
 /* Capacitor Barcode Scanner Transparency Fix
    Native kamera görüntüsünün WebView'in ardından görünebilmesi için
-   zeminin tamamen şeffaflaşması gerekir (ambiyans gradyanı dahil). */
+   zeminin tamamen şeffaflaşması gerekir. */
 html.scanner-active,
 html.scanner-active body,
 html.scanner-active #root {
   background: transparent !important;
-  background-image: none !important;
 }
 
 /* ============================================================
-   ANİMASYONLAR — Tailwind'in animate-[isim_süre_...] arbitrary
-   sözdizimiyle çağrılır (modal, kart girişi, splash, tarayıcı).
+   ANİMASYONLAR — Tailwind'in animate-[isim_süre_...] sözdizimiyle
+   çağrılır. Hepsi kısa ve ölçülü; dikkat çekmek için değil,
+   yön duygusu vermek için.
    ============================================================ */
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -111,18 +109,13 @@ html.scanner-active #root {
 }
 
 @keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideUp {
+@keyframes sheetUp {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
-}
-
-@keyframes slideDownFadeIn {
-  from { transform: translateY(-60px); opacity: 0; }
-  to   { transform: translateY(0);     opacity: 1; }
 }
 
 @keyframes rotation {
@@ -132,13 +125,7 @@ html.scanner-active #root {
 
 /* Barkod tarayıcının vizördeki tarama çizgisi */
 @keyframes scan {
-  0%   { transform: translateY(0); opacity: 0.35; }
-  50%  { transform: translateY(15rem); opacity: 1; }
-  100% { transform: translateY(0); opacity: 0.35; }
-}
-
-/* Altın vurgulu öğeler için nefes alan parıltı */
-@keyframes auraPulse {
-  0%, 100% { opacity: 0.55; }
-  50%      { opacity: 1; }
+  0%   { transform: translateY(0); opacity: 0.25; }
+  50%  { transform: translateY(14rem); opacity: 0.9; }
+  100% { transform: translateY(0); opacity: 0.25; }
 }

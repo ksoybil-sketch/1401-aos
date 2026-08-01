@@ -5,9 +5,10 @@ import { CATEGORIES } from '../../constants';
 import { useStore } from '../../store/useStore';
 import { useUIStore } from '../../store/useUIStore';
 import { ROLE_PERMISSIONS } from '../../constants/roles';
+import { Icon } from '../../components/Icon';
 import {
-  badge, btn, btnDanger, btnSm, btnPrimary, card, chip, chipActive, chipIdle,
-  emptyState, emptyText, input, screenTitle
+  badge, btn, btnDanger, btnSm, btnPrimary, card, chip, chipOff, chipOn,
+  emptyState, emptyText, iconBtn, input, screenTitle, scrollX
 } from '../../constants/ui';
 
 export const InventoryList: React.FC = () => {
@@ -41,106 +42,96 @@ export const InventoryList: React.FC = () => {
   });
 
   return (
-    <section className="flex flex-col gap-4">
-      {/* Arama + Filtreler */}
-      <div className={`${card} p-4 flex flex-col gap-3.5`}>
-        <div className="relative">
-          <svg
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-content-muted w-4 h-4 pointer-events-none"
-            viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            className={`${input} pl-11`}
-            placeholder="Ürün adı, barkod veya kategori ara..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        {/* Kategori Filtre Butonları */}
-        <div className="flex gap-2 overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <button
-            className={`${chip} ${selectedCategoryFilter === 'Hepsi' ? chipActive : chipIdle}`}
-            onClick={() => setSelectedCategoryFilter('Hepsi')}
-          >
-            Tümü
-          </button>
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              className={`${chip} ${selectedCategoryFilter === cat ? chipActive : chipIdle}`}
-              onClick={() => setSelectedCategoryFilter(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* SKT Durum Filtresi */}
-        <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <button
-            onClick={() => setStatusFilter('Hepsi')}
-            className={`${chip} ${statusFilter === 'Hepsi' ? chipActive : chipIdle}`}
-          >
-            Tüm Durumlar
-          </button>
-          <button
-            onClick={() => setStatusFilter('danger')}
-            className={`${chip} ${
-              statusFilter === 'danger'
-                ? 'bg-danger text-white border-danger shadow-[0_4px_16px_-6px_rgba(255,107,107,0.8)]'
-                : 'bg-danger-bg text-danger border-danger-border hover:bg-danger/20'
-            }`}
-          >
-            🔴 Tarihi Geçen
-          </button>
-          <button
-            onClick={() => setStatusFilter('warning')}
-            className={`${chip} ${
-              statusFilter === 'warning'
-                ? 'bg-warning text-night border-warning shadow-[0_4px_16px_-6px_rgba(245,179,60,0.8)]'
-                : 'bg-warning-bg text-warning border-warning-border hover:bg-warning/20'
-            }`}
-          >
-            🟡 Kritik (Son 3 Gün)
-          </button>
-        </div>
-      </div>
-
-      {/* Başlık ve Sayaç */}
-      <div className="flex justify-between items-center gap-3">
-        <h2 className={screenTitle}>Stoktaki Ürünler</h2>
-        <div className="flex gap-3 items-center shrink-0">
-          <span className="text-xs text-content-muted font-medium">{filteredInventory.length} ürün</span>
+    <section className="flex flex-col gap-3.5">
+      {/* Başlık */}
+      <div className="flex justify-between items-center gap-3 mt-0.5">
+        <h2 className={screenTitle}>Envanter</h2>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <span className="text-[12px] text-fg-3 tnum">{filteredInventory.length} ürün</span>
           {/* Baristalar CSV butonunu görmemeli */}
           {userRole !== 'Barista' && (
-            <button
-              onClick={() => setModalState('showCsvModal', true)}
-              className="text-content-muted text-xs cursor-pointer transition-colors hover:text-gold"
-            >
-              ⚙️ CSV
+            <button onClick={() => setModalState('showCsvModal', true)} className={iconBtn} aria-label="CSV işlemleri">
+              <Icon name="sliders" size={16} />
             </button>
           )}
         </div>
       </div>
 
-      {/* Liste Görünümü */}
+      {/* Arama */}
+      <div className="relative">
+        <Icon name="search" size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-3 pointer-events-none" />
+        <input
+          type="text"
+          className={`${input} pl-10`}
+          placeholder="Ürün, barkod veya kategori ara"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      {/* Kategori filtresi */}
+      <div className={scrollX}>
+        <button
+          className={`${chip} ${selectedCategoryFilter === 'Hepsi' ? chipOn : chipOff}`}
+          onClick={() => setSelectedCategoryFilter('Hepsi')}
+        >
+          Tümü
+        </button>
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            className={`${chip} ${selectedCategoryFilter === cat ? chipOn : chipOff}`}
+            onClick={() => setSelectedCategoryFilter(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* SKT durum filtresi */}
+      <div className={scrollX}>
+        <button
+          onClick={() => setStatusFilter('Hepsi')}
+          className={`${chip} ${statusFilter === 'Hepsi' ? chipOn : chipOff}`}
+        >
+          Tüm durumlar
+        </button>
+        <button
+          onClick={() => setStatusFilter('danger')}
+          className={`${chip} ${
+            statusFilter === 'danger'
+              ? 'bg-negative text-espresso border-negative'
+              : 'bg-negative-bg text-negative border-negative-line hover:bg-negative/20'
+          }`}
+        >
+          Tarihi geçen
+        </button>
+        <button
+          onClick={() => setStatusFilter('warning')}
+          className={`${chip} ${
+            statusFilter === 'warning'
+              ? 'bg-caution text-espresso border-caution'
+              : 'bg-caution-bg text-caution border-caution-line hover:bg-caution/20'
+          }`}
+        >
+          Kritik (3 gün)
+        </button>
+      </div>
+
+      {/* Liste */}
       {filteredInventory.length === 0 ? (
         <div className={emptyState}>
-          <div className="text-4xl opacity-40">📦</div>
+          <Icon name="box" size={26} className="text-fg-3" />
           <p className={emptyText}>Aradığınız kriterlere uygun ürün bulunamadı.</p>
           {canEdit && (
             <button onClick={() => navigate('/scanner')} className={`${btn} ${btnPrimary} ${btnSm} mt-1`}>
-              + Yeni Ürün Ekle
+              <Icon name="plus" size={14} />
+              Yeni ürün ekle
             </button>
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {filteredInventory.map((item) => {
             const days = getDaysRemaining(item.expirationDate);
             const status = getStatusDetails(days, item.category);
@@ -148,30 +139,29 @@ export const InventoryList: React.FC = () => {
             return (
               <div
                 key={item.id}
-                className={`${card} p-4 pl-5 flex flex-col gap-3 animate-[fadeSlideIn_0.3s_ease-out] ${status.statusBorderClass}`}
+                className={`${card} p-3.5 flex flex-col gap-3 animate-[fadeSlideIn_0.2s_ease-out] border-l-2 ${status.statusBorderClass}`}
               >
                 <div className="flex justify-between items-start gap-3">
                   <div className="flex flex-col min-w-0 flex-1">
-                    <span className="text-[15px] font-bold text-content tracking-tight truncate">{item.name}</span>
-                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                      <span className="px-2 py-0.5 rounded-full bg-glass-2 border border-hairline text-[10px] font-semibold text-content-secondary">
-                        {item.category}
-                      </span>
-                      <span className="font-mono text-[10px] text-content-muted">Kod: {item.barcode}</span>
+                    <span className="text-[15px] font-medium text-crema truncate">{item.name}</span>
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+                      <span className="text-[11px] text-fg-3">{item.category}</span>
+                      <span className="w-px h-2.5 bg-line-2" />
+                      <span className="font-mono text-[11px] text-fg-3">{item.barcode}</span>
                     </div>
                   </div>
-                  <span className={`${badge} ${status.statusClass}`}>{item.quantity} Adet</span>
+                  <span className={`${badge} ${status.statusClass}`}>{item.quantity}</span>
                 </div>
 
-                <div className="flex justify-between items-end gap-3 border-t border-hairline pt-3">
+                <div className="flex justify-between items-end gap-3 border-t border-line pt-3">
                   <div className="flex gap-5">
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[9px] text-content-muted uppercase font-bold tracking-[0.1em]">SKT Tarihi</span>
-                      <span className="text-[13px] font-semibold text-content">{formatDate(item.expirationDate)}</span>
+                      <span className="text-[11px] text-fg-3">SKT</span>
+                      <span className="text-[13px] font-medium text-crema tnum">{formatDate(item.expirationDate)}</span>
                     </div>
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[9px] text-content-muted uppercase font-bold tracking-[0.1em]">Durum</span>
-                      <span className="text-[13px] font-semibold text-content">{status.label}</span>
+                      <span className="text-[11px] text-fg-3">Durum</span>
+                      <span className="text-[13px] font-medium text-crema">{status.label}</span>
                     </div>
                   </div>
 
@@ -179,7 +169,6 @@ export const InventoryList: React.FC = () => {
                     <button
                       onClick={() => openDeleteModal(item)}
                       className={`${btn} ${btnDanger} ${btnSm} shrink-0`}
-                      title="Tüket / Sil"
                     >
                       Tüket / Sil
                     </button>

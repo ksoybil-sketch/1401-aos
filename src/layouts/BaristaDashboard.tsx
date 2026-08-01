@@ -4,9 +4,10 @@ import { useStore } from '../store/useStore';
 import { useUIStore } from '../store/useUIStore';
 import { getDaysRemaining } from '../utils/helpers';
 import { DisplayCabinetSummaryCard, FrozenStockSummaryCard } from '../components/DashboardStockSummary';
+import { Icon } from '../components/Icon';
 import {
-  actionTile, btn, btnLg, btnPrimary, btnSecondary, cardInteractive,
-  cardPad, eyebrow, tileBadge
+  btn, btnLg, btnPrimary, btnSecondary, iconChip, listGroup, listRow,
+  rowChevron, sectionLabel
 } from '../constants/ui';
 
 export const BaristaDashboard: React.FC = () => {
@@ -35,46 +36,46 @@ export const BaristaDashboard: React.FC = () => {
   return (
     <>
       {/* ---------- Karşılama ---------- */}
-      <div className="mt-1">
-        <h2 className="text-[26px] font-extrabold text-content tracking-tight leading-tight">
-          Hoş geldin, {activeBaristaName ? activeBaristaName.split(' ')[0] : 'Barista'} 👋
+      <div className="mt-1 mb-0.5">
+        <h2 className="text-[24px] font-bold text-crema tracking-tight leading-tight">
+          Merhaba, {activeBaristaName ? activeBaristaName.split(' ')[0] : 'Barista'}
         </h2>
-        <p className="text-content-muted text-sm mt-1.5">
+        <p className="text-fg-3 text-[13px] mt-1">
           Hızlı işlemlere aşağıdan ulaşabilirsin.
         </p>
       </div>
 
       {/* ---------- Operasyon ---------- */}
-      <button onClick={handleStartScan} className={`${btn} ${btnPrimary} w-full h-[72px] text-base rounded-3xl mt-1`}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-          <circle cx="12" cy="13" r="4" />
-        </svg>
-        Barkod Tara ve Ekle
-      </button>
-
-      <button onClick={handleOpenAddTeshir} className={`${btn} ${btnSecondary} w-full ${btnLg}`}>
-        🎂 Teşhir Dolabına Ürün Ekle (3 Gün SKT)
-      </button>
-
-      {/* ---------- Ekstra Modüller ---------- */}
-      <div className={`${eyebrow} mt-2`}>Ekstra Modüller</div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={() => navigate('/frozen-stock')}
-          className={`${cardInteractive} ${cardPad} flex flex-col items-start gap-3 text-left`}
-        >
-          <span className={tileBadge('info')}>❄️</span>
-          <span className="text-[13px] font-bold text-content leading-snug">Donuk Ürün Stok</span>
+      <div className="flex flex-col gap-2.5">
+        <button onClick={handleStartScan} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
+          <Icon name="camera" size={18} />
+          Barkod Tara ve Ekle
         </button>
 
-        <button
-          onClick={() => navigate('/training')}
-          className={`${cardInteractive} ${cardPad} flex flex-col items-start gap-3 text-left`}
-        >
-          <span className={tileBadge('violet')}>🎓</span>
-          <span className="text-[13px] font-bold text-content leading-snug">Eğitim &amp; Sınav</span>
+        <button onClick={handleOpenAddTeshir} className={`${btn} ${btnSecondary} ${btnLg} w-full`}>
+          <Icon name="cabinet" size={18} />
+          Teşhir Dolabına Ürün Ekle
+        </button>
+      </div>
+
+      {/* ---------- Modüller ---------- */}
+      <div className={`${sectionLabel} mt-1.5`}>Modüller</div>
+
+      <div className={listGroup}>
+        <button onClick={() => navigate('/frozen-stock')} className={listRow}>
+          <span className={iconChip('accent')}>
+            <Icon name="snowflake" size={17} />
+          </span>
+          <span className="flex-1 text-[15px] font-medium text-crema">Donuk Ürün Stok</span>
+          <Icon name="chevronRight" size={16} className={rowChevron} />
+        </button>
+
+        <button onClick={() => navigate('/training')} className={listRow}>
+          <span className={iconChip()}>
+            <Icon name="cap" size={17} />
+          </span>
+          <span className="flex-1 text-[15px] font-medium text-crema">Eğitim ve Sınav</span>
+          <Icon name="chevronRight" size={16} className={rowChevron} />
         </button>
       </div>
 
@@ -82,36 +83,40 @@ export const BaristaDashboard: React.FC = () => {
       <FrozenStockSummaryCard />
 
       {/* ---------- Bildirimler ---------- */}
-      <div className={`${eyebrow} mt-2`}>Bildirimler</div>
+      <div className={`${sectionLabel} mt-1.5`}>Bildirimler</div>
 
-      <div className="flex flex-col gap-3">
+      <div className={listGroup}>
         <button
           onClick={() => { setInventoryStatusFilter('warning'); navigate('/inventory'); }}
-          className={`${actionTile('warning')} ${soonExpiringCount > 0 ? 'border-warning-border' : ''}`}
+          className={listRow}
         >
-          <span className={tileBadge('warning')}>🔔</span>
-          <span className="flex-1">
-            <span className="block font-bold text-[15px] text-content">Yaklaşan SKT Bildirimi</span>
-            <span className="block text-xs text-content-muted mt-0.5">
-              {soonExpiringCount} ürünün süresi yaklaşıyor.
+          <span className={iconChip(soonExpiringCount > 0 ? 'caution' : 'neutral')}>
+            <Icon name="bell" size={17} />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-[15px] font-medium text-crema">Yaklaşan SKT</span>
+            <span className="block text-[12px] text-fg-3 mt-0.5">
+              {soonExpiringCount} ürünün süresi yaklaşıyor
             </span>
           </span>
-          <span className="text-gold text-sm font-semibold">İncele ➔</span>
+          <Icon name="chevronRight" size={16} className={rowChevron} />
         </button>
 
         {expiredCount > 0 && (
           <button
             onClick={() => { setInventoryStatusFilter('danger'); navigate('/inventory'); }}
-            className={`${actionTile('danger')} border-danger-border bg-danger-bg`}
+            className={listRow}
           >
-            <span className={tileBadge('danger')}>⚠️</span>
-            <span className="flex-1">
-              <span className="block font-bold text-[15px] text-danger">Tarihi Geçen Ürün Var!</span>
-              <span className="block text-xs text-danger/75 mt-0.5">
-                {expiredCount} ürünü imha etmeniz gerekiyor.
+            <span className={iconChip('negative')}>
+              <Icon name="alert" size={17} />
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-medium text-negative">Tarihi geçen ürün var</span>
+              <span className="block text-[12px] text-negative/70 mt-0.5">
+                {expiredCount} ürünü imha etmeniz gerekiyor
               </span>
             </span>
-            <span className="text-danger text-sm font-semibold">İncele ➔</span>
+            <Icon name="chevronRight" size={16} className={rowChevron} />
           </button>
         )}
       </div>

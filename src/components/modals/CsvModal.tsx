@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from '../Icon';
 import {
   btn, btnLg, btnPrimary, btnSecondary, iconBtn, modalBody, modalGrabber,
   modalHeader, modalOverlay, modalPanel, modalTitle
@@ -18,20 +19,19 @@ export const CsvModal: React.FC<CsvModalProps> = ({ onClose, onExportCSV, onImpo
         <div className={modalHeader}>
           <h2 className={modalTitle}>CSV İşlemleri</h2>
           <button onClick={onClose} className={iconBtn} aria-label="Kapat">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <Icon name="close" size={16} />
           </button>
         </div>
 
-        <div className={`${modalBody} flex flex-col gap-3`}>
+        <div className={`${modalBody} flex flex-col gap-2.5`}>
           <button onClick={onExportCSV} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
-            📥 Envanteri CSV Olarak Dışarı Aktar
+            <Icon name="download" size={17} />
+            Envanteri dışa aktar
           </button>
 
           <label className={`${btn} ${btnSecondary} ${btnLg} w-full`}>
-            📤 CSV Dosyasından İçeri Aktar
+            <Icon name="upload" size={17} />
+            CSV dosyasından içe aktar
             <input
               type="file"
               accept=".csv"

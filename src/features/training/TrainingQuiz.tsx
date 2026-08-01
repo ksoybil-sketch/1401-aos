@@ -3,6 +3,7 @@ import { QuizQuestion, QuizFeedback, QuizWrongAnswer } from '../../types';
 import { useStore, useAuthStore } from '../../store/useStore';
 import { ref, push } from 'firebase/database';
 import { db } from '../../api/firebase';
+import { Icon } from '../../components/Icon';
 import { btn, btnLg, btnPrimary, card } from '../../constants/ui';
 
 export const TrainingQuiz: React.FC = () => {
@@ -77,7 +78,7 @@ export const TrainingQuiz: React.FC = () => {
 
     setFeedback({
       isCorrect,
-      text: isCorrect ? '✅ Doğru Cevap!' : `❌ Yanlış! Doğru Cevap: ${currentQ.correctAnswer}`
+      text: isCorrect ? 'Doğru cevap' : `Yanlış — doğrusu: ${currentQ.correctAnswer}`
     });
 
     setTimeout(() => {
@@ -106,16 +107,14 @@ export const TrainingQuiz: React.FC = () => {
 
   if (!trainingActive) {
     return (
-      <div className={`${card} text-center py-12 px-6`}>
-        <div className="w-20 h-20 mx-auto rounded-3xl bg-gold/12 border border-gold/25 flex items-center justify-center mb-6">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gold">
-            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-            <path d="M6 12v5c3 3 9 3 12 0v-5" />
-          </svg>
+      <div className={`${card} text-center py-10 px-6 mt-1`}>
+        <div className="w-14 h-14 mx-auto rounded-xl bg-panel-2 border border-line flex items-center justify-center mb-5">
+          <Icon name="cap" size={26} className="text-fg-2" />
         </div>
-        <h2 className="text-xl font-extrabold text-content mb-3 tracking-tight">Barista Eğitim Modülü</h2>
-        <p className="text-content-secondary mb-8 leading-relaxed text-sm">
-          İçecek reçetelerini ne kadar iyi biliyorsun? 20 soruluk bu sınavda reçetelerdeki malzemeleri ve ml/gramajları tahmin et. Şubede hatasız üretim için kendini test et!
+        <h2 className="text-[19px] font-semibold text-crema mb-2.5 tracking-tight">Eğitim Modülü</h2>
+        <p className="text-fg-2 mb-7 leading-relaxed text-[14px]">
+          İçecek reçetelerini ne kadar iyi biliyorsun? 20 soruluk bu sınavda
+          reçetelerdeki malzemeleri ve ölçüleri tahmin et.
         </p>
         <button onClick={generateQuiz} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
           Sınava Başla
@@ -127,16 +126,18 @@ export const TrainingQuiz: React.FC = () => {
   if (finished) {
     const passed = score >= 80;
     return (
-      <div className={`${card} text-center py-12 px-6`}>
-        <h2 className="text-xl font-extrabold text-content mb-2 tracking-tight">Sınav Bitti!</h2>
-        <div className={`text-6xl font-extrabold my-6 tracking-tight ${passed ? 'text-success' : 'text-gold'}`}>
-          {score}
-          <span className="text-2xl font-bold ml-1">Puan</span>
+      <div className={`${card} text-center py-10 px-6 mt-1`}>
+        <div className={`w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-5 ${passed ? 'bg-positive-bg' : 'bg-caution-bg'}`}>
+          <Icon name={passed ? 'check' : 'alert'} size={26} className={passed ? 'text-positive' : 'text-caution'} />
         </div>
-        <p className="text-content-secondary mb-8 leading-relaxed text-sm">
+        <div className={`text-[44px] font-semibold tnum tracking-tight ${passed ? 'text-positive' : 'text-caution'}`}>
+          {score}
+        </div>
+        <p className="text-fg-3 text-[13px] mb-6">100 üzerinden</p>
+        <p className="text-fg-2 mb-7 leading-relaxed text-[14px]">
           {passed
-            ? 'Harika iş çıkardın! Barın arkasına geçmeye hazırsın.'
-            : 'Biraz daha pratik yapman gerekiyor. Reçeteler sekmesinden formülleri tekrar gözden geçir.'}
+            ? 'Harika iş çıkardın. Barın arkasına geçmeye hazırsın.'
+            : 'Biraz daha pratik gerekiyor. Reçeteler sekmesinden formülleri tekrar gözden geçir.'}
         </p>
         <button onClick={() => setTrainingActive(false)} className={`${btn} ${btnPrimary} ${btnLg} w-full`}>
           Yeniden Başla
@@ -146,35 +147,35 @@ export const TrainingQuiz: React.FC = () => {
   }
 
   const currentQ = questions[currentIndex];
-  const progress = ((currentIndex) / questions.length) * 100;
+  const progress = (currentIndex / questions.length) * 100;
 
   return (
-    <div className={`${card} p-5`}>
+    <div className={`${card} p-5 mt-1`}>
       {/* İlerleme */}
-      <div className="flex justify-between items-center text-[13px] text-content-muted font-semibold mb-2.5">
+      <div className="flex justify-between items-center text-[12px] text-fg-3 font-medium mb-2 tnum">
         <span>Soru {currentIndex + 1} / {questions.length}</span>
-        <span className="text-gold">Skor: {score}</span>
+        <span className="text-crema">{score} puan</span>
       </div>
-      <div className="h-1.5 bg-glass-2 rounded-full overflow-hidden mb-7">
+      <div className="h-1 bg-panel-2 rounded-full overflow-hidden mb-6">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-gold-deep to-gold transition-all duration-500"
+          className="h-full rounded-full bg-crema transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
 
-      <h3 className="text-content text-lg font-bold mb-7 leading-relaxed">
+      <h3 className="text-crema text-[17px] font-medium mb-6 leading-relaxed">
         {currentQ.questionText}
       </h3>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         {currentQ.options.map((opt, idx) => (
           <button
             key={idx}
             disabled={feedback !== null}
             onClick={() => handleAnswer(opt)}
-            className="w-full min-h-14 py-3.5 px-5 rounded-2xl text-[15px] font-semibold cursor-pointer flex items-center gap-3 text-left transition-all duration-200 bg-glass-2 border border-hairline text-content hover:bg-glass-3 hover:border-hairline-strong active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full min-h-12 py-3 px-3.5 rounded-lg text-[15px] cursor-pointer flex items-center gap-3 text-left transition-colors duration-150 bg-panel border border-line text-crema hover:bg-panel-2 hover:border-line-2 active:opacity-80 disabled:opacity-45 disabled:cursor-not-allowed"
           >
-            <span className="w-7 h-7 shrink-0 rounded-lg bg-glass-3 flex items-center justify-center text-xs font-bold text-content-muted">
+            <span className="w-6 h-6 shrink-0 rounded-md bg-panel-2 flex items-center justify-center text-[11px] font-semibold text-fg-2">
               {String.fromCharCode(65 + idx)}
             </span>
             {opt}
@@ -184,12 +185,13 @@ export const TrainingQuiz: React.FC = () => {
 
       {feedback && (
         <div
-          className={`mt-5 p-4 rounded-2xl font-bold text-center border ${
+          className={`mt-4 p-3.5 rounded-lg font-medium text-[14px] flex items-center gap-2.5 border ${
             feedback.isCorrect
-              ? 'bg-success-bg text-success border-success-border'
-              : 'bg-danger-bg text-danger border-danger-border'
+              ? 'bg-positive-bg text-positive border-positive-line'
+              : 'bg-negative-bg text-negative border-negative-line'
           }`}
         >
+          <Icon name={feedback.isCorrect ? 'check' : 'close'} size={16} />
           {feedback.text}
         </div>
       )}

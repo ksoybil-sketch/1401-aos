@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { signIn, getUserProfile, UserProfile } from '../../api/auth';
+import { Icon } from '../Icon';
 import {
   btn, btnLg, btnPrimary, btnSecondary, field, iconBtn, input, label,
   modalBody, modalGrabber, modalHeader, modalOverlay, modalPanel, modalTitle
@@ -53,22 +54,19 @@ export const ManagerLoginModal: React.FC<ManagerLoginModalProps> = ({ defaultEma
       <div className={modalPanel}>
         <div className={modalGrabber} />
         <div className={modalHeader}>
-          <h2 className={modalTitle}>👑 Yönetici Girişi</h2>
+          <h2 className={modalTitle}>Yönetici Girişi</h2>
           <button onClick={onClose} className={iconBtn} disabled={loading} aria-label="Kapat">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <Icon name="close" size={16} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={`${modalBody} flex flex-col gap-4`}>
+        <form onSubmit={handleSubmit} className={`${modalBody} flex flex-col gap-3.5`}>
           <div className={field}>
             <span className={label}>E-posta</span>
             <input
               type="email"
               className={input}
-              placeholder="E-posta"
+              placeholder="ornek@1401coffee.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -82,7 +80,7 @@ export const ManagerLoginModal: React.FC<ManagerLoginModalProps> = ({ defaultEma
             <input
               type="password"
               className={input}
-              placeholder="Şifre"
+              placeholder="••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -90,14 +88,19 @@ export const ManagerLoginModal: React.FC<ManagerLoginModalProps> = ({ defaultEma
             />
           </div>
 
-          {error && <p className="text-danger text-[13px] font-medium">{error}</p>}
+          {error && (
+            <div className="flex items-start gap-2 rounded-lg border border-negative-line bg-negative-bg px-3 py-2.5">
+              <Icon name="alert" size={15} className="text-negative mt-px" />
+              <span className="text-[13px] text-negative">{error}</span>
+            </div>
+          )}
 
-          <div className="flex gap-3 mt-2">
+          <div className="flex gap-2.5 mt-1.5">
             <button type="button" onClick={onClose} className={`${btn} ${btnSecondary} ${btnLg} flex-1`} disabled={loading}>
               İptal
             </button>
             <button type="submit" className={`${btn} ${btnPrimary} ${btnLg} flex-1`} disabled={loading}>
-              {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+              {loading ? 'Giriş yapılıyor…' : 'Giriş Yap'}
             </button>
           </div>
         </form>

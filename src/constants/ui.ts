@@ -1,28 +1,59 @@
 /**
  * 1401 AOS — Ortak tasarım sistemi.
  *
- * Buradaki her sabit, saf Tailwind utility class dizesidir. Amaç, aynı
- * görsel dilin (koyu tema + cam yüzey + altın vurgu) her ekranda birebir
- * aynı şekilde uygulanmasıdır: bir butonun yüksekliği/kavisi/gölgesi tek
- * yerden değişir, ekranlar kendi ad-hoc stillerini üretmez.
+ * Yön: mat, kompakt, keskin. Degrade yok, parıltı yok, emoji yok.
+ * Vurgu tek bir krema tonu; renk sadece anlam taşıdığında (durum,
+ * uyarı) devreye girer. Yerleşim dili iOS'un "gruplu liste"
+ * desenine dayanır — dünyanın en çok kullanılan mobil arayüz
+ * kalıbı olduğu için tanıdık gelir ve yoğun veriyi sakin gösterir.
+ *
+ * Her sabit saf Tailwind utility dizesidir; ekranlar kendi ad-hoc
+ * stillerini üretmez, buradan besleniyor.
  */
 
 /* ---------------------------------------------------------------
    YÜZEYLER
    --------------------------------------------------------------- */
 
-/** Temel cam yüzey: yarı saydam dolgu + ince kenarlık + arkaplan bulanıklığı. */
-export const glass = 'bg-glass backdrop-blur-xl border border-hairline';
+/** Temel panel: yarı saydam dolgu + saç teli kenarlık. */
+export const panel = 'bg-panel border border-line rounded-xl';
 
-/** Standart içerik kartı. */
-export const card =
-  'bg-glass backdrop-blur-xl border border-hairline rounded-3xl shadow-[0_10px_40px_-12px_rgba(0,0,0,0.7)]';
+/** Standart kart — panel + ölçülü gölge. */
+export const card = `${panel} shadow-[0_1px_2px_rgba(0,0,0,0.5)]`;
 
-/** Tıklanabilir kart (liste satırı, şube kartı vb.). */
-export const cardInteractive = `${card} cursor-pointer transition-all duration-200 hover:border-hairline-strong hover:bg-glass-2 active:scale-[0.99]`;
+/** Tıklanabilir kart. */
+export const cardInteractive = `${card} cursor-pointer transition-colors duration-150 hover:bg-panel-2 hover:border-line-2 active:bg-panel-3`;
 
-/** Kart iç boşluğu — tüm kartlarda aynı olsun diye. */
-export const cardPad = 'p-5';
+/** Kart iç boşluğu (kompakt). */
+export const cardPad = 'p-4';
+
+/* ---------------------------------------------------------------
+   GRUPLU LİSTE (iOS "grouped table view" kalıbı)
+   Kullanım:
+     <div className={listGroup}>
+       <button className={listRow}>…</button>
+       <button className={listRow}>…</button>
+     </div>
+   Satır ayraçları container tarafından çizilir; her satır kendi
+   kenarlığını taşımaz — bu sayede liste tek bir blok gibi okunur.
+   --------------------------------------------------------------- */
+
+export const listGroup =
+  'bg-panel border border-line rounded-xl overflow-hidden divide-y divide-line shadow-[0_1px_2px_rgba(0,0,0,0.5)]';
+
+/** Grup içindeki tek satır (dokunma hedefi 52px). */
+export const listRow =
+  'w-full flex items-center gap-3 px-4 min-h-13 py-3 text-left transition-colors duration-150 hover:bg-panel-2 active:bg-panel-3 cursor-pointer';
+
+/** Tıklanamayan bilgi satırı. */
+export const listRowStatic = 'w-full flex items-center gap-3 px-4 min-h-13 py-3 text-left';
+
+/** Satırın sağındaki chevron rengi. */
+export const rowChevron = 'text-fg-3 shrink-0';
+
+/** Grup üstündeki küçük bölüm etiketi (iOS Ayarlar dili). */
+export const sectionLabel =
+  'text-[11px] font-semibold uppercase tracking-[0.06em] text-fg-3 px-1';
 
 /* ---------------------------------------------------------------
    BUTONLAR
@@ -30,141 +61,136 @@ export const cardPad = 'p-5';
    --------------------------------------------------------------- */
 
 export const btn =
-  'inline-flex items-center justify-center gap-2.5 font-semibold rounded-2xl cursor-pointer select-none transition-all duration-200 active:scale-[0.97] disabled:opacity-45 disabled:cursor-not-allowed disabled:active:scale-100 whitespace-nowrap';
+  'inline-flex items-center justify-center gap-2 font-semibold rounded-lg cursor-pointer select-none transition-colors duration-150 active:opacity-80 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap';
 
-/** Ana eylem: altın gradyan, koyu metin, sıcak parıltı. */
-export const btnPrimary =
-  'bg-gradient-to-b from-gold-soft to-gold text-night border border-gold-soft/40 shadow-[0_8px_24px_-8px_rgba(217,182,95,0.65)] hover:brightness-[1.08]';
+/** Ana eylem: krema dolgu, koyu metin. Düz, degradesiz. */
+export const btnPrimary = 'bg-crema text-espresso hover:bg-crema-dim';
 
-/** İkincil eylem: cam yüzey. */
-export const btnSecondary =
-  'bg-glass-2 text-content border border-hairline hover:bg-glass-3 hover:border-hairline-strong';
+/** İkincil eylem. */
+export const btnSecondary = 'bg-panel-2 text-crema border border-line hover:bg-panel-3 hover:border-line-2';
 
-/** Yıkıcı eylem: kırmızı tonlu cam. */
-export const btnDanger =
-  'bg-danger-bg text-danger border border-danger-border hover:bg-danger/20';
+/** Yıkıcı eylem. */
+export const btnDanger = 'bg-negative-bg text-negative border border-negative-line hover:bg-negative/20';
 
-/** Çerçevesiz eylem (metin butonu). */
-export const btnGhost =
-  'bg-transparent text-content-secondary border border-transparent hover:bg-glass-2 hover:text-content';
+/** Çerçevesiz eylem. */
+export const btnGhost = 'bg-transparent text-fg-2 hover:text-crema hover:bg-panel-2';
 
-export const btnLg = 'h-14 px-6 text-[15px]';
-export const btnMd = 'h-11 px-4 text-sm';
-export const btnSm = 'h-9 px-3.5 text-xs rounded-xl';
+export const btnLg = 'h-11 px-5 text-[15px]';
+export const btnMd = 'h-9 px-3.5 text-[13px]';
+export const btnSm = 'h-8 px-3 text-[12px]';
 
-/** Dairesel ikon butonu (modal kapatma, header aksiyonları). */
+/** Kare ikon butonu. */
 export const iconBtn =
-  'inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-full bg-glass-2 border border-hairline text-content-secondary cursor-pointer transition-all duration-200 hover:bg-glass-3 hover:text-content active:scale-90 disabled:opacity-45';
+  'inline-flex items-center justify-center w-8 h-8 shrink-0 rounded-lg bg-panel-2 border border-line text-fg-2 cursor-pointer transition-colors duration-150 hover:bg-panel-3 hover:text-crema active:opacity-80 disabled:opacity-40';
 
 /* ---------------------------------------------------------------
    FORM ELEMANLARI
    --------------------------------------------------------------- */
 
 export const input =
-  'w-full h-13 px-4 rounded-2xl bg-surface-0/70 border border-hairline text-content text-[15px] transition-all duration-200 placeholder:text-content-placeholder focus:outline-none focus:border-gold/55 focus:ring-2 focus:ring-gold/15 disabled:opacity-60';
+  'w-full h-11 px-3.5 rounded-lg bg-roast border border-line text-crema text-[15px] transition-colors duration-150 placeholder:text-fg-4 focus:outline-none focus:border-line-2 focus:bg-panel-2 disabled:opacity-55';
 
-/** Çok satırlı alan. */
-export const textarea = `${input} h-28 py-3.5 resize-y leading-relaxed`;
+export const textarea = `${input} h-24 py-3 resize-y leading-relaxed`;
 
-export const label =
-  'text-[11px] font-bold uppercase tracking-[0.09em] text-content-muted';
+export const label = 'text-[12px] font-medium text-fg-2';
 
-/** Etiket + alan sarmalayıcı. */
-export const field = 'flex flex-col gap-2';
+export const field = 'flex flex-col gap-1.5';
 
 /* ---------------------------------------------------------------
-   MODAL
+   SEGMENTED CONTROL (iOS) — filtre satırları için
+   --------------------------------------------------------------- */
+
+export const segment = 'inline-flex items-center gap-1 p-1 rounded-lg bg-panel border border-line';
+export const segmentItem =
+  'px-3 h-7 inline-flex items-center rounded-md text-[12px] font-medium cursor-pointer transition-colors duration-150 whitespace-nowrap';
+export const segmentItemOn = 'bg-panel-3 text-crema';
+export const segmentItemOff = 'text-fg-3 hover:text-fg-2';
+
+/** Yatay kaydırılabilir filtre şeridi (çip). */
+export const chip =
+  'px-3 h-8 inline-flex items-center rounded-md text-[12px] font-medium whitespace-nowrap cursor-pointer transition-colors duration-150 border';
+export const chipOn = 'bg-crema text-espresso border-crema';
+export const chipOff = 'bg-panel text-fg-2 border-line hover:bg-panel-2 hover:text-crema';
+
+/** Kaydırma çubuğunu gizleyen yardımcı (filtre şeritleri). */
+export const scrollX =
+  'flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden';
+
+/* ---------------------------------------------------------------
+   MODAL / SHEET
    Mobilde alttan yükselen sayfa, geniş ekranda ortalanmış diyalog.
    --------------------------------------------------------------- */
 
 export const modalOverlay =
-  'fixed inset-0 z-[200] bg-black/75 backdrop-blur-md flex items-end sm:items-center justify-center animate-[fadeIn_0.2s_ease]';
+  'fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center animate-[fadeIn_0.15s_ease-out]';
 
 export const modalPanel =
-  'w-full max-w-[480px] max-h-[92vh] overflow-y-auto bg-surface-deep/95 backdrop-blur-2xl border border-hairline rounded-t-[28px] sm:rounded-[28px] shadow-[0_-10px_60px_rgba(0,0,0,0.8)] animate-[slideUp_0.35s_cubic-bezier(0.16,1,0.3,1)]';
+  'w-full max-w-[460px] max-h-[90vh] overflow-y-auto bg-bean border border-line rounded-t-2xl sm:rounded-2xl shadow-[0_-16px_48px_rgba(0,0,0,0.7)] animate-[sheetUp_0.28s_cubic-bezier(0.32,0.72,0,1)]';
 
-/** Mobilde üstteki sürükleme çubuğu göstergesi. */
-export const modalGrabber = 'w-10 h-1 rounded-full bg-hairline-strong mx-auto mt-3 mb-1 sm:hidden';
+export const modalGrabber = 'w-9 h-1 rounded-full bg-line-2 mx-auto mt-2.5 sm:hidden';
 
 export const modalHeader =
-  'flex items-center justify-between gap-3 px-6 pt-5 pb-4 border-b border-hairline';
+  'flex items-center justify-between gap-3 px-5 pt-4 pb-3.5 border-b border-line';
 
-export const modalTitle = 'text-lg font-bold text-content tracking-tight';
+export const modalTitle = 'text-[17px] font-semibold text-crema';
 
-export const modalBody = 'px-6 py-6';
+export const modalBody = 'px-5 py-5';
 
 /* ---------------------------------------------------------------
-   TİPOGRAFİ / BÖLÜM BAŞLIKLARI
+   TİPOGRAFİ
    --------------------------------------------------------------- */
 
-/** Bölüm üstü küçük etiket ("GENEL DURUM" gibi). */
-export const eyebrow =
-  'text-[11px] font-bold uppercase tracking-[0.14em] text-content-muted';
+/** Ekran başlığı (iOS large title'ın kompakt hâli). */
+export const screenTitle = 'text-[22px] font-bold text-crema';
 
-/** Ekran başlığı. */
-export const screenTitle = 'text-[22px] font-extrabold text-content tracking-tight';
+/** Kart/bölüm başlığı. */
+export const cardTitle = 'text-[15px] font-semibold text-crema';
 
 /* ---------------------------------------------------------------
-   ROZETLER / ÇİPLER
+   ROZETLER
    --------------------------------------------------------------- */
 
 export const badge =
-  'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap border';
+  'inline-flex items-center gap-1 px-2 h-6 rounded-md text-[11px] font-semibold whitespace-nowrap border tnum';
 
-/** Filtre sekmesi (seçili / seçili değil). */
-export const chip =
-  'px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer transition-all duration-200 border';
-export const chipActive = 'bg-gold text-night border-gold shadow-[0_4px_16px_-6px_rgba(217,182,95,0.7)]';
-export const chipIdle = 'bg-glass text-content-secondary border-hairline hover:bg-glass-2 hover:text-content';
+export const badgeNeutral = 'bg-panel-2 text-fg-2 border-line';
+export const badgePositive = 'bg-positive-bg text-positive border-positive-line';
+export const badgeCaution = 'bg-caution-bg text-caution border-caution-line';
+export const badgeNegative = 'bg-negative-bg text-negative border-negative-line';
 
 /* ---------------------------------------------------------------
    VURGU RENKLERİ
-   Aksiyon kutucukları ve ikon rozetleri için tek kaynak. Böylece
-   "mavi kutucuk" her ekranda aynı maviyi kullanır.
+   İkon rozetleri için tek kaynak — "aynı mavi her yerde aynı mavi".
    --------------------------------------------------------------- */
 
-export type Accent = 'gold' | 'info' | 'success' | 'warning' | 'danger' | 'violet';
+export type Tone = 'neutral' | 'accent' | 'positive' | 'caution' | 'negative';
 
-interface AccentStyle {
-  /** İkon rozetinin dolgusu + metin rengi. */
-  badge: string;
-  /** Vurgulu metin rengi. */
-  text: string;
-  /** Kutucuk kenarlığı (hover'da belirginleşir). */
-  ring: string;
-}
-
-export const ACCENT: Record<Accent, AccentStyle> = {
-  gold:    { badge: 'bg-gold/15 text-gold',       text: 'text-gold',    ring: 'hover:border-gold/40' },
-  info:    { badge: 'bg-info/15 text-info',       text: 'text-info',    ring: 'hover:border-info/40' },
-  success: { badge: 'bg-success/15 text-success', text: 'text-success', ring: 'hover:border-success/40' },
-  warning: { badge: 'bg-warning/15 text-warning', text: 'text-warning', ring: 'hover:border-warning/40' },
-  danger:  { badge: 'bg-danger/15 text-danger',   text: 'text-danger',  ring: 'hover:border-danger/40' },
-  violet:  { badge: 'bg-violet/15 text-violet',   text: 'text-violet',  ring: 'hover:border-violet/40' },
+export const TONE: Record<Tone, { fg: string; chipBg: string; line: string }> = {
+  neutral:  { fg: 'text-fg-2',     chipBg: 'bg-panel-2',      line: 'border-line' },
+  accent:   { fg: 'text-accent',   chipBg: 'bg-accent-bg',    line: 'border-accent-line' },
+  positive: { fg: 'text-positive', chipBg: 'bg-positive-bg',  line: 'border-positive-line' },
+  caution:  { fg: 'text-caution',  chipBg: 'bg-caution-bg',   line: 'border-caution-line' },
+  negative: { fg: 'text-negative', chipBg: 'bg-negative-bg',  line: 'border-negative-line' },
 };
 
-/** Dashboard aksiyon kutucuğu — ikon rozeti + başlık içerir. */
-export const actionTile = (accent: Accent) =>
-  `${cardInteractive} ${ACCENT[accent].ring} ${cardPad} flex items-center gap-4 text-left w-full`;
-
-/** İkon rozeti (aksiyon kutucuklarının solundaki kare ikon alanı). */
-export const tileBadge = (accent: Accent) =>
-  `flex items-center justify-center w-11 h-11 shrink-0 rounded-2xl text-xl ${ACCENT[accent].badge}`;
+/** Satır/kart başındaki kare ikon alanı. */
+export const iconChip = (tone: Tone = 'neutral') =>
+  `flex items-center justify-center w-8 h-8 shrink-0 rounded-lg ${TONE[tone].chipBg} ${TONE[tone].fg}`;
 
 /* ---------------------------------------------------------------
    BOŞ DURUM
    --------------------------------------------------------------- */
 
 export const emptyState =
-  'flex flex-col items-center gap-3 text-center py-14 px-6 rounded-3xl border border-dashed border-hairline bg-glass/50';
-export const emptyText = 'text-[13px] text-content-muted max-w-[260px] leading-relaxed';
+  'flex flex-col items-center gap-2.5 text-center py-12 px-6 rounded-xl border border-dashed border-line';
+export const emptyText = 'text-[13px] text-fg-3 max-w-[260px] leading-relaxed';
 
 /* ---------------------------------------------------------------
    YÜKLENİYOR
    --------------------------------------------------------------- */
 
 export const spinner =
-  'inline-block rounded-full border-2 border-hairline border-t-gold [animation:rotation_0.8s_linear_infinite]';
+  'inline-block rounded-full border-2 border-line border-t-crema [animation:rotation_0.7s_linear_infinite]';
 
 export const fullscreenLoader =
-  'fixed inset-0 z-[10000] flex items-center justify-center bg-void/80 backdrop-blur-md';
+  'fixed inset-0 z-[300] flex items-center justify-center bg-espresso/85 backdrop-blur-sm';

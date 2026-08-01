@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TESHIR_URUNLERI, KUTU_ICI_ADETLER } from '../../constants';
+import { Icon } from '../Icon';
 import {
   btn, btnLg, btnPrimary, field, iconBtn, input, label,
   modalBody, modalGrabber, modalHeader, modalOverlay, modalPanel, modalTitle
@@ -45,25 +46,22 @@ export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
       <div className={modalPanel}>
         <div className={modalGrabber} />
         <div className={modalHeader}>
-          <h2 className={modalTitle}>❄️ Donuk Stok Ekle</h2>
+          <h2 className={modalTitle}>Donuk Stok Ekle</h2>
           <button onClick={onClose} className={iconBtn} aria-label="Kapat">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <Icon name="close" size={16} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className={`${modalBody} flex flex-col gap-4`}>
+        <form onSubmit={handleSubmit} className={`${modalBody} flex flex-col gap-3.5`}>
           <div className={field}>
             <div className="flex justify-between items-center">
-              <label className={label}>Ürün {isManual ? 'Adı' : 'Seçin'}</label>
+              <label className={label}>Ürün {isManual ? 'adı' : 'seçin'}</label>
               <button
                 type="button"
                 onClick={() => handleToggleManual(!isManual)}
-                className="text-gold text-xs font-semibold cursor-pointer transition-opacity hover:opacity-75"
+                className="text-fg-2 text-[12px] font-medium cursor-pointer transition-colors hover:text-crema"
               >
-                {isManual ? 'Listeden Seç' : 'Manuel Gir'}
+                {isManual ? 'Listeden seç' : 'Manuel gir'}
               </button>
             </div>
             {isManual ? (
@@ -90,22 +88,22 @@ export const FrozenModal: React.FC<FrozenModalProps> = ({ onClose, onAdd }) => {
           </div>
 
           <div className={field}>
-            <label className={label}>Kutu / Adet Miktarı</label>
-            {KUTU_ICI_ADETLER[name] && (
-              <span className="text-xs text-content-muted -mt-1">
-                Kutu içi standart adet: {KUTU_ICI_ADETLER[name]}
-              </span>
-            )}
+            <label className={label}>Kutu / adet miktarı</label>
             <input
               type="number"
-              className={input}
+              className={`${input} tnum`}
               min="1"
               value={qty}
               onChange={(e) => setQty(parseInt(e.target.value) || 1)}
             />
+            {KUTU_ICI_ADETLER[name] && (
+              <span className="text-[12px] text-fg-3">
+                Kutu içi standart adet: {KUTU_ICI_ADETLER[name]}
+              </span>
+            )}
           </div>
 
-          <button type="submit" className={`${btn} ${btnPrimary} ${btnLg} w-full mt-2`}>
+          <button type="submit" className={`${btn} ${btnPrimary} ${btnLg} w-full mt-1.5`}>
             Stoğa Ekle
           </button>
         </form>

@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { formatDate } from '../../utils/helpers';
 import { useStore } from '../../store/useStore';
 import { QuizResult } from '../../types';
+import { Icon } from '../../components/Icon';
 import {
-  card, cardInteractive, emptyState, emptyText, eyebrow, iconBtn,
-  modalBody, modalGrabber, modalHeader, modalOverlay, modalPanel, modalTitle
+  card, emptyState, emptyText, iconBtn, iconChip, listGroup, listRow,
+  modalBody, modalGrabber, modalHeader, modalOverlay, modalPanel, modalTitle,
+  rowChevron, sectionLabel
 } from '../../constants/ui';
 
 export const BaristaPerformanceReport: React.FC = () => {
@@ -17,112 +19,93 @@ export const BaristaPerformanceReport: React.FC = () => {
     : 0;
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className={`${card} p-5`}>
-        <div className={eyebrow}>Şube Müdürü Raporu</div>
-        <h2 className="text-lg font-extrabold text-content mt-2 tracking-tight">
-          🎓 Barista Eğitim ve Sınav Performansı
-        </h2>
-        <p className="text-[13px] text-content-secondary leading-relaxed mt-2">
-          Şubenizde görev yapan baristaların reçete bilgisi sınav sonuçları ve başarı oranları.
-        </p>
-      </div>
+    <div className="flex flex-col gap-3.5">
+      <div className={sectionLabel}>Barista Performansı</div>
 
-      {/* Ortalama Başarı Kartı */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className={`${card} p-5 text-center`}>
-          <div className={`text-3xl font-extrabold tracking-tight ${averageScore >= 80 ? 'text-success' : 'text-warning'}`}>
-            %{averageScore}
+      {/* Özet */}
+      <div className="grid grid-cols-2 gap-2.5">
+        <div className={`${card} p-4 text-center`}>
+          <div className={`text-[26px] font-semibold tnum tracking-tight ${averageScore >= 80 ? 'text-positive' : 'text-caution'}`}>
+            {averageScore}
           </div>
-          <div className="text-[10px] text-content-muted font-bold uppercase tracking-[0.1em] mt-1.5">
-            Şube Ortalama Puanı
-          </div>
+          <div className="text-[11px] text-fg-3 mt-0.5">Şube ortalaması</div>
         </div>
 
-        <div className={`${card} p-5 text-center`}>
-          <div className="text-3xl font-extrabold tracking-tight text-gold">
+        <div className={`${card} p-4 text-center`}>
+          <div className="text-[26px] font-semibold tnum tracking-tight text-crema">
             {safeResults.length}
           </div>
-          <div className="text-[10px] text-content-muted font-bold uppercase tracking-[0.1em] mt-1.5">
-            Tamamlanan Sınav
-          </div>
+          <div className="text-[11px] text-fg-3 mt-0.5">Tamamlanan sınav</div>
         </div>
       </div>
 
-      {/* Sınav Dereceleri Listesi */}
-      <div className="flex flex-col gap-3">
-        <div className={eyebrow}>Barista Sınav Sonuçları</div>
-
-        {safeResults.length === 0 ? (
-          <div className={emptyState}>
-            <p className={emptyText}>Henüz baristalar tarafından tamamlanmış sınav bulunmuyor.</p>
-          </div>
-        ) : (
-          safeResults.map((result) => (
-            <div
-              key={result.id}
-              className={`${cardInteractive} p-4 pl-5 flex justify-between items-center gap-3 border-l-4 ${
-                result.score >= 80 ? 'border-l-success' : 'border-l-warning'
-              }`}
-              onClick={() => setSelectedResult(result)}
-            >
-              <div className="flex flex-col min-w-0">
-                <span className="text-[15px] font-bold text-content truncate">{result.baristaName}</span>
-                <span className="text-[11px] text-content-muted mt-1">Tarih: {formatDate(result.date)}</span>
-              </div>
-              <span
-                className={`px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap shrink-0 border ${
-                  result.score >= 80
-                    ? 'bg-success-bg text-success border-success-border'
-                    : 'bg-warning-bg text-warning border-warning-border'
-                }`}
-              >
-                {result.score} Puan ({result.correctAnswers}/{result.totalQuestions})
+      {/* Sonuç listesi */}
+      {safeResults.length === 0 ? (
+        <div className={emptyState}>
+          <Icon name="cap" size={26} className="text-fg-3" />
+          <p className={emptyText}>Henüz tamamlanmış sınav bulunmuyor.</p>
+        </div>
+      ) : (
+        <div className={listGroup}>
+          {safeResults.map((result) => (
+            <button key={result.id} className={listRow} onClick={() => setSelectedResult(result)}>
+              <span className={iconChip(result.score >= 80 ? 'positive' : 'caution')}>
+                <Icon name="user" size={16} />
               </span>
-            </div>
-          ))
-        )}
-      </div>
+              <span className="flex-1 min-w-0">
+                <span className="block text-[15px] font-medium text-crema truncate">{result.baristaName}</span>
+                <span className="block text-[12px] text-fg-3 mt-0.5 tnum">{formatDate(result.date)}</span>
+              </span>
+              <span className={`text-[14px] font-semibold tnum shrink-0 ${result.score >= 80 ? 'text-positive' : 'text-caution'}`}>
+                {result.score}
+              </span>
+              <Icon name="chevronRight" size={16} className={rowChevron} />
+            </button>
+          ))}
+        </div>
+      )}
 
       {selectedResult && (
         <div className={modalOverlay} onClick={() => setSelectedResult(null)}>
           <div className={modalPanel} onClick={(e) => e.stopPropagation()}>
             <div className={modalGrabber} />
             <div className={modalHeader}>
-              <h2 className={modalTitle}>{selectedResult.baristaName} — Yanlış Cevaplar</h2>
+              <h2 className={modalTitle}>{selectedResult.baristaName}</h2>
               <button onClick={() => setSelectedResult(null)} className={iconBtn} aria-label="Kapat">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
+                <Icon name="close" size={16} />
               </button>
             </div>
             <div className={modalBody}>
-              <p className="text-[13px] text-content-muted mb-5">
-                {formatDate(selectedResult.date)} tarihli sınav — {selectedResult.score} Puan ({selectedResult.correctAnswers}/{selectedResult.totalQuestions})
+              <p className="text-[13px] text-fg-3 mb-4 tnum">
+                {formatDate(selectedResult.date)} · {selectedResult.score} puan
+                {' '}({selectedResult.correctAnswers}/{selectedResult.totalQuestions})
               </p>
 
               {!selectedResult.wrongAnswers ? (
-                <p className="text-sm text-content-muted">
+                <p className="text-[14px] text-fg-3 leading-relaxed">
                   Bu sınav için detaylı kayıt bulunmuyor (eski bir sonuç olabilir).
                 </p>
               ) : selectedResult.wrongAnswers.length === 0 ? (
-                <p className="text-sm text-success font-semibold">
-                  🎉 Hiç yanlış cevap yok, tam puan!
-                </p>
+                <div className="flex items-center gap-2.5 rounded-lg border border-positive-line bg-positive-bg px-3.5 py-3">
+                  <Icon name="check" size={16} className="text-positive" />
+                  <span className="text-[14px] text-positive font-medium">Hiç yanlış cevap yok</span>
+                </div>
               ) : (
-                <ul className="p-0 m-0 list-none flex flex-col gap-3">
-                  {selectedResult.wrongAnswers.map((wa, idx) => (
-                    <li key={idx} className="p-4 bg-danger-bg border border-danger-border rounded-2xl">
-                      <div className="text-[13px] font-bold text-content mb-1.5">{wa.recipeName}</div>
-                      <div className="text-[13px] text-content-muted mb-2.5 leading-relaxed">{wa.questionText}</div>
-                      <div className="text-[13px] flex flex-col gap-1">
-                        <span className="text-danger">Verdiği cevap: <strong>{wa.userAnswer}</strong></span>
-                        <span className="text-success">Doğrusu: <strong>{wa.correctAnswer}</strong></span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <div className={`${sectionLabel} mb-2 px-0`}>Yanlış cevaplar</div>
+                  <ul className="p-0 m-0 list-none flex flex-col gap-2.5">
+                    {selectedResult.wrongAnswers.map((wa, idx) => (
+                      <li key={idx} className="p-3.5 rounded-xl border border-line bg-panel">
+                        <div className="text-[14px] font-medium text-crema">{wa.recipeName}</div>
+                        <div className="text-[13px] text-fg-3 mt-1 mb-2.5 leading-relaxed">{wa.questionText}</div>
+                        <div className="flex flex-col gap-1 text-[13px]">
+                          <span className="text-negative">Verdiği: {wa.userAnswer}</span>
+                          <span className="text-positive">Doğrusu: {wa.correctAnswer}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </div>
           </div>

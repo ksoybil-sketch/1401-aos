@@ -1,8 +1,9 @@
 import React from 'react';
 import { useStore } from '../../store/useStore';
+import { Icon } from '../Icon';
 import {
-  cardInteractive, iconBtn, modalBody, modalGrabber, modalHeader,
-  modalOverlay, modalPanel, modalTitle
+  iconBtn, iconChip, listGroup, listRow, modalBody, modalGrabber,
+  modalHeader, modalOverlay, modalPanel, modalTitle
 } from '../../constants/ui';
 
 interface BranchModalProps {
@@ -19,21 +20,18 @@ export const BranchModal: React.FC<BranchModalProps> = ({ currentBranchId, onClo
       <div className={modalPanel}>
         <div className={modalGrabber} />
         <div className={modalHeader}>
-          <h2 className={modalTitle}>Şube Bağlantısı</h2>
+          <h2 className={modalTitle}>Şube Seç</h2>
           <button onClick={onClose} className={iconBtn} aria-label="Kapat">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <Icon name="close" size={16} />
           </button>
         </div>
 
         <div className={modalBody}>
-          <p className="text-[13px] text-content-muted mb-4">
-            İşlem yapmak istediğiniz şubeyi listeden seçin:
+          <p className="text-[13px] text-fg-3 mb-3.5">
+            İşlem yapmak istediğiniz şubeyi listeden seçin.
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className={listGroup}>
             {branches.map((b) => {
               const isSelected = currentBranchId === b.id;
               return (
@@ -44,15 +42,18 @@ export const BranchModal: React.FC<BranchModalProps> = ({ currentBranchId, onClo
                     onSelectBranch(b.id);
                     onClose();
                   }}
-                  className={`${cardInteractive} rounded-2xl py-4 px-5 flex items-center justify-between gap-3 text-left ${
-                    isSelected ? 'border-gold/50 bg-gold/10' : ''
-                  }`}
+                  className={listRow}
                 >
-                  <span className="flex items-center gap-2.5 min-w-0">
-                    <span className="text-base">📍</span>
-                    <span className={`font-bold truncate ${isSelected ? 'text-gold' : 'text-content'}`}>{b.name}</span>
+                  <span className={iconChip(isSelected ? 'positive' : 'neutral')}>
+                    <Icon name="store" size={16} />
                   </span>
-                  <span className="text-xs text-content-muted shrink-0">{b.city}</span>
+                  <span className="flex-1 min-w-0">
+                    <span className={`block text-[15px] truncate ${isSelected ? 'text-crema font-semibold' : 'text-crema font-medium'}`}>
+                      {b.name}
+                    </span>
+                    {b.city && <span className="block text-[12px] text-fg-3 mt-0.5 truncate">{b.city}</span>}
+                  </span>
+                  {isSelected && <Icon name="check" size={16} className="text-positive shrink-0" />}
                 </button>
               );
             })}

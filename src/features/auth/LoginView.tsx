@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { UserRole } from '../../types';
 import { DEMO_BARISTAS } from '../../constants';
-import { cardInteractive } from '../../constants/ui';
+import { Icon } from '../../components/Icon';
+import { iconChip, listGroup, listRow, rowChevron } from '../../constants/ui';
 /**
  * DİKKAT: Barista işlemlerinin sorumluluk sınırı hakkında not
  * Baristaların ayrı bir Firebase Auth kullanıcısı (hesabı) yoktur.
@@ -38,7 +39,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerLoginCli
       if (barista && barista.pin === pin) {
         onLogin('Barista', barista.id);
       } else {
-        setError('Hatalı Şifre');
+        setError('Hatalı şifre');
       }
     }
   };
@@ -50,109 +51,94 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerLoginCli
   }, [pin]);
 
   const keypadBtn =
-    'aspect-square rounded-2xl bg-glass-2 border border-hairline text-content text-2xl font-bold cursor-pointer transition-all duration-200 hover:bg-glass-3 active:scale-90';
+    'h-14 rounded-xl bg-panel border border-line text-crema text-[20px] font-medium cursor-pointer transition-colors duration-150 hover:bg-panel-2 active:bg-panel-3';
 
   if (!selectedUser) {
     return (
-      <div className="flex flex-col min-h-screen px-5 pt-[calc(48px+env(safe-area-inset-top))] pb-10 max-w-[440px] mx-auto">
-        <div className="text-center mb-10">
-          <div className="relative inline-block mb-5">
-            <div className="absolute inset-0 rounded-full bg-gold/30 blur-2xl [animation:auraPulse_4s_ease-in-out_infinite]" />
-            <img src="/icons/logo_goat.svg" alt="Logo" className="relative w-20 h-20 object-contain" />
-          </div>
-          <h1 className="text-2xl font-extrabold text-content tracking-tight">1401 AOS</h1>
-          <p className="text-[13px] text-content-muted mt-2">Lütfen giriş yapacak baristayı seçin</p>
+      <div className="flex flex-col min-h-screen px-5 pt-[calc(56px+env(safe-area-inset-top))] pb-10 max-w-[420px] mx-auto">
+        <div className="mb-9">
+          <img src="/icons/logo_goat.svg" alt="" className="w-11 h-11 object-contain opacity-90 mb-5" />
+          <h1 className="text-[26px] font-bold text-crema tracking-tight">1401 Coffee</h1>
+          <p className="text-[14px] text-fg-3 mt-1.5">Devam etmek için hesabını seç</p>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className={listGroup}>
           {DEMO_BARISTAS.map(b => (
-            <button
-              key={b.id}
-              onClick={() => setSelectedUser(b.id)}
-              className={`${cardInteractive} py-4 px-5 flex items-center justify-between gap-3 text-left`}
-            >
-              <span className="flex items-center gap-3 min-w-0">
-                <span className="flex items-center justify-center w-10 h-10 shrink-0 rounded-2xl bg-gold/15 text-lg">🧑‍🍳</span>
-                <span className="font-bold text-content truncate">{b.name}</span>
+            <button key={b.id} onClick={() => setSelectedUser(b.id)} className={listRow}>
+              <span className={iconChip()}>
+                <Icon name="user" size={16} />
               </span>
-              <span className="text-[13px] text-gold font-semibold shrink-0">Giriş Yap ➔</span>
+              <span className="flex-1 text-[15px] font-medium text-crema truncate">{b.name}</span>
+              <Icon name="chevronRight" size={16} className={rowChevron} />
             </button>
           ))}
+        </div>
 
-          <div className="flex items-center gap-3 my-4">
-            <div className="flex-1 h-px bg-hairline" />
-            <span className="text-[10px] uppercase tracking-[0.14em] text-content-muted font-bold">veya</span>
-            <div className="flex-1 h-px bg-hairline" />
+        <div className="mt-3.5">
+          <div className={listGroup}>
+            <button onClick={onManagerLoginClick} className={listRow}>
+              <span className={iconChip()}>
+                <Icon name="shield" size={16} />
+              </span>
+              <span className="flex-1 text-[15px] font-medium text-crema">Yönetici girişi</span>
+              <Icon name="chevronRight" size={16} className={rowChevron} />
+            </button>
           </div>
-
-          <button
-            onClick={onManagerLoginClick}
-            className="w-full h-14 rounded-2xl bg-transparent border border-gold/50 text-gold font-bold cursor-pointer transition-all duration-200 hover:bg-gold/10 active:scale-[0.98]"
-          >
-            👑 Yönetici Girişi Yap
-          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen max-w-[440px] mx-auto pt-[calc(20px+env(safe-area-inset-top))] pb-10">
-      <div className="px-5 flex items-center">
+    <div className="flex flex-col min-h-screen max-w-[420px] mx-auto pt-[calc(12px+env(safe-area-inset-top))] pb-10 px-5">
+      <div className="flex items-center h-12">
         <button
           onClick={() => { setSelectedUser(null); setPin(''); setError(''); }}
-          className="text-content-secondary text-sm font-semibold cursor-pointer py-2 pr-3 transition-colors hover:text-content"
+          className="inline-flex items-center gap-1 text-fg-2 text-[15px] font-medium cursor-pointer transition-colors hover:text-crema -ml-1"
         >
-          ❮ Geri
+          <Icon name="chevronLeft" size={18} />
+          Geri
         </button>
       </div>
 
-      <div className="text-center px-5 mt-8">
-        <h2 className="text-content text-xl font-extrabold tracking-tight">
-          {selectedUser === 'admin' ? 'Yönetici' : DEMO_BARISTAS.find(b => b.id === selectedUser)?.name}
+      <div className="text-center mt-10">
+        <h2 className="text-crema text-[19px] font-semibold tracking-tight">
+          {DEMO_BARISTAS.find(b => b.id === selectedUser)?.name}
         </h2>
-        <p className="text-[13px] text-content-muted mt-2 mb-8">
-          Lütfen şifrenizi girin
-        </p>
+        <p className="text-[13px] text-fg-3 mt-1.5 mb-8">Şifreni gir</p>
 
         {/* PIN göstergesi */}
-        <div className="flex justify-center items-center gap-3 h-10 mb-3">
+        <div className="flex justify-center items-center gap-3.5 h-6">
           {[0, 1, 2, 3].map(i => (
             <span
               key={i}
-              className={`w-3.5 h-3.5 rounded-full transition-all duration-200 ${
-                i < pin.length
-                  ? 'bg-gold scale-110 shadow-[0_0_12px_2px_rgba(217,182,95,0.6)]'
-                  : 'bg-glass-3 border border-hairline'
+              className={`w-2.5 h-2.5 rounded-full transition-colors duration-150 ${
+                i < pin.length ? 'bg-crema' : 'bg-panel-3'
               }`}
             />
           ))}
         </div>
 
-        <p className={`text-danger text-sm font-semibold h-6 mb-4 transition-opacity ${error ? 'opacity-100' : 'opacity-0'}`}>
-          {error || ' '}
+        <p className={`text-negative text-[13px] font-medium h-5 mt-3.5 mb-5 transition-opacity ${error ? 'opacity-100' : 'opacity-0'}`}>
+          {error || ' '}
         </p>
 
-        <div className="grid grid-cols-3 gap-3 px-2">
+        <div className="grid grid-cols-3 gap-2.5">
           {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(num => (
             <button key={num} onClick={() => handleKeypad(num)} className={keypadBtn}>
               {num}
             </button>
           ))}
-          <button
-            onClick={handleLogin}
-            className="aspect-square rounded-2xl bg-gradient-to-b from-gold-soft to-gold text-night text-2xl font-bold cursor-pointer transition-all duration-200 shadow-[0_8px_24px_-8px_rgba(217,182,95,0.7)] hover:brightness-110 active:scale-90"
-          >
-            ✓
-          </button>
+          <div />
           <button onClick={() => handleKeypad('0')} className={keypadBtn}>
             0
           </button>
           <button
             onClick={handleBackspace}
-            className={`${keypadBtn} text-lg text-content-secondary`}
+            className={`${keypadBtn} flex items-center justify-center text-fg-2`}
+            aria-label="Sil"
           >
-            ⌫
+            <Icon name="chevronLeft" size={20} />
           </button>
         </div>
       </div>

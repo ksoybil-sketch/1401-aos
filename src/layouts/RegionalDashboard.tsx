@@ -5,8 +5,10 @@ import { getDaysRemaining } from '../utils/helpers';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { useRegionBranchesData } from '../hooks/useRegionBranchesData';
+import { Icon } from '../components/Icon';
 import {
-  actionTile, card, cardInteractive, eyebrow, fullscreenLoader, spinner, tileBadge
+  btn, btnSecondary, btnSm, cardInteractive, fullscreenLoader, iconChip,
+  listGroup, listRow, rowChevron, screenTitle, sectionLabel, spinner
 } from '../constants/ui';
 
 interface BranchStats {
@@ -57,8 +59,6 @@ export const RegionalDashboard: React.FC = () => {
     return statsArray;
   }, [branches]);
 
-  const maxTotalItems = Math.max(...branchesStats.map(s => s.totalItems), 60);
-
   const handleExportCSV = async () => {
     let csv = "﻿Şube,Şehir,Toplam Stok,Teşhir Dolabı,Tarihi Geçen,Eğitim Ortalaması\n";
     branchesStats.forEach(stat => {
@@ -91,94 +91,80 @@ export const RegionalDashboard: React.FC = () => {
   if (loading) {
     return (
       <div className={fullscreenLoader}>
-        <div className={`${spinner} w-11 h-11`} />
+        <div className={`${spinner} w-8 h-8`} />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Bölge başlığı */}
-      <div className={`${card} p-5`}>
-        <div className="flex justify-between items-center gap-3">
-          <span className={eyebrow}>Bölge Müdürü</span>
-          <button
-            onClick={handleExportCSV}
-            className="text-gold cursor-pointer font-bold text-xs transition-opacity hover:opacity-75 shrink-0"
-          >
-            Özeti CSV İndir
-          </button>
-        </div>
-        <h2 className="text-xl font-extrabold text-content mt-2 tracking-tight">
-          Tüm Şubeler Canlı Durum
-        </h2>
-        <p className="text-[13px] text-content-muted mt-1.5 leading-relaxed">
-          Şubelerin anlık stok durumlarını inceleyin ve detaylar için şubeye tıklayın.
-        </p>
+    <div className="flex flex-col gap-3.5">
+      <div className="flex justify-between items-center gap-3 mt-0.5">
+        <h2 className={screenTitle}>Bölge</h2>
+        <button onClick={handleExportCSV} className={`${btn} ${btnSecondary} ${btnSm} shrink-0`}>
+          <Icon name="download" size={14} />
+          CSV
+        </button>
       </div>
 
-      <button onClick={() => navigate('/reports')} className={actionTile('violet')}>
-        <span className={tileBadge('violet')}>📊</span>
-        <span className="flex-1 font-bold text-[15px] text-content">Raporlar ve Analizler</span>
-        <span className="text-content-muted">›</span>
-      </button>
+      <div className={listGroup}>
+        <button onClick={() => navigate('/reports')} className={listRow}>
+          <span className={iconChip()}>
+            <Icon name="chart" size={16} />
+          </span>
+          <span className="flex-1 text-[15px] font-medium text-crema">Raporlar ve Analizler</span>
+          <Icon name="chevronRight" size={16} className={rowChevron} />
+        </button>
+      </div>
 
-      <div className={`${eyebrow} mt-1`}>Şubeler</div>
+      <div className={`${sectionLabel} mt-1`}>Şubeler</div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {branchesStats.length === 0 && (
-          <div className="text-center py-6 text-content-muted text-sm">Bu bölgeye ait şube bulunamadı.</div>
+          <div className="text-center py-6 text-fg-3 text-[13px]">Bu bölgeye ait şube bulunamadı.</div>
         )}
-        {branchesStats.map((stats) => {
-          const teshirWidth = Math.min((stats.teshirStock / maxTotalItems) * 100, 100);
-
-          return (
-            <div
-              key={stats.id}
-              onClick={() => {
-                setBranch(stats.id);
-                localStorage.setItem('skt_branch_id', stats.id);
-              }}
-              className={`${cardInteractive} p-5 flex flex-col gap-3.5`}
-            >
-              <div className="flex justify-between items-start gap-3">
-                <div className="min-w-0">
-                  <div className="text-base font-extrabold text-content truncate">
-                    {stats.name}
-                  </div>
-                  <div className="text-[11px] text-content-muted mt-0.5">
-                    {stats.city}
-                  </div>
-                </div>
-                <div className="flex flex-col items-end shrink-0">
-                  <span className="text-[10px] text-content-muted uppercase font-bold tracking-[0.08em]">Eğitim Ort.</span>
-                  <span className={`text-sm font-bold ${stats.averageScore >= 80 ? 'text-success' : 'text-warning'}`}>
-                    %{stats.averageScore}
-                  </span>
-                </div>
+        {branchesStats.map((stats) => (
+          <div
+            key={stats.id}
+            onClick={() => {
+              setBranch(stats.id);
+              localStorage.setItem('skt_branch_id', stats.id);
+            }}
+            className={`${cardInteractive} p-4 flex flex-col gap-3`}
+          >
+            <div className="flex justify-between items-start gap-3">
+              <div className="min-w-0">
+                <div className="text-[15px] font-semibold text-crema truncate">{stats.name}</div>
+                {stats.city && <div className="text-[12px] text-fg-3 mt-0.5">{stats.city}</div>}
               </div>
-
-              {stats.expiredCount > 0 && (
-                <div className="py-2 px-3 bg-danger-bg rounded-xl border border-danger-border text-xs text-danger font-semibold">
-                  ⚠️ {stats.expiredCount} tarihi geçen ürün var!
-                </div>
-              )}
-
-              <div>
-                <div className="flex justify-between text-[11px] mb-1.5 font-semibold">
-                  <span className="text-content-muted">Teşhir Dolabı</span>
-                  <span className="text-content">{stats.teshirStock} çeşit</span>
-                </div>
-                <div className="h-1.5 bg-glass-2 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-gold-deep to-gold transition-all duration-500"
-                    style={{ width: `${teshirWidth}%` }}
-                  />
-                </div>
+              <div className="flex flex-col items-end shrink-0">
+                <span className="text-[11px] text-fg-3">Eğitim</span>
+                <span className={`text-[14px] font-semibold tnum ${stats.averageScore >= 80 ? 'text-positive' : 'text-caution'}`}>
+                  {stats.averageScore}
+                </span>
               </div>
             </div>
-          );
-        })}
+
+            {stats.expiredCount > 0 && (
+              <div className="flex items-center gap-2 py-2 px-2.5 bg-negative-bg rounded-lg border border-negative-line">
+                <Icon name="alert" size={14} className="text-negative" />
+                <span className="text-[12px] text-negative font-medium">
+                  {stats.expiredCount} tarihi geçen ürün
+                </span>
+              </div>
+            )}
+
+            <div className="flex gap-5 border-t border-line pt-3">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] text-fg-3">Toplam stok</span>
+                <span className="text-[14px] font-medium text-crema tnum">{stats.totalItems}</span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[11px] text-fg-3">Teşhir dolabı</span>
+                <span className="text-[14px] font-medium text-crema tnum">{stats.teshirStock}</span>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

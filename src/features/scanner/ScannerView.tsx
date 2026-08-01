@@ -4,6 +4,7 @@ import { BarcodeScanner, BarcodeFormat } from '@capacitor-mlkit/barcode-scanning
 import { playBeepSound } from '../../utils/helpers';
 import { Capacitor } from '@capacitor/core';
 import { useUIStore } from '../../store/useUIStore';
+import { Icon } from '../../components/Icon';
 
 export const ScannerView: React.FC = () => {
   const navigate = useNavigate();
@@ -111,62 +112,63 @@ export const ScannerView: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[100] flex flex-col">
       {/* Üst Kısım: İptal Butonu ve Başlık */}
-      <div className="flex items-center justify-between p-4 bg-black/40 backdrop-blur-sm text-white pt-[max(16px,env(safe-area-inset-top))]">
-        <button className="p-2 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 transition" onClick={handleCancel}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+      <div className="flex items-center justify-between px-4 pb-3.5 bg-black/45 backdrop-blur-md text-white pt-[max(14px,env(safe-area-inset-top))]">
+        <button
+          className="w-9 h-9 inline-flex items-center justify-center rounded-lg bg-white/10 border border-white/15 hover:bg-white/15 active:opacity-80 transition-colors"
+          onClick={handleCancel}
+          aria-label="Kapat"
+        >
+          <Icon name="close" size={17} />
         </button>
-        <span className="text-lg font-bold tracking-wide drop-shadow-md">Ürün Tarama</span>
-        <div style={{ width: '40px' }}></div>
+        <span className="text-[15px] font-semibold">Ürün Tarama</span>
+        <div className="w-9" />
       </div>
 
       {/* Hata Mesajı */}
       {scannerError && (
-        <div className="absolute top-24 left-4 right-4 bg-danger/90 text-white p-4 rounded-2xl shadow-lg z-20 backdrop-blur-md font-semibold text-sm border border-white/15">
+        <div className="absolute top-20 left-4 right-4 flex items-start gap-2.5 bg-negative/90 text-white p-3.5 rounded-xl z-20 backdrop-blur-md text-[13px] leading-relaxed border border-white/15">
+          <Icon name="alert" size={16} className="mt-px" />
           {scannerError}
         </div>
       )}
 
       {/* Kamera Alanı (Barkod Tarayıcı için Şeffaf Kutu) */}
       <div className="flex-1 relative flex items-center justify-center pointer-events-none">
-        {/* Karartılmış arka plan katmanı */}
-        <div className="absolute inset-0 border-[40px] border-black/40 backdrop-blur-[2px]"></div>
-        
         {/* Odak Çerçevesi */}
-        <div className="relative w-64 h-64 border border-white/20 rounded-3xl overflow-hidden shadow-[0_0_0_9999px_rgba(0,0,0,0.55)]">
+        <div className="relative w-60 h-60 rounded-2xl overflow-hidden shadow-[0_0_0_9999px_rgba(0,0,0,0.6)]">
           {/* Köşe İşaretçileri */}
-          <div className="absolute top-0 left-0 w-9 h-9 border-t-[3px] border-l-[3px] border-gold rounded-tl-3xl"></div>
-          <div className="absolute top-0 right-0 w-9 h-9 border-t-[3px] border-r-[3px] border-gold rounded-tr-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-9 h-9 border-b-[3px] border-l-[3px] border-gold rounded-bl-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-9 h-9 border-b-[3px] border-r-[3px] border-gold rounded-br-3xl"></div>
+          <div className="absolute top-0 left-0 w-7 h-7 border-t-2 border-l-2 border-white/85 rounded-tl-2xl" />
+          <div className="absolute top-0 right-0 w-7 h-7 border-t-2 border-r-2 border-white/85 rounded-tr-2xl" />
+          <div className="absolute bottom-0 left-0 w-7 h-7 border-b-2 border-l-2 border-white/85 rounded-bl-2xl" />
+          <div className="absolute bottom-0 right-0 w-7 h-7 border-b-2 border-r-2 border-white/85 rounded-br-2xl" />
 
           {/* Tarama Çizgisi (Animasyonlu) */}
-          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent shadow-[0_0_12px_2px_rgba(217,182,95,0.6)] [animation:scan_2.2s_ease-in-out_infinite]"></div>
+          <div className="absolute top-0 left-0 w-full h-px bg-white/70 [animation:scan_2.2s_ease-in-out_infinite]" />
         </div>
 
         {/* El Feneri Butonu (sadece cihaz destekliyorsa) */}
         {hasTorch && (
           <button
             onClick={handleToggleTorch}
-            className={`absolute bottom-6 right-6 p-3 rounded-full backdrop-blur-sm active:scale-95 transition pointer-events-auto z-20 ${torchOn ? 'bg-gold' : 'bg-black/40'}`}
+            className={`absolute bottom-6 right-6 w-11 h-11 inline-flex items-center justify-center rounded-xl backdrop-blur-md border transition-colors pointer-events-auto z-20 active:opacity-80 ${
+              torchOn
+                ? 'bg-white text-espresso border-white'
+                : 'bg-black/45 text-white border-white/20'
+            }`}
             aria-label="El feneri"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill={torchOn ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
+            <Icon name="flash" size={19} />
           </button>
         )}
       </div>
 
       {/* Durum Metni */}
-      <div className="absolute bottom-32 left-0 right-0 text-center text-white font-bold text-lg drop-shadow-lg z-20 tracking-wide">
+      <div className="absolute bottom-24 left-0 right-0 text-center text-white/90 text-[14px] font-medium z-20">
         {scanStatusText}
       </div>
 
       {/* Alt Bilgi */}
-      <div className="absolute bottom-0 w-full p-6 pb-safe bg-black/60 backdrop-blur-md text-white/80 text-center text-sm font-medium z-20 rounded-t-3xl">
+      <div className="absolute bottom-0 w-full px-6 pt-4 pb-[max(20px,env(safe-area-inset-bottom))] bg-black/55 backdrop-blur-md text-white/60 text-center text-[12px] z-20">
         Manuel giriş için barkodu form üzerinden girebilirsiniz.
       </div>
     </div>

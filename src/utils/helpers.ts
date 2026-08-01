@@ -13,20 +13,20 @@ export function getStatusDetails(daysRemaining: number, category?: string): Stat
   const warningThreshold = category === 'Teşhir Dolabı' ? 1 : 3;
   if (daysRemaining <= 0) {
     return {
-      statusClass: "bg-danger-bg text-danger border border-danger-border",
-      statusBorderClass: "border-danger-border border-l-4 border-l-danger",
-      label: daysRemaining === 0 ? "Bugün Son Gün!" : `Tarihi Geçmiş (${Math.abs(daysRemaining)} gün)`,
+      statusClass: "bg-negative-bg text-negative border-negative-line",
+      statusBorderClass: "border-l-negative",
+      label: daysRemaining === 0 ? "Bugün son gün" : `${Math.abs(daysRemaining)} gün geçti`,
     };
   } else if (daysRemaining <= warningThreshold) {
     return {
-      statusClass: "bg-warning-bg text-warning border border-warning-border",
-      statusBorderClass: "border-warning-border border-l-4 border-l-warning",
-      label: `${daysRemaining} Gün Kaldı!`,
+      statusClass: "bg-caution-bg text-caution border-caution-line",
+      statusBorderClass: "border-l-caution",
+      label: `${daysRemaining} gün kaldı`,
     };
   } else {
     return {
-      statusClass: "bg-success-bg text-success border border-success-border",
-      statusBorderClass: "border-success-border border-l-4 border-l-success",
+      statusClass: "bg-positive-bg text-positive border-positive-line",
+      statusBorderClass: "border-l-positive",
       label: "Güvenli",
     };
   }

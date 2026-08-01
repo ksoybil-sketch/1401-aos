@@ -2,36 +2,39 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { useUIStore } from '../store/useUIStore';
-import { card, tileBadge } from '../constants/ui';
+import { Icon, IconName } from '../components/Icon';
+import { card, cardTitle, iconChip, Tone } from '../constants/ui';
 
-/** İki özet kartının ortak kabuğu — başlık, "Tümünü Gör" ve liste. */
+/** İki özet kartının ortak kabuğu — başlık, "Tümü" bağlantısı ve liste. */
 const SummaryShell: React.FC<{
-  icon: string;
-  accent: 'gold' | 'info';
+  icon: IconName;
+  tone: Tone;
   title: string;
   onSeeAll: () => void;
   children: React.ReactNode;
   footer?: React.ReactNode;
-}> = ({ icon, accent, title, onSeeAll, children, footer }) => (
-  <div className={`${card} p-5`}>
-    <div className="flex justify-between items-center mb-3">
-      <div className="flex items-center gap-3">
-        <span className={`${tileBadge(accent)} w-9 h-9 text-base rounded-xl`}>{icon}</span>
-        <h3 className="text-[15px] font-bold text-content">{title}</h3>
+}> = ({ icon, tone, title, onSeeAll, children, footer }) => (
+  <div className={card}>
+    <div className="flex justify-between items-center gap-3 px-4 pt-3.5 pb-3 border-b border-line">
+      <div className="flex items-center gap-2.5 min-w-0">
+        <span className={iconChip(tone)}>
+          <Icon name={icon} size={16} />
+        </span>
+        <h3 className={cardTitle}>{title}</h3>
       </div>
       <button
         onClick={onSeeAll}
-        className="text-gold text-xs font-semibold cursor-pointer transition-opacity hover:opacity-75"
+        className="text-fg-2 text-[12px] font-medium cursor-pointer transition-colors hover:text-crema shrink-0"
       >
-        Tümünü Gör
+        Tümü
       </button>
     </div>
-    <ul className="list-none p-0 m-0">{children}</ul>
+    <ul className="list-none p-0 m-0 divide-y divide-line">{children}</ul>
     {footer}
   </div>
 );
 
-const row = 'flex justify-between items-center gap-3 py-2.5 border-b border-hairline last:border-b-0 text-sm';
+const row = 'flex justify-between items-center gap-3 px-4 py-2.5 text-[14px]';
 
 export const DisplayCabinetSummaryCard: React.FC = () => {
   const navigate = useNavigate();
@@ -51,15 +54,15 @@ export const DisplayCabinetSummaryCard: React.FC = () => {
 
   return (
     <SummaryShell
-      icon="🎂"
-      accent="gold"
-      title="Dolapta Neler Var?"
+      icon="cabinet"
+      tone="neutral"
+      title="Dolapta neler var"
       onSeeAll={() => { setInventoryCategoryFilter('Teşhir Dolabı'); navigate('/inventory'); }}
     >
       {summaryArray.map((item) => (
         <li key={item.name} className={row}>
-          <span className="text-content-secondary truncate">{item.name}</span>
-          <span className="font-bold text-content shrink-0">{item.quantity} Adet</span>
+          <span className="text-fg-2 truncate">{item.name}</span>
+          <span className="font-medium text-crema shrink-0 tnum">{item.quantity}</span>
         </li>
       ))}
     </SummaryShell>
@@ -76,23 +79,23 @@ export const FrozenStockSummaryCard: React.FC = () => {
 
   return (
     <SummaryShell
-      icon="🧀"
-      accent="info"
-      title="Stokta Ne Var?"
+      icon="snowflake"
+      tone="accent"
+      title="Donuk stok"
       onSeeAll={() => navigate('/frozen-stock')}
       footer={
         sorted.length > 6 ? (
-          <p className="mt-3 mb-0 text-xs text-content-muted text-center">
-            +{sorted.length - 6} ürün daha...
+          <p className="px-4 py-2.5 text-[12px] text-fg-3 text-center border-t border-line">
+            +{sorted.length - 6} ürün daha
           </p>
         ) : undefined
       }
     >
       {sorted.slice(0, 6).map((item) => (
         <li key={item.id} className={row}>
-          <span className="text-content-secondary truncate">{item.name}</span>
-          <span className={`font-bold shrink-0 ${item.quantity === 0 ? 'text-danger' : 'text-gold'}`}>
-            {item.quantity === 0 ? 'Tükendi!' : `${item.quantity} Adet`}
+          <span className="text-fg-2 truncate">{item.name}</span>
+          <span className={`font-medium shrink-0 tnum ${item.quantity === 0 ? 'text-negative' : 'text-crema'}`}>
+            {item.quantity === 0 ? 'Tükendi' : item.quantity}
           </span>
         </li>
       ))}

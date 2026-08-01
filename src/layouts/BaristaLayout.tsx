@@ -30,13 +30,13 @@ export const BaristaLayout: React.FC = () => {
         className={
           isScanner
             ? ''
-            : 'max-w-[560px] mx-auto px-4 pt-[calc(80px+env(safe-area-inset-top))] pb-[calc(100px+env(safe-area-inset-bottom))] flex flex-col gap-4'
+            : 'max-w-[560px] mx-auto px-4 pt-[calc(68px+env(safe-area-inset-top))] pb-[calc(76px+env(safe-area-inset-bottom))] flex flex-col gap-3.5'
         }
       >
         <React.Suspense
           fallback={
             <div className={fullscreenLoader}>
-              <div className={`${spinner} w-11 h-11`} />
+              <div className={`${spinner} w-8 h-8`} />
             </div>
           }
         >
