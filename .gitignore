@@ -26,3 +26,6 @@ serviceAccountKey.json
 .DS_Store
 Thumbs.db
 inst_user_settings.tmp
+
+# Office geçici kilit dosyaları
+~$*

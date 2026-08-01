@@ -39,6 +39,23 @@ Rol matrisi merkezi bir dosyada (`src/constants/roles.ts`) tanımlıdır — yen
 
 ---
 
+## 📱 Uygulamadan Görüntüler
+
+| Barista ana ekranı | Envanter & SKT | Akıllı sipariş önerisi |
+|---|---|---|
+| ![Barista ana ekranı](screenshots/03-barista-ana-ekran.png) | ![Envanter](screenshots/06-envanter-skt-takibi.png) | ![Sipariş önerisi](screenshots/15-akilli-siparis-onerisi.png) |
+
+| Reçete detayı | Barista yanlış cevapları | Bölge Müdürü paneli |
+|---|---|---|
+| ![Reçete detayı](screenshots/10-recete-detayi.png) | ![Yanlış cevaplar](screenshots/18-barista-yanlis-cevaplar.png) | ![Bölge paneli](screenshots/19-bolge-muduru-paneli.png) |
+
+21 ekranın tamamı ve ne gösterdikleri için: [`screenshots/`](screenshots/README.md)
+
+> Görsellerdeki ürün adetleri, zayi kayıtları ve sınav sonuçları tanıtım amaçlı
+> örnek verilerdir; hiçbiri veritabanına yazılmamıştır.
+
+---
+
 ## ✨ Öne Çıkan Özellikler
 
 ### 📦 Envanter & SKT Takibi
