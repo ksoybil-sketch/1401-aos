@@ -181,7 +181,8 @@ export const syncEngine = {
             id: key,
             name: data[key].name || key,
             city: data[key].city || '',
-            regionId: data[key].regionId
+            regionId: data[key].regionId,
+            notifyEmail: data[key].notifyEmail
           }));
           useBranchesStore.getState().setBranches(branchesArr);
         }
@@ -196,7 +197,8 @@ export const syncEngine = {
             id: activeBranchId,
             name: data.name || activeBranchId,
             city: data.city || '',
-            regionId: data.regionId
+            regionId: data.regionId,
+            notifyEmail: data.notifyEmail
           }]);
         }
       });

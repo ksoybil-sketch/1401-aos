@@ -24,6 +24,8 @@ export interface QuizResult {
   totalQuestions: number;
   correctAnswers: number;
   wrongAnswers?: QuizWrongAnswer[];
+  /** Hangi eğitim seviyesinin sınavı olduğu. Eski kayıtlarda yok — 'recipes' varsayılır. */
+  levelId?: string;
 }
 
 export interface InventoryItem {
@@ -73,6 +75,7 @@ export interface TransactionLogItem {
 
 export interface QuizQuestion {
   id: string;
+  /** Reçete sorularında içecek adı; diğer seviyelerde konu başlığı (örn. "Şikayet Yönetimi"). */
   recipeName: string;
   questionText: string;
   correctAnswer: string;
@@ -95,6 +98,8 @@ export interface BranchInfo {
   name: string;
   city: string;
   regionId?: string;
+  /** Sınav sonucu gibi bildirimlerin gönderileceği şube müdürü e-postası. */
+  notifyEmail?: string;
 }
 
 export interface BroadcastMessage {

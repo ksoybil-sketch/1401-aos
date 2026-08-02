@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { formatDate } from '../../utils/helpers';
 import { useStore } from '../../store/useStore';
 import { QuizResult } from '../../types';
+import { TRAINING_LEVELS } from '../../constants/trainingLevels';
 import { Icon } from '../../components/Icon';
+
+const levelName = (levelId?: string): string =>
+  TRAINING_LEVELS.find((l) => l.id === (levelId || 'recipes'))?.name || 'Reçeteler';
 import {
   card, emptyState, emptyText, iconBtn, iconChip, listGroup, listRow,
   modalBody, modalGrabber, modalHeader, modalOverlay, modalPanel, modalTitle,
@@ -54,7 +58,9 @@ export const BaristaPerformanceReport: React.FC = () => {
               </span>
               <span className="flex-1 min-w-0">
                 <span className="block text-[15px] font-medium text-crema truncate">{result.baristaName}</span>
-                <span className="block text-[12px] text-fg-3 mt-0.5 tnum">{formatDate(result.date)}</span>
+                <span className="block text-[12px] text-fg-3 mt-0.5 truncate">
+                  {levelName(result.levelId)} · <span className="tnum">{formatDate(result.date)}</span>
+                </span>
               </span>
               <span className={`text-[14px] font-semibold tnum shrink-0 ${result.score >= 80 ? 'text-positive' : 'text-caution'}`}>
                 {result.score}
@@ -76,9 +82,11 @@ export const BaristaPerformanceReport: React.FC = () => {
               </button>
             </div>
             <div className={modalBody}>
-              <p className="text-[13px] text-fg-3 mb-4 tnum">
-                {formatDate(selectedResult.date)} · {selectedResult.score} puan
-                {' '}({selectedResult.correctAnswers}/{selectedResult.totalQuestions})
+              <p className="text-[13px] text-fg-3 mb-4">
+                {levelName(selectedResult.levelId)} ·{' '}
+                <span className="tnum">
+                  {formatDate(selectedResult.date)} · {selectedResult.score} puan ({selectedResult.correctAnswers}/{selectedResult.totalQuestions})
+                </span>
               </p>
 
               {!selectedResult.wrongAnswers ? (
