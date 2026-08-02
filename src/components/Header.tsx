@@ -33,7 +33,9 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <img src="/icons/logo_goat.svg" alt="" className="w-7 h-7 object-contain opacity-90" />
           <div className="flex flex-col min-w-0 leading-none">
-            <span className="text-[14px] font-semibold text-crema tracking-tight">1401 Coffee</span>
+            {/* truncate şart: 320px'lik ekranda şube + rol butonu yan yanayken
+                marka adı iki satıra kırılıp butonların altına taşıyordu. */}
+            <span className="text-[14px] font-semibold text-crema tracking-tight truncate">1401 Coffee</span>
             <span className="text-[11px] text-fg-3 truncate mt-0.5">
               {activeBranchId ? branchDisplayName : 'Akıllı Operasyon Sistemi'}
             </span>
@@ -45,7 +47,7 @@ export const Header: React.FC<HeaderProps> = ({
           {userRole !== 'Barista' && (
             <button
               onClick={onOpenBranchModal}
-              className="h-8 pl-2 pr-2.5 inline-flex items-center gap-1.5 rounded-lg bg-panel-2 border border-line text-fg-2 text-[12px] font-medium max-w-[112px] cursor-pointer transition-colors hover:bg-panel-3 hover:text-crema active:opacity-80"
+              className="h-8 pl-2 pr-2.5 inline-flex items-center gap-1.5 rounded-lg bg-panel-2 border border-line text-fg-2 text-[12px] font-medium max-w-[84px] min-[360px]:max-w-[112px] cursor-pointer transition-colors hover:bg-panel-3 hover:text-crema active:opacity-80"
             >
               <Icon name="store" size={14} />
               <span className="truncate">{branchDisplayName}</span>
@@ -57,7 +59,10 @@ export const Header: React.FC<HeaderProps> = ({
             className="h-8 pl-2 pr-2.5 inline-flex items-center gap-1.5 rounded-lg bg-panel-2 border border-line text-crema text-[12px] font-medium cursor-pointer transition-colors hover:bg-panel-3 active:opacity-80"
           >
             <Icon name={userRole === 'Barista' ? 'user' : 'shield'} size={14} />
-            <span className="truncate max-w-[96px]">
+            {/* 320px'lik ekranda marka adı + şube + rol aynı satıra sığmıyor.
+                En dar cihazlarda rol butonu ikona iniyor; şube adı kalıyor
+                çünkü müdür için hangi şubede olduğu daha kritik bilgi. */}
+            <span className="hidden min-[360px]:inline truncate max-w-[96px]">
               {userRole === 'Barista' && activeBarista ? activeBarista.name.split(' ')[0] : userRole}
             </span>
           </button>

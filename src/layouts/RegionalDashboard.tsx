@@ -19,6 +19,8 @@ interface BranchStats {
   teshirStock: number;
   expiredCount: number;
   averageScore: number;
+  /** Tamamlanan sınav sayısı — 0 ise ortalama puan anlamsızdır. */
+  quizCount: number;
 }
 
 export const RegionalDashboard: React.FC = () => {
@@ -50,7 +52,8 @@ export const RegionalDashboard: React.FC = () => {
         totalItems: branch.inventory.length,
         teshirStock,
         expiredCount,
-        averageScore
+        averageScore,
+        quizCount: branch.quizResults.length
       };
     });
 
@@ -138,8 +141,18 @@ export const RegionalDashboard: React.FC = () => {
               </div>
               <div className="flex flex-col items-end shrink-0">
                 <span className="text-[11px] text-fg-3">Eğitim</span>
-                <span className={`text-[14px] font-semibold tnum ${stats.averageScore >= 80 ? 'text-positive' : 'text-caution'}`}>
-                  {stats.averageScore}
+                {/* Hiç sınav yapılmamışsa 0 puan göstermek "şube kötü" gibi
+                    okunuyor; veri yokluğunu nötr bir tire ile ayırıyoruz. */}
+                <span
+                  className={`text-[14px] font-semibold tnum ${
+                    stats.quizCount === 0
+                      ? 'text-fg-3'
+                      : stats.averageScore >= 80
+                        ? 'text-positive'
+                        : 'text-caution'
+                  }`}
+                >
+                  {stats.quizCount === 0 ? '—' : stats.averageScore}
                 </span>
               </div>
             </div>

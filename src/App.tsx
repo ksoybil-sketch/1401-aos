@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useStore, useAuthStore } from './store/useStore';
 import { useSyncData } from './hooks/useSyncData';
-import { DEMO_BARISTAS } from './constants';
+import { BARISTAS } from './constants';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { App as CapacitorApp } from '@capacitor/app';
 import { useUIStore } from './store/useUIStore';
@@ -21,6 +21,7 @@ import { RegionalDashboard } from './layouts/RegionalDashboard';
 import { ChangePasswordScreen } from './features/auth/ChangePasswordScreen';
 import { watchAuthState, AuthUserWithProfile, UserProfile } from './api/auth';
 import { ManagerLoginModal } from './components/modals/ManagerLoginModal';
+import { SyncStatusBanner } from './components/SyncStatusBanner';
 import { UserRole } from './types';
 
 // Lazy Loaded Routes
@@ -80,7 +81,7 @@ export const App: React.FC = () => {
   const handleLogin = (role: any, baristaId?: string) => {
     let barista = null;
     if (role === 'Barista' && baristaId) {
-      barista = DEMO_BARISTAS.find(b => b.id === baristaId) || null;
+      barista = BARISTAS.find(b => b.id === baristaId) || null;
     }
     setAuth(true, role, barista);
     
@@ -143,6 +144,7 @@ export const App: React.FC = () => {
   return (
     <>
       <Splash />
+      <SyncStatusBanner hasSession={!!firebaseUser} />
       <Routes>
         {userRole === 'Barista' && (
           <Route element={<BaristaLayout />}>

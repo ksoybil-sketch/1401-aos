@@ -1,16 +1,14 @@
-import { Recipe, BranchInfo, BaristaProfile, QuizResult } from '../types';
+import { BaristaProfile } from '../types';
 
-
-export const DEMO_BARISTAS: BaristaProfile[] = [
-  { id: 'b1', name: 'Ahmet Yılmaz', pin: '1111', branchId: 'moda_cadde' },
-  { id: 'b2', name: 'Elif Kaya', pin: '2222', branchId: 'moda_cadde' },
-  { id: 'b3', name: 'Mehmet Demir', pin: '3333', branchId: 'moda_cadde' }
-];
-
-export const DEMO_QUIZ_RESULTS: QuizResult[] = [
-  { id: 'qr-1', baristaName: 'Ahmet Yılmaz', score: 95, date: new Date().toISOString(), totalQuestions: 20, correctAnswers: 19 },
-  { id: 'qr-2', baristaName: 'Elif Kaya', score: 85, date: new Date(Date.now() - 86400000).toISOString(), totalQuestions: 20, correctAnswers: 17 },
-  { id: 'qr-3', baristaName: 'Mehmet Demir', score: 70, date: new Date(Date.now() - 172800000).toISOString(), totalQuestions: 20, correctAnswers: 14 }
+/**
+ * Moda Cadde (pilot şube) baristaları. Barista girişi PIN ile yapılır ve
+ * cihazda kalır — Firebase Auth oturumu şube müdürünün hesabıyla açılır,
+ * baristalar onun üzerinden yazar (bkz. README, "Cihaz oturumu").
+ */
+export const BARISTAS: BaristaProfile[] = [
+  { id: 'b1', name: 'Defne Köprülü', pin: '1717', branchId: 'moda_cadde' },
+  { id: 'b2', name: 'Mert Bezmez', pin: '1919', branchId: 'moda_cadde' },
+  { id: 'b3', name: 'Emek Dilmeç', pin: '1917', branchId: 'moda_cadde' }
 ];
 
 export const CATEGORIES = [
@@ -23,17 +21,17 @@ export const CATEGORIES = [
 
 export const TESHIR_URUNLERI = [
   // Tatlılar
-  "Muzlu Rulo Pasta", "Newyork Lotus Cheesecake", "Lotus Magnolya", "Çilek Magnolya", "Tiramisu", 
-  "Çilekli Paris Brest", "Frambuazlı Cheesecake", "Mango Flan Tart", "Yerfıstıklı Flan Tart", 
-  "Honey Berry Raw Cake", "Pavlova Çilekli", "Opera Kahveli Pasta", "Nutella Pasta", "Limonlu Cheesecake", 
-  "San Sebastian", "Beyaz Çikolatalı Brownie", "Honey Berry Pasta", "Honey Berry Magnolia", 
+  "Muzlu Rulo Pasta", "Newyork Lotus Cheesecake", "Lotus Magnolya", "Çilek Magnolya", "Tiramisu",
+  "Çilekli Paris Brest", "Frambuazlı Cheesecake", "Mango Flan Tart", "Yerfıstıklı Flan Tart",
+  "Honey Berry Raw Cake", "Pavlova Çilekli", "Opera Kahveli Pasta", "Nutella Pasta", "Limonlu Cheesecake",
+  "San Sebastian", "Beyaz Çikolatalı Brownie", "Honey Berry Pasta", "Honey Berry Magnolia",
   "Spoonful", "Kremalı Havuçlu Kek", "Honey Berry Granola", "Hp Rulo", "Kitkat Mozaik",
   // Unlu Mamüller
-  "Zeytinli Tereyağlı Poğaça", "Kruvasan Çikolatalı", "Kruvasan Sade", "Triple Chocolate Cookie", 
-  "Vişneli Muffin", "Çikolatalı Muffin", "Kek Marble", "Kek Limonlu", "Sade Açma", "Çikolatalı Açma", 
+  "Zeytinli Tereyağlı Poğaça", "Kruvasan Çikolatalı", "Kruvasan Sade", "Triple Chocolate Cookie",
+  "Vişneli Muffin", "Çikolatalı Muffin", "Kek Marble", "Kek Limonlu", "Sade Açma", "Çikolatalı Açma",
   "Sade Poğaça", "Peynirli Poğaça", "Dereotlu Peynirli Tereyağlı Poğaça",
   // Sandviç ve Tostlar
-  "Kore Tostu Hindi Fümeli", "Kore Tostu Tavuklu", "Üç Peynirli Sandviç", "Tartar Soslu Dana Jambonlu", 
+  "Kore Tostu Hindi Fümeli", "Kore Tostu Tavuklu", "Üç Peynirli Sandviç", "Tartar Soslu Dana Jambonlu",
   "Hindi Füme Cheddar Peynirli", "Tavuklu Avokado Soslu", "Avokado Soslu Mozarella"
 ];
 
@@ -86,44 +84,3 @@ export const KUTU_ICI_ADETLER: Record<string, number> = {
   "Kek Limonlu": 25,
   "Muzlu Rulo Pasta": 5
 };
-
-export const DEMO_RECIPES: Recipe[] = [
-  {
-    "id": "r1",
-    "name": "FRAPPE LATTE",
-    "category": "Soğuk Kahveler",
-    "ingredients": [
-      { "name": "Espresso", "amount": "40 ml" },
-      { "name": "Süt", "amount": "170 ml" },
-      { "name": "Frappe Tozu", "amount": "50 gr" },
-      { "name": "Buz", "amount": "Silme" },
-      { "name": "Krema", "amount": "Bombe Dekor" }
-    ],
-    "instructions": "16 OZ BARDAK Kahveyi öğütün ve espresso shot'ı hazırlayın. Kahve, süt, frappe tozu ve buzu blenderde çekin. Hazırladığınız içeceği bardağa ekleyip servis edin.",
-    "image": null
-  },
-  {
-    "id": "r2",
-    "name": "ICED LATTE",
-    "category": "Soğuk Kahveler",
-    "ingredients": [
-      { "name": "Espresso", "amount": "40 ml" },
-      { "name": "Süt", "amount": "220 ml" },
-      { "name": "Buz", "amount": "Silme" }
-    ],
-    "instructions": "16 OZ BARDAK Kahveyi öğütün ve espresso shot'ı hazırlayın. Sırasıyla silme buz, süt ve espressoyu ekleyip servis edin.",
-    "image": null
-  },
-  {
-    "id": "r3",
-    "name": "ICED AMERICANO",
-    "category": "Soğuk Kahveler",
-    "ingredients": [
-      { "name": "Espresso", "amount": "60 ml" },
-      { "name": "Su", "amount": "220 ml" },
-      { "name": "Buz", "amount": "Silme" }
-    ],
-    "instructions": "16 OZ BARDAK Kahveyi öğütün ve espresso shot'ı hazırlayın. Sırasıyla silme buz, su ve espressoyu ekleyip servis edin.",
-    "image": null
-  }
-];

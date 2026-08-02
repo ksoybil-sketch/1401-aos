@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { UserRole } from '../../types';
-import { DEMO_BARISTAS } from '../../constants';
+import { BARISTAS } from '../../constants';
 import { Icon } from '../../components/Icon';
 import { iconChip, listGroup, listRow, rowChevron } from '../../constants/ui';
 /**
@@ -35,7 +35,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerLoginCli
 
   const handleLogin = () => {
     if (selectedUser) {
-      const barista = DEMO_BARISTAS.find(b => b.id === selectedUser);
+      const barista = BARISTAS.find(b => b.id === selectedUser);
       if (barista && barista.pin === pin) {
         onLogin('Barista', barista.id);
       } else {
@@ -63,7 +63,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerLoginCli
         </div>
 
         <div className={listGroup}>
-          {DEMO_BARISTAS.map(b => (
+          {BARISTAS.map(b => (
             <button key={b.id} onClick={() => setSelectedUser(b.id)} className={listRow}>
               <span className={iconChip()}>
                 <Icon name="user" size={16} />
@@ -103,7 +103,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onManagerLoginCli
 
       <div className="text-center mt-10">
         <h2 className="text-crema text-[19px] font-semibold tracking-tight">
-          {DEMO_BARISTAS.find(b => b.id === selectedUser)?.name}
+          {BARISTAS.find(b => b.id === selectedUser)?.name}
         </h2>
         <p className="text-[13px] text-fg-3 mt-1.5 mb-8">Şifreni gir</p>
 

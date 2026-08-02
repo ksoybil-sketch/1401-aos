@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { Recipe, QuizResult } from '../types';
-import { DEMO_RECIPES, DEMO_QUIZ_RESULTS } from '../constants';
 
 interface AppState {
   recipes: Recipe[];
@@ -12,8 +11,10 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  recipes: DEMO_RECIPES,
-  quizResults: DEMO_QUIZ_RESULTS,
+  // Gerçek veri Firebase'den gelir. Örnek reçete/sonuç tohumlamıyoruz:
+  // çevrimdışı bir cihazda 3 reçete göstermek "76 reçete var" gerçeğini gizler.
+  recipes: [],
+  quizResults: [],
   productMappings: {},
   setRecipes: (data) => set({ recipes: data }),
   setQuizResults: (data) => set({ quizResults: data }),
