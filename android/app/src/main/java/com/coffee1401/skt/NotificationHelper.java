@@ -20,6 +20,7 @@ public class NotificationHelper {
     public static final String CHANNEL_DESC = "Son kullanma tarihi geçmiş veya yaklaşan ürünler için bildirimler";
     public static final int NOTIFICATION_ID_MORNING = 1001;
     public static final int NOTIFICATION_ID_EVENING = 1002;
+    public static final int NOTIFICATION_ID_BROADCAST = 1003;
 
     /**
      * Android 8+ için bildirim kanalını oluşturur.

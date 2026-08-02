@@ -1,7 +1,6 @@
 import { useStore } from '../store/useStore';
 import { useSyncData } from './useSyncData';
 import { InventoryItem, FrozenItem, TransactionLogItem } from '../types';
-import { saveInventoryToNative } from '../utils/helpers';
 import { areProductsMatching } from '../utils/matching';
 
 export const useInventoryManager = () => {
@@ -47,8 +46,9 @@ export const useInventoryManager = () => {
     };
 
     const updatedInventory = [...inventory, newItem];
+    // updateInventory zaten native SKT-bildirim köprüsünü tetikliyor
+    // (bkz. useSyncData.ts) — burada ayrıca çağırmaya gerek yok.
     updateInventory(updatedInventory);
-    saveInventoryToNative(updatedInventory);
 
     // 3. Handle Frozen to Display "Smart Deduction"
     let feedbackMsg = '';
@@ -156,7 +156,6 @@ export const useInventoryManager = () => {
       updateFrozenStock(updatedList as FrozenItem[]);
     } else {
       updateInventory(updatedList as InventoryItem[]);
-      saveInventoryToNative(updatedList);
     }
   };
 

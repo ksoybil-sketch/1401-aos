@@ -32,7 +32,13 @@
 
     "recipes": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'bolge_muduru'"
+    },
+
+    "broadcasts": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() === 'bolge_muduru'",
+      ".indexOn": ["sentAt"]
     },
 
     "productMappings": {

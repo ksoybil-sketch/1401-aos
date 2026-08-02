@@ -117,6 +117,20 @@ export const RegionalDashboard: React.FC = () => {
           <span className="flex-1 text-[15px] font-medium text-crema">Raporlar ve Analizler</span>
           <Icon name="chevronRight" size={16} className={rowChevron} />
         </button>
+        <button onClick={() => navigate('/recipes')} className={listRow}>
+          <span className={iconChip()}>
+            <Icon name="book" size={16} />
+          </span>
+          <span className="flex-1 text-[15px] font-medium text-crema">Reçeteler</span>
+          <Icon name="chevronRight" size={16} className={rowChevron} />
+        </button>
+        <button onClick={() => navigate('/broadcast')} className={listRow}>
+          <span className={iconChip()}>
+            <Icon name="bell" size={16} />
+          </span>
+          <span className="flex-1 text-[15px] font-medium text-crema">Duyuru Gönder</span>
+          <Icon name="chevronRight" size={16} className={rowChevron} />
+        </button>
       </div>
 
       <div className={`${sectionLabel} mt-1`}>Şubeler</div>

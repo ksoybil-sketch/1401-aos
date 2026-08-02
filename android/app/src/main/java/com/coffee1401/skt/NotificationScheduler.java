@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.Calendar;
 
 /**
- * AlarmManager ile 09:00 ve 17:00 günlük alarmlarını kurar.
+ * AlarmManager ile 08:00 ve 17:00 günlük alarmlarını kurar.
  * AlarmManager.RTC_WAKEUP kullanıldığı için telefon uyku modunda olsa bile çalışır.
  */
 public class NotificationScheduler {
@@ -21,20 +21,20 @@ public class NotificationScheduler {
     public static final int REQUEST_CODE_EVENING = 2002;
 
     /**
-     * Her gün 09:00 ve 17:00 için alarmları kur.
+     * Her gün 08:00 ve 17:00 için alarmları kur.
      * Eğer o saat bugün için geçmişse, yarın için ayarla.
      */
     public static void scheduleAlarms(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
 
-        scheduleAlarm(context, alarmManager, 9, 0,
+        scheduleAlarm(context, alarmManager, 8, 0,
                 SKTAlarmReceiver.ACTION_MORNING, REQUEST_CODE_MORNING);
 
         scheduleAlarm(context, alarmManager, 17, 0,
                 SKTAlarmReceiver.ACTION_EVENING, REQUEST_CODE_EVENING);
 
-        Log.d(TAG, "SKT alarmları kuruldu: 09:00 ve 17:00");
+        Log.d(TAG, "SKT alarmları kuruldu: 08:00 ve 17:00");
     }
 
     private static void scheduleAlarm(Context context, AlarmManager alarmManager,

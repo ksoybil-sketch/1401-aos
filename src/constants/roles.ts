@@ -19,7 +19,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canScanBarcode: true,
     canViewReports: false,
     canViewRecipes: true,
-    canEditRecipes: true,
+    // Reçeteler tüm şubelerde ortak tek bir liste — bir barista yanlışlıkla
+    // silerse herkesi etkiler. Düzenleme yetkisi Bölge Müdürü'nde.
+    canEditRecipes: false,
     canViewTraining: true,
     canManageFrozenStock: true,
     canManageBranches: false
@@ -40,8 +42,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canEditInventory: false,
     canScanBarcode: false,
     canViewReports: true,
-    canViewRecipes: false,
-    canEditRecipes: false,
+    canViewRecipes: true,
+    canEditRecipes: true,
     canViewTraining: false,
     canManageFrozenStock: false,
     canManageBranches: true

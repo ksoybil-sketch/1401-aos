@@ -45,6 +45,28 @@ public class InventoryBridgePlugin extends Plugin {
         call.resolve(result);
     }
 
+    /**
+     * Bölge Müdürü'nün gönderdiği bir duyuruyu bu cihazda anında sistem
+     * bildirimi olarak gösterir. NotificationHelper zaten mevcut kanalı ve
+     * izinleri kullanıyor — ayrı bir eklentiye gerek yok.
+     *
+     * Not: bu, uygulama süreci canlıyken (ön planda ya da yakın zamanda
+     * arka plana alınmışken) çalışır. Tamamen kapatılmış/kaydırılmış bir
+     * cihaza ulaşmak için gerçek push altyapısı (FCM) gerekir.
+     */
+    @PluginMethod
+    public void showNotification(PluginCall call) {
+        String title = call.getString("title", "1401 Coffee");
+        String body = call.getString("body", "");
+
+        NotificationHelper.sendNotification(getContext(), title, body,
+                NotificationHelper.NOTIFICATION_ID_BROADCAST);
+
+        JSObject result = new JSObject();
+        result.put("success", true);
+        call.resolve(result);
+    }
+
     private int countItems(String json) {
         try {
             return new org.json.JSONArray(json).length();

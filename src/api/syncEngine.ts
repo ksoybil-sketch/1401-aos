@@ -3,6 +3,7 @@ import { ref, set, remove, onValue, off } from 'firebase/database';
 import { db } from './firebase';
 import { useAuthStore, useInventoryStore, useSyncStore, useAppStore, useBranchesStore } from '../store/useStore';
 import { InventoryItem, FrozenItem, TransactionLogItem, Recipe } from '../types';
+import { syncInventoryToNative } from '../native/inventoryBridge';
 
 // Configure localforage for Sync Queue
 localforage.config({
@@ -98,11 +99,12 @@ export const syncEngine = {
     const productMappingsRef = ref(db, `productMappings`);
 
     onValue(inventoryRef, async (snapshot) => {
-      if (snapshot.exists()) {
-        const val = snapshot.val();
-        useInventoryStore.getState().setInventory(val);
-        await localforage.setItem(`cache_${branchId}_inventory`, val);
-      }
+      const val = snapshot.exists() ? snapshot.val() : [];
+      useInventoryStore.getState().setInventory(val);
+      await localforage.setItem(`cache_${branchId}_inventory`, val);
+      // 08:00/17:00 SKT bildirimleri bu cihazın SharedPreferences'ından okur —
+      // envanter boşalırsa (son ürün tüketildi) da güncel kalması gerekiyor.
+      await syncInventoryToNative(val);
     });
 
     onValue(frozenStockRef, async (snapshot) => {

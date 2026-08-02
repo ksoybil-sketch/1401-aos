@@ -97,6 +97,13 @@ export interface BranchInfo {
   regionId?: string;
 }
 
+export interface BroadcastMessage {
+  id: string;
+  message: string;
+  sentByEmail: string;
+  sentAt: number;
+}
+
 export interface ReorderRecommendation {
   productName: string;
   category: string;

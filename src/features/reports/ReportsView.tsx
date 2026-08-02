@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { Icon } from '../../components/Icon';
+import { WeeklyTrendCard } from '../../components/WeeklyTrendCard';
+import { computeWeeklyTrend } from '../../utils/helpers';
 import {
   card, iconChip, listGroup, listRow, rowChevron, screenTitle, sectionLabel
 } from '../../constants/ui';
@@ -15,6 +17,11 @@ export const ReportsView: React.FC = () => {
   const expiredLogs = transactionLog.filter(log => log.type === 'EXPIRED');
   const consumedLogs = transactionLog.filter(log => log.type === 'CONSUMED');
 
+  const { zayiTrend, tuketimTrend } = useMemo(() => ({
+    zayiTrend: computeWeeklyTrend(transactionLog, 'EXPIRED'),
+    tuketimTrend: computeWeeklyTrend(transactionLog, 'CONSUMED')
+  }), [transactionLog]);
+
   return (
     <div className="flex flex-col gap-3.5">
       <h2 className={`${screenTitle} mt-0.5`}>Raporlar</h2>
@@ -27,6 +34,13 @@ export const ReportsView: React.FC = () => {
           <span className="flex-1 text-[15px] font-medium text-crema">Barista Performans Raporu</span>
           <Icon name="chevronRight" size={16} className={rowChevron} />
         </button>
+      </div>
+
+      {/* Haftalık trend */}
+      <div className={sectionLabel}>Bu hafta vs geçen hafta</div>
+      <div className="grid grid-cols-2 gap-2.5">
+        <WeeklyTrendCard label="Zayi" trend={zayiTrend} goodDirection="down" />
+        <WeeklyTrendCard label="Tüketim" trend={tuketimTrend} goodDirection="up" />
       </div>
 
       {/* Zayi */}

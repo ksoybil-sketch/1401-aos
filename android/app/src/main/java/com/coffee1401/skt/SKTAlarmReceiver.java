@@ -16,7 +16,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
- * AlarmManager tarafından 09:00 ve 17:00'da tetiklenen BroadcastReceiver.
+ * AlarmManager tarafından 08:00 ve 17:00'da tetiklenen BroadcastReceiver.
  * SharedPreferences'tan envanter verilerini okur ve kritik ürünler varsa bildirim gönderir.
  * Uygulama tamamen kapalıyken bile çalışır.
  */

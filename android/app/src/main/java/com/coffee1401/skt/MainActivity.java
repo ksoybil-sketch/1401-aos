@@ -33,7 +33,7 @@ public class MainActivity extends BridgeActivity {
             }
         }
 
-        // 09:00 ve 17:00 alarmlarını kur
+        // 08:00 ve 17:00 alarmlarını kur
         NotificationScheduler.scheduleAlarms(this);
     }
 

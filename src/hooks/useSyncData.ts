@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAuthStore, useInventoryStore, useAppStore } from '../store/useStore';
 import { syncEngine } from '../api/syncEngine';
 import { InventoryItem, FrozenItem, TransactionLogItem, Recipe } from '../types';
+import { syncInventoryToNative } from '../native/inventoryBridge';
 
 export const useSyncData = () => {
   const activeBranchId = useAuthStore(state => state.activeBranchId);
@@ -30,6 +31,9 @@ export const useSyncData = () => {
     updateInventory: (newData: InventoryItem[]) => {
       setInventory(newData);
       syncEngine.enqueueTask({ type: 'INVENTORY', action: 'SET', payload: newData });
+      // Firebase'e ulaşmadan (çevrimdışıyken) da 08:00/17:00 bildirimleri
+      // bu cihazdaki en güncel envanteri görsün diye anında yazıyoruz.
+      syncInventoryToNative(newData);
     },
     updateFrozenStock: (newData: FrozenItem[]) => {
       setFrozenStock(newData);

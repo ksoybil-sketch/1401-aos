@@ -22,6 +22,8 @@ import { ChangePasswordScreen } from './features/auth/ChangePasswordScreen';
 import { watchAuthState, AuthUserWithProfile, UserProfile } from './api/auth';
 import { ManagerLoginModal } from './components/modals/ManagerLoginModal';
 import { SyncStatusBanner } from './components/SyncStatusBanner';
+import { BroadcastBanner } from './components/BroadcastBanner';
+import { useBroadcastListener } from './hooks/useBroadcastListener';
 import { UserRole } from './types';
 
 // Lazy Loaded Routes
@@ -33,6 +35,7 @@ const ReportsView = React.lazy(() => import('./features/reports/ReportsView').th
 const BaristaPerformanceReport = React.lazy(() => import('./features/reports/BaristaPerformanceReport').then(m => ({ default: m.BaristaPerformanceReport })));
 const RegionalReportsView = React.lazy(() => import('./features/reports/RegionalReportsView').then(m => ({ default: m.RegionalReportsView })));
 const FrozenStockView = React.lazy(() => import('./features/frozenstock/FrozenStockView').then(m => ({ default: m.FrozenStockView })));
+const BroadcastView = React.lazy(() => import('./features/broadcast/BroadcastView').then(m => ({ default: m.BroadcastView })));
 
 export const App: React.FC = () => {
   const { isAuthenticated, userRole, setAuth } = useStore();
@@ -40,6 +43,8 @@ export const App: React.FC = () => {
   const [firebaseUser, setFirebaseUser] = React.useState<AuthUserWithProfile | null | 'loading'>('loading');
   const [showManagerLoginModal, setShowManagerLoginModal] = React.useState(false);
   useSyncData();
+  const hasSession = firebaseUser !== null && firebaseUser !== 'loading';
+  const { banner, dismissBanner } = useBroadcastListener(hasSession);
 
   React.useEffect(() => {
     const unsubscribe = watchAuthState((user) => {
@@ -145,6 +150,7 @@ export const App: React.FC = () => {
     <>
       <Splash />
       <SyncStatusBanner hasSession={!!firebaseUser} />
+      <BroadcastBanner broadcast={banner} onDismiss={dismissBanner} />
       <Routes>
         {userRole === 'Barista' && (
           <Route element={<BaristaLayout />}>
@@ -184,6 +190,10 @@ export const App: React.FC = () => {
                 <Route path="/reports" element={<RegionalReportsView />} />
               </>
             )}
+            {/* Reçeteler ve duyurular şubeye değil bölgeye ait — şube
+                seçili olsun olmasın erişilebilir olmalı. */}
+            <Route path="/recipes" element={<RecipesView />} />
+            <Route path="/broadcast" element={<BroadcastView />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         )}

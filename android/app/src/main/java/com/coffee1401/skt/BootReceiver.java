@@ -26,7 +26,7 @@ public class BootReceiver extends BroadcastReceiver {
             // Bildirim kanalını oluştur
             NotificationHelper.createNotificationChannel(context);
 
-            // 09:00 ve 17:00 alarmlarını yeniden kur
+            // 08:00 ve 17:00 alarmlarını yeniden kur
             NotificationScheduler.scheduleAlarms(context);
 
             Log.d(TAG, "SKT alarmları başarıyla yeniden kuruldu.");

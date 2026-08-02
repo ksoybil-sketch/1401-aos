@@ -4,6 +4,8 @@ import { useRegionBranchesData } from '../../hooks/useRegionBranchesData';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { Icon } from '../../components/Icon';
+import { WeeklyTrendCard } from '../../components/WeeklyTrendCard';
+import { computeWeeklyTrend } from '../../utils/helpers';
 import {
   btn, btnSecondary, btnSm, card, fullscreenLoader, screenTitle, sectionLabel, spinner
 } from '../../constants/ui';
@@ -55,6 +57,14 @@ export const RegionalReportsView: React.FC = () => {
     return { expiredLogs: expired, consumedLogs: consumed, branchBreakdown: breakdown };
   }, [branches]);
 
+  const { zayiTrend, tuketimTrend } = useMemo(() => {
+    const allLogs = branches.flatMap((b) => b.transactionLog);
+    return {
+      zayiTrend: computeWeeklyTrend(allLogs, 'EXPIRED'),
+      tuketimTrend: computeWeeklyTrend(allLogs, 'CONSUMED')
+    };
+  }, [branches]);
+
   const handleExportCSV = async () => {
     let csv = '﻿Şube,Tür,Ürün,Miktar,Tarih\n';
     expiredLogs.forEach((log) => {
@@ -103,6 +113,13 @@ export const RegionalReportsView: React.FC = () => {
           <Icon name="download" size={14} />
           CSV
         </button>
+      </div>
+
+      {/* Haftalık trend */}
+      <div className={sectionLabel}>Bu hafta vs geçen hafta</div>
+      <div className="grid grid-cols-2 gap-2.5">
+        <WeeklyTrendCard label="Zayi (bölge geneli)" trend={zayiTrend} goodDirection="down" />
+        <WeeklyTrendCard label="Tüketim (bölge geneli)" trend={tuketimTrend} goodDirection="up" />
       </div>
 
       {/* Şube bazlı kırılım */}
