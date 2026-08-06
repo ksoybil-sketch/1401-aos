@@ -23,7 +23,9 @@ import { watchAuthState, AuthUserWithProfile, UserProfile } from './api/auth';
 import { ManagerLoginModal } from './components/modals/ManagerLoginModal';
 import { SyncStatusBanner } from './components/SyncStatusBanner';
 import { BroadcastBanner } from './components/BroadcastBanner';
+import { UpdateBanner } from './components/UpdateBanner';
 import { useBroadcastListener } from './hooks/useBroadcastListener';
+import { useVersionCheck } from './hooks/useVersionCheck';
 import { UserRole } from './types';
 
 // Lazy Loaded Routes
@@ -45,6 +47,7 @@ export const App: React.FC = () => {
   useSyncData();
   const hasSession = firebaseUser !== null && firebaseUser !== 'loading';
   const { banner, dismissBanner } = useBroadcastListener(hasSession);
+  const { updateInfo, dismiss: dismissUpdate } = useVersionCheck(hasSession);
 
   React.useEffect(() => {
     const unsubscribe = watchAuthState((user) => {
@@ -151,6 +154,9 @@ export const App: React.FC = () => {
       <Splash />
       <SyncStatusBanner hasSession={!!firebaseUser} />
       <BroadcastBanner broadcast={banner} onDismiss={dismissBanner} />
+      {updateInfo && (
+        <UpdateBanner latestVersion={updateInfo.latestVersion} note={updateInfo.note} onDismiss={dismissUpdate} />
+      )}
       <Routes>
         {userRole === 'Barista' && (
           <Route element={<BaristaLayout />}>
