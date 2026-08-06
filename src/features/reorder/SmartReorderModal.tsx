@@ -36,7 +36,10 @@ export const SmartReorderModal: React.FC<SmartReorderModalProps> = ({ inventory,
     const matchedFrozen = frozenStock.find(f => areProductsMatching(f.name, teshirName));
     const boxQty = KUTU_ICI_ADETLER[teshirName] || 12;
 
-    if (!matchedFrozen || matchedFrozen.quantity <= 3) {
+    // Yarım kutuya düşünce uyar (tüketim geçmişi henüz yoksa da erken
+    // yakalar) — sabit "3 adet kaldı" eşiği büyük kutularda çok geç uyarıyordu.
+    const halfBox = boxQty / 2;
+    if (!matchedFrozen || matchedFrozen.quantity <= halfBox) {
       const currentQty = matchedFrozen ? matchedFrozen.quantity : 0;
       recommendations.push({
         productName: teshirName,
@@ -44,7 +47,7 @@ export const SmartReorderModal: React.FC<SmartReorderModalProps> = ({ inventory,
         currentStock: currentQty,
         recommendedOrder: Math.ceil(boxQty * 2), // 2 kutu öner
         boxSize: boxQty,
-        reason: currentQty === 0 ? 'Donuk stokta hiç kalmadı' : `Kritik stok seviyesi (${currentQty} adet kaldı)`,
+        reason: currentQty === 0 ? 'Donuk stokta hiç kalmadı' : `Kutunun yarısına düştü (${currentQty} adet kaldı)`,
         urgency: currentQty === 0 ? 'HIGH' : 'MEDIUM'
       });
     }

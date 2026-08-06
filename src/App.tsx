@@ -167,6 +167,7 @@ export const App: React.FC = () => {
         {userRole === 'Şube Müdürü' && (
           <Route element={<ManagerLayout />}>
             <Route path="/" element={<ManagerDashboard />} />
+            <Route path="/scanner" element={<ScannerView />} />
             <Route path="/inventory" element={<InventoryList />} />
             <Route path="/frozen-stock" element={<FrozenStockView />} />
             <Route path="/reports" element={<ReportsView />} />
